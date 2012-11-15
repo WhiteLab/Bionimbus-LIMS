@@ -1,0 +1,5 @@
+sqlite            = True
+postgres          = postgres://dstn:cisdstn@localhost:5432/bionimbus
+login_with_openid = False
+api_key           = ec9030cdca5c64b6f8f968de3f08a7298d0d846e
+domain            = bionimbus

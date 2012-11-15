@@ -1,0 +1,198 @@
+/*
+  Additional css specific to the OSDC site, some also taken from bootstraps' site
+*/
+
+/* Body and structure
+-------------------------------------------------- */
+body {
+  position: relative;
+//  padding-top: 90px;
+  background-color: #fff;
+  background-image: url(../img/grid-18px-masked.png);
+  background-repeat: repeat-x;
+  background-position: 0 40px;
+}
+
+/* Tweak navbar brand link to be super sleek
+-------------------------------------------------- */
+.navbar-fixed-top .brand {
+  padding-right: 0;
+  padding-left: 0;
+  margin-left: 20px;
+  float: right;
+  font-weight: bold;
+  color: #b8e0f1;
+  text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.125);
+  -webkit-transition: all .2s linear;
+     -moz-transition: all .2s linear;
+          transition: all .2s linear;
+}
+.navbar-fixed-top .brand:hover {
+  text-decoration: none;
+}
+
+/* Jumbotrons
+-------------------------------------------------- */
+.jumbotron {
+  margin-top: 60px;
+  position: relative;
+}
+.jumbotron h1 {
+  margin-bottom: 9px;
+  font-size: 61px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.jumbotron p {
+  margin-bottom: 18px;
+  font-weight: 300;
+}
+.jumbotron .btn-large {
+  font-size: 20px;
+  font-weight: normal;
+  padding: 14px 24px;
+  margin-right: 10px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+.jumbotron .btn-large small {
+  font-size: 14px;
+}
+
+/* Specific jumbotrons
+------------------------- */
+/* supporting docs pages */
+.subhead {
+  padding-bottom: 0;
+  margin-bottom: 9px;
+}
+.subhead h1 {
+  font-size: 44px;
+}
+
+/* Masthead (docs home) */
+.masthead {
+  padding-top: 36px;
+  margin-bottom: 72px;
+}
+.masthead h1,
+.masthead p {
+  text-align: center;
+}
+.masthead h1 {
+  margin-bottom: 18px;
+}
+.masthead p {
+  margin-left: 5%;
+  margin-right: 5%;
+  font-size: 30px;
+  line-height: 36px;
+}
+
+.well-main{
+    min-height: 250px;
+    margin-top: 20px;
+    margin-bottom:80px;
+    }
+
+.data-header {
+  padding-bottom: 0px;
+  margin: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.data-lead {
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.data-entry{
+    margin-bottom: 8px;
+    }
+
+.data-faint{
+    color: #777777;
+    font-size: 11px;
+    font-style: italic;
+    }
+
+.data-label{
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.status-label{
+    font-size: 13px;
+    font-weight: bold;
+    }
+
+.status-row{
+    line-height: 24px;
+    margin: 10px 0;
+    }
+
+.status-used{
+    float: left;
+    background-color: #faa732;
+    text-align: right;
+    }
+
+.status-bound{
+    border: 1px solid #777777;
+}
+
+.status-total{
+    padding-left: 2px;
+    float: left;
+}
+
+.status-header {
+  padding-bottom: 5px;
+  margin: 10px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.btn-block + .btn-block {
+  margin-top: 5px;
+}
+
+.sub-topic{
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 7px;
+}
+
+.code-list-item{
+    padding-bottom: 3px;
+}
+
+.form-horizontal .help-block{
+    margin-top: 0px;
+    width: 400px;
+    }
+
+.form-horizontal .control-group-min{
+    margin-bottom: 0px;
+}
+
+.form-horizontal .control-group-min li label {
+    width:auto; 
+    float:none;
+    display: inline;
+    font-weight:normal; 
+    vertical-align:middle;
+    padding:0; 
+    line-height:27px; 
+    margin-right:10px;
+}

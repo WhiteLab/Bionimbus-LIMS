@@ -1,0 +1,15 @@
+
+This is the entire bionimbus distribution.  It can be untarred directly into the applicaitons folder of 
+web2py and run.  The only package that needs to be installed is the XLRD module for python to allow 
+the generation of keys based on spreadsheets.  XLRD can be downloaded from: http://pypi.python.org/pypi/xlrd
+
+The package as deployed uses local login and a stabdalone SQLITE database that needs no configutation.  
+In the base directory of the application there is a config.txt file for setting that allow you to use 
+a postgres database, or an openid-based login system. In both cases, there is a line in the config
+script you will need to configure to point to the local database, or your API key for the janrain 
+openid system.
+
+If you have an existing bioinformatics database, there is a sample import script for importing samples and 
+experiments into the system, also in the applications folder.  
+
+
