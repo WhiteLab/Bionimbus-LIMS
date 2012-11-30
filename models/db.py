@@ -9,11 +9,28 @@
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
+
+# get configurations 
 f = open( "applications/BNAdmin/config.dat" , "r" )
 for line in f.readlines():
   line = line.strip()
   (k,v) = [ t.strip() for t in line.split( '=' ) ]
   settings[ k ] = v 
+
+
+# set up mail 
+from gluon.tools import Mail
+mail = Mail()
+mail.settings.server = '127.0.0.1'
+mail.settings.sender = 'ctchrinthry@gmail.com'
+#mail.settings.login = 'username:password'
+
+mail.send(to=['ctchrinthry@gmail.com'],
+          subject='hello',
+          # If reply_to is omitted, then mail.settings.sender is used
+          reply_to='us@example.com',
+          message='hi there')
+
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
