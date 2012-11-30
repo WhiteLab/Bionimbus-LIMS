@@ -10,8 +10,10 @@
 # request.requires_https()
 
 
-# get configurations 
-f = open( "applications/BNAdmin/config.dat" , "r" )
+mpath = request.env.path_info.split('/')
+path = mpath[ 1 ] 
+
+f = open( "applications/%s/config.dat" % path , "r" )
 for line in f.readlines():
   line = line.strip()
   (k,v) = [ t.strip() for t in line.split( '=' ) ]
