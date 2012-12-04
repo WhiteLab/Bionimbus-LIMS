@@ -6,10 +6,10 @@ import xlrd
 
 from gluon.custom_import import track_changes; track_changes(True)
 
-from applications.BNAdmin.modules.permissions import is_user_admin
-from applications.BNAdmin.modules.permissions import get_experiment_visibility_query
-from applications.BNAdmin.modules.permissions import experiment_project_join
-from applications.BNAdmin.modules.permissions import can_user_access_bionimbus_id
+from applications.Bionimbus.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.permissions import get_experiment_visibility_query
+from applications.Bionimbus.modules.permissions import experiment_project_join
+from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
@@ -90,7 +90,7 @@ def get_spreadsheet_info( id ):
   projectname = project[ db.t_project.f_name ]
   projectid   = project[ db.t_project.id ]
 
-  matrix = spreadsheet_to_matrix( "applications/BNAdmin/uploads/" + fn )
+  matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
   return row , fn , project , projectname , projectid , matrix
 
 
@@ -166,7 +166,7 @@ def process_key_spreadsheet( id ):
 
 import xmlrpclib
 def generate_key( antibody , sample , import_id , project , barcode ):
-  server=xmlrpclib.ServerProxy( 'http://bc.bionimbus.org/w2/BNAdmin/keys/call/xmlrpc' )
+  server=xmlrpclib.ServerProxy( 'http://bc.bionimbus.org/w2/Bionimbus/keys/call/xmlrpc' )
   aid    = get_antibody_id( antibody  )
   sample = get_sample_id( sample )
   key = server.generate_key()
@@ -185,5 +185,5 @@ def create_keys():
 
   for row in matrix[ 3: ]:
     key = generate_key( row[ 3 ] , row[ 2 ] , id , project , row[ 6 ] )
-  #return redirect( 'http://bc.bionimbus.org/w2/BNAdmin/default/experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
+  #return redirect( 'http://bc.bionimbus.org/w2/Bionimbus/default/experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
   return redirect( URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id ) )

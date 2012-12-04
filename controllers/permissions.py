@@ -4,7 +4,7 @@
 import os
 import xlrd
 
-from applications.BNAdmin.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.permissions import is_user_admin
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)

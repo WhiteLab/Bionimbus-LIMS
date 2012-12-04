@@ -1,7 +1,7 @@
 import sys
 import os
 
-from applications.BNAdmin.modules.file_location import generate_name
+from applications.Bionimbus.modules.file_location import generate_name
 
 def run( str ):
   print str

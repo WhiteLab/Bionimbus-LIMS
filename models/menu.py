@@ -14,7 +14,7 @@ response.menu = [
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
 ]
 
-from applications.BNAdmin.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.permissions import is_user_admin
 
 if is_user_admin( db , auth ):
   response.menu.append( (T('Project Users'),URL('permissions','user_project_manage')==URL(),URL('permissions','user_project_manage'),[]) )
