@@ -29,7 +29,7 @@ db.define_table('t_sample',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_sample_archive',db.t_sample,Field('current_record','reference t_sample',readable=False,writable=False))
+db.define_table('t_sample_archive',db.t_sample,Field('current_record','reference t_sample',readable=False,writable=False),migrate=settings.migrate)
 
 ########################################
 db.define_table('t_users',
@@ -54,7 +54,7 @@ db.define_table('t_users',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_users_archive',db.t_users,Field('current_record','reference t_users',readable=False,writable=False))
+db.define_table('t_users_archive',db.t_users,Field('current_record','reference t_users',readable=False,writable=False),migrate=settings.migrate)
 
 ########################################
 db.define_table('t_agent',
@@ -64,7 +64,7 @@ db.define_table('t_agent',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_agent_archive',db.t_agent,Field('current_record','reference t_agent',readable=False,writable=False))
+db.define_table('t_agent_archive',db.t_agent,Field('current_record','reference t_agent',readable=False,writable=False),migrate=settings.migrate)
 
 
 ########################################
@@ -90,7 +90,7 @@ db.define_table('t_organism',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_organism_archive',db.t_organism,Field('current_record','reference t_organism',readable=False,writable=False))
+db.define_table('t_organism_archive',db.t_organism,Field('current_record','reference t_organism',readable=False,writable=False),migrate=settings.migrate)
 
 
 
@@ -114,7 +114,7 @@ db.define_table('t_project',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_project_archive',db.t_project,Field('current_record','reference t_project',readable=False,writable=False))
+db.define_table('t_project_archive',db.t_project,Field('current_record','reference t_project',readable=False,writable=False),migrate=settings.migrate)
 
 ########################################
 db.define_table('t_file',
@@ -132,7 +132,7 @@ db.define_table('t_file',
     format='%(f_name)s',
     migrate=settings.migrate)
 
-db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_file',readable=False,writable=False))
+db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_file',readable=False,writable=False),migrate=settings.migrate)
 
 
 ########################################
@@ -197,13 +197,14 @@ db.define_table('t_experiment_unit_archive',
           label=T('Protein')),
     Field('f_is_public' , type = 'boolean' ,
           label=T('Public')),
+    migrate=settings.migrate
      )
 
 db.define_table( 't_barcodes' ,
         Field('f_name', type='string',
           label=T('Name'),unique=True),
         Field('f_sequence', type='string',
-          label=T('Sequence'),unique=True))
+          label=T('Sequence'),unique=True),migrate=settings.migrate)
 
 
 db.define_table('t_keygen_spreadsheets', 
@@ -215,7 +216,8 @@ db.define_table('t_keygen_spreadsheets',
     Field( 'f_cycles_per_lane' , type = 'string' , label=T('Cycles requested per lane') ) ,
     Field( 'f_reference_library_to_map_output' , type = 'string' , label=T('Refrence library to map output') ) ,
     Field( 'f_comments' , type = 'text' , label=T('Comments') ) ,
-    Field('file','upload', requires = IS_NOT_EMPTY() ))
+    Field('file','upload', requires = IS_NOT_EMPTY() ) , 
+    migrate=settings.migrate )
 
 
 
@@ -228,7 +230,8 @@ db.define_table( 't_keys' ,
         Field('f_year', type='integer',
           label=T('year')),
         Field('f_index', type='integer',
-          label=T('index'))  
+          label=T('index')),
+        migrate=settings.migrate  
 )
 
 db.define_table( 't_key_metadata' ,
@@ -238,4 +241,5 @@ db.define_table( 't_key_metadata' ,
           label=T('metadata key')) ,
         Field('f_value', type='string',
           label=T('value')) ,
+       migrate=settings.migrate
 )

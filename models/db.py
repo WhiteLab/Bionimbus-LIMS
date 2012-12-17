@@ -9,6 +9,7 @@
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
+settings.migrate = False
 
 mpath = request.env.path_info.split('/')
 path = mpath[ 1 ] 
