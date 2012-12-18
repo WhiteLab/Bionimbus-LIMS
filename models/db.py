@@ -73,9 +73,9 @@ db.define_table('auth_user',
     Field('password', type='password',
           readable=False,
           label=T('Password')),
-    Field('filesystem_password', type='password',
+    Field('filesystem_password', type='string',
           readable=False,
-          label=T('Password')),
+          label=T('File system Password')),
     Field('is_admin',type='boolean'),
     Field('created_on','datetime',default=request.now,
           label=T('Created On'),writable=False,readable=False),
@@ -96,7 +96,7 @@ if settings[ 'login_with_openid' ] == 'True':
   from gluon.contrib.login_methods.rpx_account import RPXAccount
   auth.settings.actions_disabled=['register','change_password',
   'request_reset_password']
-  u = URL( request.application , '/default/user/login' , scheme = True , host = True )
+  u = URL( '/user/login' , scheme = True , host = True )
   auth.settings.login_form = RPXAccount(request,
     api_key = settings[ 'api_key' ] ,
     domain = settings[ 'domain' ] ,
