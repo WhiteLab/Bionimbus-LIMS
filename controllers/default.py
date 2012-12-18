@@ -283,22 +283,3 @@ def users_manage():
     form = SQLFORM.smartgrid(db.t_users,onupdate=auth.archive)
     return locals()
 
-#def get_antibody_id( aname ):
-#    id = db( db.t_agent.f_name == aname ).select( db.t_agent.id )
-#    if len( id ) == 0:
-#      print "making new id"
-#      id = db.t_agent.insert( f_name = aname )
-#    else:
-#      id = id[ 0 ][ 'id' ] 
-#    return id
-   
-#def get_sample_id( sname ):
-#    id = db( db.t_sample.f_name == sname ).select( db.t_sample.id )
-#    if len( id ) == 0:
-#      print "making new id"
-#      id = db.t_sample.insert( f_name = sname )
-#    else:
-#      id = id[ 0 ][ 'id' ]
-#    return id
-
-
