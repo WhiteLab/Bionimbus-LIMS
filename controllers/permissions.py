@@ -4,7 +4,7 @@
 import os
 import xlrd
 
-from applications.BNAdmin.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.permissions import is_user_admin
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
@@ -22,6 +22,7 @@ def project_manage():
              db.t_project.f_name 
            , db.t_project.f_organism 
            , db.t_project.f_pi  
+           , db.t_project.f_public
              ]
     editable = is_user_admin( db , auth )
     form = SQLFORM.grid( db.t_project,fields = fields , 

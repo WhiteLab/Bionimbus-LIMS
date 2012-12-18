@@ -4,11 +4,10 @@ import os
 import sys
 import pg
 
-
-import sqlite3 
 connection = pg.connect( 'cistrackdb' , 'localhost', -1 , None , None , 'dstn' , 'cisdstn' )
 connection2= pg.connect( 'bionimbus'  , 'localhost', -1 , None , None , 'dstn' , 'cisdstn' )
 
+# TODO: insert using DAL 
 
 def run_sql( c , sql ):
   print sql , ";"

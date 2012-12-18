@@ -1,2 +1,2 @@
-cd ../../..; python web2py.py -S BNAdmin -M -R applications/BNAdmin/scripts/fs.py
+cd ../../..; python web2py.py -S Bionimbus -M -R applications/Bionimbus/scripts/fs.py
 

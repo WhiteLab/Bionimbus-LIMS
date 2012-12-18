@@ -9,11 +9,17 @@
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
-f = open( "applications/BNAdmin/config.dat" , "r" )
+settings.migrate = False
+
+mpath = request.env.path_info.split('/')
+path = mpath[ 1 ] 
+
+f = open( "applications/%s/config.dat" % path , "r" )
 for line in f.readlines():
   line = line.strip()
   (k,v) = [ t.strip() for t in line.split( '=' ) ]
   settings[ k ] = v 
+
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
@@ -65,6 +71,9 @@ db.define_table('auth_user',
     Field('email', type='string',
           label=T('Email')),
     Field('password', type='password',
+          readable=False,
+          label=T('Password')),
+    Field('filesystem_password', type='password',
           readable=False,
           label=T('Password')),
     Field('is_admin',type='boolean'),
@@ -136,6 +145,6 @@ use_janrain(auth,filename='private/janrain.key')
 #########################################################################
 
 
-mail.settings.server = settings.email_server
-mail.settings.sender = settings.email_sender
-mail.settings.login = settings.email_login
+#mail.settings.server = settings.email_server
+#mail.settings.sender = settings.email_sender
+#mail.settings.login = settings.email_login

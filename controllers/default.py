@@ -6,10 +6,10 @@ import xlrd
 
 from gluon.custom_import import track_changes; track_changes(True)
 
-from applications.BNAdmin.modules.permissions import is_user_admin
-from applications.BNAdmin.modules.permissions import get_experiment_visibility_query
-from applications.BNAdmin.modules.permissions import experiment_project_join
-from applications.BNAdmin.modules.permissions import can_user_access_bionimbus_id
+from applications.Bionimbus.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.permissions import get_experiment_visibility_query
+from applications.Bionimbus.modules.permissions import experiment_project_join
+from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
@@ -106,7 +106,7 @@ def metadata():
   row = db( db.t_experiment_unit.f_bionimbus_id == id ).select()
   row = row[ 0 ] 
   id = row[ db.t_experiment_unit.id ]
-  return redirect( 'http://bc.bionimbus.org/w2/BNAdmin/default/metadata_display/view/t_experiment_unit/' + str( id ) )
+  return redirect( 'http://bc.bionimbus.org/w2/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
 
 
 

@@ -1,5 +1,5 @@
 
-This is the entire bionimbus distribution.  It can be untarred directly into the applicaitons folder of 
+This is the entire bionimbus distribution.  You can check it out from git directly into the applicaitons folder of 
 web2py and run.  The only package that needs to be installed is the XLRD module for python to allow 
 the generation of keys based on spreadsheets.  XLRD can be downloaded from: http://pypi.python.org/pypi/xlrd
 
