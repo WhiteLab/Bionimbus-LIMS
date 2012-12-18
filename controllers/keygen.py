@@ -42,6 +42,12 @@ def user_in_project( project_id ):
   uip = db( ( d.f_project_id == project_id ) & ( d.f_user_id == auth.user_id ) ).select()
   return len( uip ) > 0 
 
+templates = [ 'Samples_ChIPseq.xlsx' , 
+              'Samples_DNAseq_Whole Genome2.xlsx' , 
+              'Samples_DNAseq_Whole_Genome.xlsx' , 
+              'Samples_RNAseq.xlsx' ]
+
+
 @auth.requires_login()
 def keygen_spreadsheet():
   form = SQLFORM( db.t_keygen_spreadsheets )
@@ -51,6 +57,10 @@ def keygen_spreadsheet():
         return process_key_spreadsheet( id )
       else:
         response.flash = "You are not part of that project" 
+  for template in templates:
+    st = "/w2/Bionimbus/static/" + template
+    l = A( template , _href = st ) 
+    form[ 0 ].insert( 0 , l )
   return locals()
 
 def spreadsheet_to_matrix( fn ):
