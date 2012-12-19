@@ -159,20 +159,36 @@ def process_key_spreadsheet( id ):
   table.append( TR( "" , "name" , "biological material" , "Antibody/treatment" , "Experiment" , "Facility" , "Barcode" ) ) 
  
   for row in matrix[ 3: ]:
+    values = extractRow( row )
     ar = []
     ar.append( LABEL( "Row " + str(x) ) )
     x = x + 1 
-    ar.append( INPUT( _value = row[ 1 ] ) ) #name
-    ar.append( INPUT( _value = row[ 2 ] ) ) #material
-    ar.append( INPUT( _value = row[ 3 ] ) ) #antibody
-    ar.append( INPUT( _value = row[ 4 ] ) ) #experiment
-    ar.append( INPUT( _value = row[ 5 ] ) ) #Facility
-    ar.append( INPUT( _value = row[ 6 ] ) ) #barcode
+    ar.append( values.name ) 
+    ar.append( values.material )
+    ar.append( values.antibody )
+    ar.append( values.experiment )
+    ar.append( values.facility )
+    ar.append( values.barcode )
     table.append( TR( *ar ) )
   slug.append( TABLE( *table ) )
   slug.append( INPUT( value = 'Create Keys' , _type = 'submit' , _action = URL( 'page_two' ) )  )
   form = FORM( _action = 'create_keys/' + str( id ) , *slug)
   return locals()
+
+class Bunch:
+  def __init__(self, **kwds):
+    self.__dict__.update(kwds)
+
+def extractRow( row ):
+  r = [ INPUT( _value = x ) for x in row ]
+
+  return Bunch( name       = r[ 1 ] ,
+                material   = r[ 2 ] ,
+                antibody   = r[ 3 ] , 
+                experiment = r[ 4 ] , 
+                facility   = r[ 5 ] ,
+                barcode    = r[ 6 ] )
+
 
 import xmlrpclib
 def generate_key( antibody , sample , import_id , project , barcode ):
@@ -194,6 +210,6 @@ def create_keys():
   row , fn , project , projectname , projectid , matrix = get_spreadsheet_info( id )
 
   for row in matrix[ 3: ]:
-    key = generate_key( row[ 3 ] , row[ 2 ] , id , project , row[ 6 ] )
-  #return redirect( 'http://bc.bionimbus.org/w2/Bionimbus/default/experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
+    values = extractRow( row )
+    key = generate_key( values.antibody , values.material , id , project , values.barcode )
   return redirect( URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id ) )
