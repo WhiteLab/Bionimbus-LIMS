@@ -37,26 +37,50 @@ def get_sample_id( sname ):
       id = id[ 0 ][ 'id' ]
     return id
 
-def user_in_project( project_id ):
+
+def projects_for_user():
   d = db.t_user_project
-  uip = db( ( d.f_project_id == project_id ) & ( d.f_user_id == auth.user_id ) ).select()
-  return len( uip ) > 0 
+  pfu = db( d.f_user_id == auth.user_id ).select( d.id )
+  projects = {}
+  for p in pfu:
+    projects[ p[ d.id ] ] = 0
+  return projects
+
 
 templates = [ 'Samples_ChIPseq.xlsx' , 
               'Samples_DNAseq_Whole Genome2.xlsx' , 
               'Samples_DNAseq_Whole_Genome.xlsx' , 
               'Samples_RNAseq.xlsx' ]
 
-
 @auth.requires_login()
 def keygen_spreadsheet():
   form = SQLFORM( db.t_keygen_spreadsheets )
   if form.process().accepted:
-      if user_in_project( form.vars.f_project ):
-        id      = int( form.vars.id )
-        return process_key_spreadsheet( id )
-      else:
-        response.flash = "You are not part of that project" 
+    id = int( form.vars.id )
+    return process_key_spreadsheet( id )
+
+  projects = projects_for_user()
+
+  projectOption = form[0][0][1][0]
+  print "Type: " , type(projectOption)
+  disc = []
+  for i,p in zip(range(0,1000) , projectOption):
+   try:
+    po = str( p ) 
+    po = po[  po.find( '"' ) + 1 : ]
+    po = po[ : po.find( '"' ) ] 
+    po = int( po ) 
+    if projects.has_key( po ):
+       print "*************Keep " , p 
+    else:
+       disc.append( i )
+    
+   except:
+    print "err: *%s*" % po 
+  disc.reverse()
+  for d in disc:
+    projectOption.__delitem__(d)
+
   for template in templates:
     st = "/w2/Bionimbus/static/" + template
     l = A( template , _href = st ) 
@@ -180,7 +204,7 @@ class Bunch:
     self.__dict__.update(kwds)
 
 def extractRow( row ):
-  r = [ INPUT( _value = x ) for x in row ]
+  r = row # [ INPUT( _value = x ) for x in row ]
 
   return Bunch( name       = r[ 1 ] ,
                 material   = r[ 2 ] ,
