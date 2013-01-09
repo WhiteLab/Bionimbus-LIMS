@@ -3,6 +3,8 @@
 
 import os
 import xlrd
+import sys
+import traceback
 
 from gluon.custom_import import track_changes; track_changes(True)
 
@@ -82,13 +84,16 @@ def keygen_spreadsheet():
     projectOption.__delitem__(d)
 
   for template in templates:
-    st = "/w2/Bionimbus/static/" + template
+    st = "/Bionimbus/static/" + template
     l = A( template , _href = st ) 
     form[ 0 ].insert( 0 , l )
   return locals()
 
+titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ]
+
 def spreadsheet_to_matrix( fn ):
   book = xlrd.open_workbook( fn )
+  title = None
   matrix = []
   for sheet_name in book.sheet_names():
     sh = book.sheet_by_name(sheet_name)
@@ -96,9 +101,15 @@ def spreadsheet_to_matrix( fn ):
       mr = []
       row = sh.row_values(rownum)
       for r in row:
+        if title == None:
+          title = str( r )
+          title = title.split() 
+          title = title[ 0 ] 
+          if not title in titles:
+            return 1 / 0 
         mr.append( str( r ) )
       matrix.append( mr )
-  return matrix
+  return title,matrix
 
 
 def get_user_hash():
@@ -124,12 +135,15 @@ def get_spreadsheet_info( id ):
   projectname = project[ db.t_project.f_name ]
   projectid   = project[ db.t_project.id ]
 
-  matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
-  return row , fn , project , projectname , projectid , matrix
+  title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
+  return row , fn , project , projectname , projectid , title , matrix
 
 
 def process_key_spreadsheet( id ):
-  row , fn , project , projectname , projectid , matrix = get_spreadsheet_info( id )
+  try:
+    row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
+  except:
+    return HTML( "Error" )
 
   slug = [ ]
   table = []
@@ -182,8 +196,8 @@ def process_key_spreadsheet( id ):
   table = []
   table.append( TR( "" , "name" , "biological material" , "Antibody/treatment" , "Experiment" , "Facility" , "Barcode" ) ) 
  
-  for row in matrix[ 3: ]:
-    values = extractRow( row )
+  for row in matrix[ 1: ]:
+    values = extractRow( title , row )
     ar = []
     ar.append( LABEL( "Row " + str(x) ) )
     x = x + 1 
@@ -216,7 +230,7 @@ def extractRow( row ):
 
 import xmlrpclib
 def generate_key( antibody , sample , import_id , project , barcode ):
-  server=xmlrpclib.ServerProxy( 'http://bc.bionimbus.org/w2/Bionimbus/keys/call/xmlrpc' )
+  server=xmlrpclib.ServerProxy( 'http://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   aid    = get_antibody_id( antibody  )
   sample = get_sample_id( sample )
   key = server.generate_key()
@@ -234,6 +248,6 @@ def create_keys():
   row , fn , project , projectname , projectid , matrix = get_spreadsheet_info( id )
 
   for row in matrix[ 3: ]:
-    values = extractRow( row )
+    values = extractRow( title , row )
     key = generate_key( values.antibody , values.material , id , project , values.barcode )
   return redirect( URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id ) )

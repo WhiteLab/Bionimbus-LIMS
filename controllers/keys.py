@@ -19,6 +19,12 @@ def error():
 
 service = Service()
 
+sheets = [
+  'rnaseq' , 
+  'dswg2' , 
+  'dswg' , 
+  'cs' ] 
+
 @service.xmlrpc
 def generate_key(  ):
     now = datetime.datetime.now()

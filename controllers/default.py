@@ -106,7 +106,7 @@ def metadata():
   row = db( db.t_experiment_unit.f_bionimbus_id == id ).select()
   row = row[ 0 ] 
   id = row[ db.t_experiment_unit.id ]
-  return redirect( 'http://bc.bionimbus.org/w2/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
+  return redirect( 'http://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
 
 
 
