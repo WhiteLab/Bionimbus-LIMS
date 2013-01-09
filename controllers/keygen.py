@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#gent -*- coding: utf-8 -*-
 ### required - do no delete
 
 import os
@@ -49,10 +49,10 @@ def projects_for_user():
   return projects
 
 
-templates = [ 'Samples_ChIPseq.xlsx' , 
-              'Samples_DNAseq_Whole Genome2.xlsx' , 
-              'Samples_DNAseq_Whole_Genome.xlsx' , 
-              'Samples_RNAseq.xlsx' ]
+templates = [ 'Samples_ChIPseq.xls' , 
+              'Samples_DNAseq_Whole Genome2.xls' , 
+              'Samples_DNAseq_Whole_Genome.xls' , 
+              'Samples_RNAseq.xls' ]
 
 @auth.requires_login()
 def keygen_spreadsheet():
@@ -194,7 +194,7 @@ def process_key_spreadsheet( id ):
 
   x = 1
   table = []
-  table.append( TR( "" , "name" , "biological material" , "Antibody/treatment" , "Experiment" , "Facility" , "Barcode" ) ) 
+  table.append( TR( "" , "name" , "biological material" , "Antibody/treatment" , "Experiment" , "Barcode" ) ) 
  
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
@@ -205,7 +205,6 @@ def process_key_spreadsheet( id ):
     ar.append( values.material )
     ar.append( values.antibody )
     ar.append( values.experiment )
-    ar.append( values.facility )
     ar.append( values.barcode )
     table.append( TR( *ar ) )
   slug.append( TABLE( *table ) )
@@ -217,8 +216,21 @@ class Bunch:
   def __init__(self, **kwds):
     self.__dict__.update(kwds)
 
-def extractRow( row ):
+def extractRow( title , row ):
   r = row # [ INPUT( _value = x ) for x in row ]
+
+  if title == 'dswg':
+    return Bunch( name       = r[ 0 ] ,
+                  material   = r[ 1 ] ,
+                  antibody   = r[ 2 ] ,
+                  experiment = r[ 4 ] ,
+                  barcode    = r[ 7 ] )
+  if title == 'CS':
+    return Bunch( name       = r[ 1 ] ,
+                  material   = r[ 2 ] ,
+                  antibody   = r[ 5 ] ,
+                  experiment = r[ 4 ] ,
+                  barcode    = r[ 10 ] )
 
   return Bunch( name       = r[ 1 ] ,
                 material   = r[ 2 ] ,
@@ -229,12 +241,10 @@ def extractRow( row ):
 
 
 import xmlrpclib
-def generate_key( antibody , sample , import_id , project , barcode ):
-  server=xmlrpclib.ServerProxy( 'http://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
-  aid    = get_antibody_id( antibody  )
-  sample = get_sample_id( sample )
+def generate_key( agent , sample , import_id , project , barcode ):
+  server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org:443/Bionimbus/keys/call/xmlrpc' )
   key = server.generate_key()
-  id = db.t_experiment_unit.insert( f_agent = aid ,
+  id = db.t_experiment_unit.insert( f_agent = agent ,
                                     f_bionimbus_id = key ,
                                     f_project = project ,
                                     f_sample = sample ,
@@ -245,9 +255,9 @@ def generate_key( antibody , sample , import_id , project , barcode ):
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
-  row , fn , project , projectname , projectid , matrix = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
 
-  for row in matrix[ 3: ]:
+  for row in matrix[ 1: ]:
     values = extractRow( title , row )
     key = generate_key( values.antibody , values.material , id , project , values.barcode )
   return redirect( URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id ) )

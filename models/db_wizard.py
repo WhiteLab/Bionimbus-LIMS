@@ -22,15 +22,6 @@ db.define_table( 't_platform' ,
     migrate=settings.migrate)
 
 
-db.define_table('t_sample',
-    Field('f_name', type='string',
-          label=T('Name')),
-    auth.signature,
-    format='%(f_name)s',
-    migrate=settings.migrate)
-
-db.define_table('t_sample_archive',db.t_sample,Field('current_record','reference t_sample',readable=False,writable=False),migrate=settings.migrate)
-
 ########################################
 db.define_table('t_users',
     Field('f_name', type='string',
@@ -56,15 +47,6 @@ db.define_table('t_users',
 
 db.define_table('t_users_archive',db.t_users,Field('current_record','reference t_users',readable=False,writable=False),migrate=settings.migrate)
 
-########################################
-db.define_table('t_agent',
-    Field('f_name', type='string',
-          label=T('Name')),
-    auth.signature,
-    format='%(f_name)s',
-    migrate=settings.migrate)
-
-db.define_table('t_agent_archive',db.t_agent,Field('current_record','reference t_agent',readable=False,writable=False),migrate=settings.migrate)
 
 
 ########################################
@@ -158,12 +140,10 @@ db.define_table('t_experiment_unit',
           label=T('Bionimbus Id')),
     Field('f_project', db.t_project,
           label=T('Project')),
-    Field('f_sample', type='reference t_sample',
+    Field('f_sample', type='string',
           label=T('Sample')),
-    Field('f_agent', type='reference t_agent',
-          label=T('Agent')),
-    Field('f_agent_text_tmp', type='string',
-          label=T('Agent Text')),
+    Field('f_agent', type='string',
+          label=T('Antobody/Treatment')),
     Field('f_barcode', type='string',
           label=T('Barcode')),
     Field('f_protein', type='string',
@@ -185,12 +165,10 @@ db.define_table('t_experiment_unit_archive',
           label=T('Bionimbus Id')),
     Field('f_project', db.t_project,
           label=T('Project')),
-    Field('f_sample', type='reference t_sample',
+    Field('f_sample', type='string',
           label=T('Sample')),
-    Field('f_agent', type='reference t_agent',
+    Field('f_agent', type='string',
           label=T('Agent')),
-    Field('f_agent_text_tmp', type='string',
-          label=T('Agent Text')),
     Field('f_barcode', type='string',
           label=T('Barcode')),
     Field('f_protein', type='string',
@@ -206,12 +184,18 @@ db.define_table( 't_barcodes' ,
         Field('f_sequence', type='string',
           label=T('Sequence'),unique=True),migrate=settings.migrate)
 
+db.define_table( 't_facility' ,
+        Field('f_name', type='string',
+          label=T('Name'),unique=True),
+        Field('f_contact', type='text',
+          label=T('Contact information'),unique=True),migrate=settings.migrate)
 
 db.define_table('t_keygen_spreadsheets', 
-    Field( 'f_project' , type = 'reference t_project' , label=T('Project')  ) , 
+    Field( 'f_project' ,  type = 'reference t_project' , label=T('Project')  ) , 
     Field( 'f_platform' , type = 'reference t_platform' , label=T('Platform') ) ,
     Field( 'f_library_prep_type' , type = 'string' , label=T('Library Preparation Type') , 
             requires = IS_IN_SET([  'DNAseq' , 'ChIP-seq' , 'Paired-end' , 'RNAseq' , '16s' ]) ) ,
+    Field( 'f_facility' , type = 'reference t_facility' , label=T('Facility') ) ,
     Field( 'f_lanes_per_sample' , type = 'integer' , label=T('Lanes requested per sample') ) , 
     Field( 'f_cycles_per_lane' , type = 'string' , label=T('Cycles requested per lane') ) ,
     Field( 'f_reference_library_to_map_output' , type = 'string' , label=T('Refrence library to map output') ) ,

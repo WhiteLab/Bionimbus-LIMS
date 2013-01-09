@@ -190,6 +190,16 @@ def organism_manage():
                          )
     return locals()
 
+@auth.requires_login()
+def facility_manage():
+    editable = is_user_admin( db , auth )
+
+    form = SQLFORM.grid( db.t_facility ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         )
+    return locals()
 
 
 file_links = [
