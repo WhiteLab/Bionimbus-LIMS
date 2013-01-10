@@ -184,18 +184,22 @@ db.define_table( 't_barcodes' ,
         Field('f_sequence', type='string',
           label=T('Sequence'),unique=True),migrate=settings.migrate)
 
-db.define_table( 't_facility' ,
-        Field('f_name', type='string',
-          label=T('Name'),unique=True),
-        Field('f_contact', type='text',
-          label=T('Contact information'),unique=True),migrate=settings.migrate)
+db.define_table('t_facility',
+    Field('f_name', type='string',
+          label=T('Name')),
+    Field('f_contact', type='string',
+          label=T('Contact Information')),
+    auth.signature,
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
 
 db.define_table('t_keygen_spreadsheets', 
     Field( 'f_project' ,  type = 'reference t_project' , label=T('Project')  ) , 
     Field( 'f_platform' , type = 'reference t_platform' , label=T('Platform') ) ,
     Field( 'f_library_prep_type' , type = 'string' , label=T('Library Preparation Type') , 
             requires = IS_IN_SET([  'DNAseq' , 'ChIP-seq' , 'Paired-end' , 'RNAseq' , '16s' ]) ) ,
-    Field( 'f_facility' , type = 'reference t_facility' , label=T('Facility') ) ,
+    Field( 't_facility' ,  type = 'reference t_facility' , label=T('Facility')  ) ,
     Field( 'f_lanes_per_sample' , type = 'integer' , label=T('Lanes requested per sample') ) , 
     Field( 'f_cycles_per_lane' , type = 'string' , label=T('Cycles requested per lane') ) ,
     Field( 'f_reference_library_to_map_output' , type = 'string' , label=T('Refrence library to map output') ) ,
