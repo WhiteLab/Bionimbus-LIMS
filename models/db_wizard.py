@@ -22,32 +22,6 @@ db.define_table( 't_platform' ,
     migrate=settings.migrate)
 
 
-########################################
-db.define_table('t_users',
-    Field('f_name', type='string',
-          label=T('Name')),
-    Field('f_username', type='string',
-          label=T('User Name')),
-    Field('f_address', type='string',
-          label=T('Address')),
-    Field('f_email', type='string',
-          label=T('Email Address')),
-    Field('f_phone', type='string',
-          label=T('Phone Number')),
-
-    Field('f_password', type='string'
-          ),
-    Field('f_lastlogin', type='datetime',
-          label=T('Lastlogin')),
-    Field('f_superuser', type='boolean',
-          label=T('Superuser')),
-    auth.signature,
-    format='%(f_name)s',
-    migrate=settings.migrate)
-
-db.define_table('t_users_archive',db.t_users,Field('current_record','reference t_users',readable=False,writable=False),migrate=settings.migrate)
-
-
 
 ########################################
 db.define_table('t_mail_list',
@@ -187,7 +161,7 @@ db.define_table( 't_barcodes' ,
 db.define_table('t_facility',
     Field('f_name', type='string',
           label=T('Name')),
-    Field('f_contact', type='string',
+    Field('f_contact', type='text',
           label=T('Contact Information')),
     auth.signature,
     format='%(f_name)s',

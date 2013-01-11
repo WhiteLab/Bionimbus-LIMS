@@ -23,23 +23,6 @@ def index():
 def error():
     return dict()
 
-def get_antibody_id( aname ):
-    id = db( db.t_agent.f_name == aname ).select( db.t_agent.id )
-    if len( id ) == 0:
-      id = db.t_agent.insert( f_name = aname )
-    else:
-      id = id[ 0 ][ 'id' ]
-    return id
-
-def get_sample_id( sname ):
-    id = db( db.t_sample.f_name == sname ).select( db.t_sample.id )
-    if len( id ) == 0:
-      id = db.t_sample.insert( f_name = sname )
-    else:
-      id = id[ 0 ][ 'id' ]
-    return id
-
-
 def projects_for_user():
   d = db.t_user_project
   pfu = db( d.f_user_id == auth.user_id ).select( d.id )
@@ -223,21 +206,29 @@ def extractRow( title , row ):
     return Bunch( name       = r[ 0 ] ,
                   material   = r[ 1 ] ,
                   antibody   = r[ 2 ] ,
-                  experiment = r[ 4 ] ,
+                  experiment = r[ 4 ] , 
                   barcode    = r[ 7 ] )
+  if title == 'dswg2':
+    return Bunch( name       = r[ 0 ] ,
+                  material   = r[ 1 ] ,
+                  antibody   = r[ 3 ] ,
+                  experiment = r[ 5 ] ,
+                  barcode    = r[ 8 ] )
   if title == 'CS':
     return Bunch( name       = r[ 1 ] ,
                   material   = r[ 2 ] ,
+                  experiment = r[ 3 ] , 
                   antibody   = r[ 5 ] ,
-                  experiment = r[ 4 ] ,
                   barcode    = r[ 10 ] )
+  if title == 'rnaseq':
+     return Bunch( name       = r[ 0 ] ,
+                   material   = r[ 1 ] ,
+                   antibody   = r[ 3 ] ,
+                   experiment = r[ 5 ] , 
+                   barcode    = r[ 9 ] )
 
-  return Bunch( name       = r[ 1 ] ,
-                material   = r[ 2 ] ,
-                antibody   = r[ 3 ] , 
-                experiment = r[ 4 ] , 
-                facility   = r[ 5 ] ,
-                barcode    = r[ 6 ] )
+  
+  raise Exception("Invalid spreadsheet")
 
 
 import xmlrpclib
