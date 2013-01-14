@@ -1,18 +1,6 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
 
-db.define_table( 't_cloud_push' ,
-    Field('f_from', type='string',
-          label=T('From')),
-    Field('f_to', type='string',
-          label=T('To')),
-    Field('f_synced', type='string',
-          label=T('Synced')),
-    Field('f_performed_on', type='datetime',
-          label=T('Performed on')),
-    auth.signature,
-    format='%(f_name)s',
-    migrate=settings.migrate)
 
 db.define_table( 't_platform' , 
     Field('f_name', type='string',
@@ -126,6 +114,8 @@ db.define_table('t_experiment_unit',
           label=T('Public')),
     Field('f_import_id' , type = 'integer' ,
           label=T('Import ID')),
+    Field('f_spreadsheet' , type = 'reference t_keygen_spreadsheets' ,
+          label=T('Spreadsheet')),
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)

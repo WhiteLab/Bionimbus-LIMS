@@ -24,10 +24,8 @@ def error():
 @auth.requires_login()
 def experiment_unit_manage():
     experiment_links = [
-         lambda row: A('Download',_href=URL("default","download",args=[row.f_bionimbus_id])),
-         #lambda row: A('Cloud Push',_href=URL("default","cloud_push",args=[row.f_bionimbus_id])),
-         #lambda row: A('Cloud Push',callback=URL('cloud_push',args=[row.f_bionimbus_id]),target="me"),
-         lambda row: A('Files'   ,_href=URL("default","file_manage" , args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
+         lambda row: A('Download'    , _href=URL("default","bn_download",             args=[row.f_bionimbus_id])),
+         lambda row: A('Files'       , _href=URL("default","file_manage" ,         args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
         ]
 
     editable = True
@@ -35,6 +33,7 @@ def experiment_unit_manage():
 
     if ( arg == 'view' ):
       experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
+      experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
 
     if ( arg == 'edit' ):
       if is_user_admin( db , auth ):
@@ -72,7 +71,7 @@ def experiment_unit_manage():
 
 def metadata_display():
     experiment_links = [
-         lambda row: A('Download',_href=URL("default","download",args=[row.f_bionimbus_id])),
+         lambda row: A('Download',_href=URL("default","bn_download",args=[row.f_bionimbus_id])),
          lambda row: A('Files'   ,_href=URL("default","file_manage" , args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
         ]
 
@@ -135,7 +134,7 @@ def metadata():
 
 
 @auth.requires_login()
-def download():
+def bn_download():
   args = request.env.path_info.split('/')[3:]
   bn_id = args[ 1 ]
 
@@ -148,6 +147,13 @@ def download():
   response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % bn_id
   return response.stream( instream , chunk_size = 256 * 256 )
 
+
+def spreadsheet_download():
+  args = request.env.path_info.split('/')[3:]
+  ss_id = int( args[ 1 ] )
+  (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
+  response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
+  return response.stream( file )
 
 
 @auth.requires_login()
@@ -253,43 +259,3 @@ def file_download():
   return response.stream( path , chunk_size = 256 * 256 )
  
  
-
-@auth.requires_login()
-def sample_manage():
-    fields = [
-               db.t_sample.f_name 
-             ]
-    editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_sample , 
-                         fields    = fields , 
-                         onupdate  = auth.archive , 
-                         create    = editable ,
-                         editable  = editable ,
-                         deletable = editable 
-                       )
-    return locals()
-
-
-
-@auth.requires_login()
-def agent_manage():
-    fields = [
-               db.t_agent.f_name 
-             ]
-    editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_agent ,
-                         fields    = fields ,
-                         onupdate  = auth.archive ,  
-                         create    = editable ,
-                         editable  = editable ,
-                         deletable = editable 
-                       )
-    return locals()
-
-
-
-@auth.requires_login()
-def users_manage():
-    form = SQLFORM.smartgrid(db.t_users,onupdate=auth.archive)
-    return locals()
-
