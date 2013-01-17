@@ -91,12 +91,17 @@ db.define_table('auth_user',
     format='%(username)s',
     migrate=settings.migrate)
 
+scheme = True
+try:
+  scheme = settings[ 'scheme' ]
+except:
+  pass
 
 if settings[ 'login_with_openid' ] == 'True':
   from gluon.contrib.login_methods.rpx_account import RPXAccount
   auth.settings.actions_disabled=['register','change_password',
   'request_reset_password']
-  u = URL( '/user/login' , scheme = True , host = True )
+  u = URL( '/user/login' , scheme = scheme , host = True )
   auth.settings.login_form = RPXAccount(request,
     api_key = settings[ 'api_key' ] ,
     domain = settings[ 'domain' ] ,
