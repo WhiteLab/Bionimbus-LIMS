@@ -168,6 +168,18 @@ def barcode_manage():
     return locals()
 
 @auth.requires_login()
+def mailing_list_manage():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_mail_list ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         #fields    = fields
+                       )
+    return locals()
+
+
+@auth.requires_login()
 def mail_list():
     editable = True # is_user_admin()
     form = SQLFORM.grid( db.t_mail_list ,

@@ -20,5 +20,5 @@ if is_user_admin( db , auth ):
   response.menu.append( (T('Project Users'),URL('permissions','user_project_manage')==URL(),URL('permissions','user_project_manage'),[]) )
   response.menu.append( (T('Barcodes'),URL('default','barcode_manage')==URL(),URL('default','barcode_manage'),[]) )
   response.menu.append( (T('Facilities'),URL('default','facility_manage')==URL(),URL('default','facility_manage'),[]) )
-
+  response.menu.append( (T('Mailing Lists'),URL('default','mailing_list_manage')==URL(),URL('default','mailing_list_manage'),[]) )
 
