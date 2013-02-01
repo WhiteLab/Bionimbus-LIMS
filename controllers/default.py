@@ -24,8 +24,8 @@ def error():
 @auth.requires_login()
 def experiment_unit_manage():
     experiment_links = [
-         lambda row: A('Download'    , _href=URL("default","bn_download",             args=[row.f_bionimbus_id])),
-         lambda row: A('Files'       , _href=URL("default","file_manage" ,         args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
+         lambda row: A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id])),
+         lambda row: A('Files'       , _href=URL( "default" , 'file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % row.f_bionimbus_id ) ) ,
         ]
 
     editable = True
@@ -133,6 +133,10 @@ def metadata():
 
 
 
+def files_for( bn_id ):
+  rows = [ r.f_newpath for r in db(db.t_file.f_bionimbus_id==bn_id).select() ]
+  return rows
+
 @auth.requires_login()
 def bn_download():
   args = request.env.path_info.split('/')[3:]
@@ -141,7 +145,10 @@ def bn_download():
   if not can_user_access_bionimbus_id( bn_id , db , auth ):
     return HTML( "You don't have permissions to download that experiment" )  # + db._lastsql )
 
-  rows = [ r.f_newpath for r in db(db.t_file.f_bionimbus_id==bn_id).select() ] 
+  rows = files_for( bn_id )
+  if len( rows ) == 0 or None in rows:
+    response.flash = "Sorry, that experiment has no files" 
+    return redirect(URL('experiment_unit_manage'))
   instream = os.popen( "tar --dereference -czf - " + " ".join( rows ) )
   response.headers[ 'Content-Type' ] = '.gz'
   response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % bn_id
@@ -221,9 +228,8 @@ def facility_manage():
 
 
 file_links = [
-         lambda row: A('Download',_href=URL("default","file_download",args=[row.id])),
-         lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")
-         #lambda row: A('Cloud Push',_href=URL("default","file_cloud_push",args=[row.id])),
+         lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
+         #lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")
         ]
 
 @auth.requires_login()
