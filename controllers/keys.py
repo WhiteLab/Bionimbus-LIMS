@@ -78,6 +78,15 @@ def metadata_for_key( key ):
     res.append( ( kv[ 'f_metadata_key' ] , kv[ 'f_value' ] ) )
   return res 
 
+@service.xmlrpc
+def does_key_exist( key ):
+  try:
+    id = key_to_id( key )
+    return True
+  except:
+    return False 
+  
+
 def call():
     return service()
 

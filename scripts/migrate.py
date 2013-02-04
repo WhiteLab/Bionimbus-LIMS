@@ -10,7 +10,7 @@ connection2= pg.connect( 'bionimbus'  , 'localhost', -1 , None , None , 'dstn' ,
 # TODO: insert using DAL 
 
 def run_sql( c , sql ):
-  print sql , ";"
+  #print sql , ";"
   r = None
   res = c.query( sql )
   if res <> None:
@@ -74,6 +74,7 @@ for key in keys:
   pass
 
 convert( 'select datafileid,cistrack_id,path,size from data_digest' , 't_file' , [ 'id' , 'f_bionimbus_id' , 'f_path' , 'f_size' ] )
+setter( 't_file_id_seq' , 't_file' )
 
 ip = run_sql( connection2 , "select id , f_path from t_file" )
 for (id,path) in ip:

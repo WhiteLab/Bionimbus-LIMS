@@ -37,6 +37,28 @@ templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_DNAseq_Whole_Genome.xls' , 
               'Samples_RNAseq.xls' ]
 
+def trimProject( form ):
+  projectOption = form[0][0][1][0]
+  print "Type: " , type(projectOption)
+  disc = []
+  for i,p in zip(range(0,1000) , projectOption):
+   try:
+    po = str( p )
+    po = po[  po.find( '"' ) + 1 : ]
+    po = po[ : po.find( '"' ) ]
+    po = int( po )
+    if projects.has_key( po ):
+       print "*************Keep " , p
+    else:
+       disc.append( i )
+
+   except:
+    print "err: *%s*" % po
+  disc.reverse()
+  for d in disc:
+    projectOption.__delitem__(d)
+
+
 @auth.requires_login()
 def keygen_spreadsheet():
   form = SQLFORM( db.t_keygen_spreadsheets )
@@ -46,25 +68,7 @@ def keygen_spreadsheet():
 
   projects = projects_for_user()
 
-  projectOption = form[0][0][1][0]
-  print "Type: " , type(projectOption)
-  disc = []
-  for i,p in zip(range(0,1000) , projectOption):
-   try:
-    po = str( p ) 
-    po = po[  po.find( '"' ) + 1 : ]
-    po = po[ : po.find( '"' ) ] 
-    po = int( po ) 
-    if projects.has_key( po ):
-       print "*************Keep " , p 
-    else:
-       disc.append( i )
-    
-   except:
-    print "err: *%s*" % po 
-  disc.reverse()
-  for d in disc:
-    projectOption.__delitem__(d)
+  trimProject( form ) 
 
   for template in templates:
     st = "/Bionimbus/static/" + template
