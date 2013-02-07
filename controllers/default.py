@@ -146,9 +146,9 @@ def bn_download():
     return HTML( "You don't have permissions to download that experiment" )  # + db._lastsql )
 
   rows = files_for( bn_id )
-  if len( rows ) == 0 or None in rows:
-    response.flash = "Sorry, that experiment has no files" 
-    return redirect(URL('experiment_unit_manage'))
+  #if len( rows ) == 0 or None in rows:
+  #  response.flash = "Sorry, that experiment has no files" 
+  #  return redirect(URL('experiment_unit_manage'))
   instream = os.popen( "tar --dereference -czf - " + " ".join( rows ) )
   response.headers[ 'Content-Type' ] = '.gz'
   response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % bn_id

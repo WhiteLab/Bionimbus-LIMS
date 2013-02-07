@@ -66,9 +66,9 @@ def keygen_spreadsheet():
     id = int( form.vars.id )
     return process_key_spreadsheet( id )
 
-  projects = projects_for_user()
+  #projects = projects_for_user()
 
-  trimProject( form ) 
+  #trimProject( form ) 
 
   for template in templates:
     st = "/Bionimbus/static/" + template
@@ -135,6 +135,7 @@ def process_key_spreadsheet( id ):
   slug = [ ]
   table = []
   uh = get_user_hash()
+  uh[ None ] = 'None'
 
   table.append( TR( LABEL( "Principal Investigator" ) ,
                     LABEL( uh[ project.f_pi ] ) ) )

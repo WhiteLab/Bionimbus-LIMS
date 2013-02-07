@@ -1,6 +1,8 @@
 import os 
 
 def generate_name( i , bn_id , fn ):
+  # print "Generate name" , i , bn_id , fn 
+
   newpath = '/XRaid/bionimbus'
   ( year , index ) = bn_id.split( '-' )
   index = str( i ) 

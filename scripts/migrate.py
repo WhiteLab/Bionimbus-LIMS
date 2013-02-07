@@ -46,11 +46,11 @@ def convert( q , t2 , cs2 ):
     run_sql( connection2 , q  ) 
   run_sql( connection2 , 'commit' ) 
 
-convert( 'select orgid,commonname,speciesname from organism' , 't_organism' , [ 'id' , 'f_name' , 'f_common_name' ] )
-setter( 't_organism_id_seq' , 't_organism' )
+#convert( 'select orgid,commonname,speciesname from organism' , 't_organism' , [ 'id' , 'f_name' , 'f_common_name' ] )
+#setter( 't_organism_id_seq' , 't_organism' )
 
-convert( 'select projectid,projectname,projectpath,projectdescription,organismid from project' , 't_project' , [ 'id' , 'f_name' , 'f_path' , 'f_description' , 'f_organism' ] )
-setter( 't_project_id_seq' , 't_project' )
+#convert( 'select projectid,projectname,projectpath,projectdescription,organismid from project' , 't_project' , [ 'id' , 'f_name' , 'f_path' , 'f_description' , 'f_organism' ] )
+#setter( 't_project_id_seq' , 't_project' )
 
 
 convert( 'select id,name,cistrack_id,sampleid,projectid,agent  from experiment_unit' , 't_experiment_unit' , [ 'id' , 'f_name' , 'f_bionimbus_id' , 'f_sample' , 'f_project' , 'f_agent' ] )

@@ -8,20 +8,24 @@ def run( str ):
   os.popen( str ).readlines()
 
 files = db(db.t_file.f_newpath == None ).select()
-for file in files:
- try:
-  rpath = os.path.realpath(file.f_path)
+for f in files:
+  rpath = os.path.realpath(f.f_path)
+  #print "rpath:" , rpath 
+
   fn = rpath.split( '/' )[ -1 ]
-
-  newpath,newname = generate_name( file.id , file.f_bionimbus_id , fn )
+  #print "fn" , fn 
+  
+  newpath,newname = generate_name( f.id , f.f_bionimbus_id , fn )
  
-  if not file.exists( newpath ): 
+  #print "newpath , newname:", newpath , newname 
+
+  if not os.path.exists( newpath ): 
+    print "making" 
     run( "mkdir -p " + newpath )
+  #else:
+  #  print "path is already there" 
 
-  if not file.exists( newname ):
+  if not os.path.exists( newname ):
     run( "ln " + rpath + " " + newname )
-    db( db.t_file.id == file.id ).update( f_newpath = newname )
+    db( db.t_file.id == f.id ).update( f_newpath = newname )
     db.commit()
-
- except:
-  print "Fail" , file 
