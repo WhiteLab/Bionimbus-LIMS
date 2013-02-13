@@ -247,14 +247,20 @@ def generate_key( agent , sample , import_id , project , barcode , spreadsheet_i
                                     f_barcode = barcode , 
                                     f_import_id = import_id ,
                                     f_spreadsheet = spreadsheet_id )
-  return id 
+  return key
 
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
   row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
 
+  keys = ""
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
     key = generate_key( values.antibody , values.material , id , project , values.barcode , id )
+    keys = keys + " " + key + " " + projectname 
+
+  #add to google doc 
+  os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
+
   return redirect( URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id ) )
