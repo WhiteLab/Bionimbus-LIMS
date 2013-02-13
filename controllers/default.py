@@ -269,7 +269,7 @@ def file_download():
   if not can_user_access_bionimbus_id( bn_id , db , auth ):
     return HTML( "You don't have permissions to download files for experiment " + bn_id )  # + db._lastsql )
 
-  path = [ r.f_path for r in db(db.t_file.id==id).select() ]
+  path = [ r.f_newpath for r in db(db.t_file.id==id).select() ]
   path = path[ 0 ] 
   parts = path.split( '/' )
   response.headers[ 'Content-Type' ] = '.gz'
