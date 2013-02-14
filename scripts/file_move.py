@@ -25,7 +25,7 @@ for f in files:
   #else:
   #  print "path is already there" 
 
-  if not os.path.exists( newname ):
-    run( "ln " + rpath + " " + newname )
-    db( db.t_file.id == f.id ).update( f_newpath = newname )
-    db.commit()
+  #if not os.path.exists( newname ):
+  run( "ln " + rpath + " " + newname )
+  db( db.t_file.id == f.id ).update( f_newpath = newname )
+  db.commit()

@@ -62,6 +62,7 @@ def experiment_unit_manage():
                          fields = fields , 
                          links = experiment_links , 
                          editable = editable , 
+                         #groupby = db.t_experiment_unit.f_bionimbus_id , 
                          onupdate = auth.archive , 
                          deletable = False , 
                          create = False 
