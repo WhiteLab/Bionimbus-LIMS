@@ -25,10 +25,11 @@ def error():
 
 def projects_for_user():
   d = db.t_user_project
-  pfu = db( d.f_user_id == auth.user_id ).select( d.id )
-  projects = {}
-  for p in pfu:
-    projects[ p[ d.id ] ] = 0
+  p = db.t_project
+  pfu = db( d.f_user_id == auth.user_id and d.f_project_id == p.id ).select()
+  projects = []
+  for row in pfu:
+    projects.append( OPTION( row[ p.f_name ] , _value = row[ d.id ] ) )
   return projects
 
 
@@ -38,37 +39,19 @@ templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_RNAseq.xls' ]
 
 def trimProject( form ):
-  projectOption = form[0][0][1][0]
-  print "Type: " , type(projectOption)
-  disc = []
-  for i,p in zip(range(0,1000) , projectOption):
-   try:
-    po = str( p )
-    po = po[  po.find( '"' ) + 1 : ]
-    po = po[ : po.find( '"' ) ]
-    po = int( po )
-    if projects.has_key( po ):
-       print "*************Keep " , p
-    else:
-       disc.append( i )
-
-   except:
-    print "err: *%s*" % po
-  disc.reverse()
-  for d in disc:
-    projectOption.__delitem__(d)
+  form[0][0][1][0] = SELECT( *projects_for_user() )
 
 
 @auth.requires_login()
 def keygen_spreadsheet():
+  db.t_keygen_spreadsheets.f_project.represent = lambda v,r: "Super gay"
+
   form = SQLFORM( db.t_keygen_spreadsheets )
   if form.process().accepted:
     id = int( form.vars.id )
     return process_key_spreadsheet( id )
 
-  #projects = projects_for_user()
-
-  #trimProject( form ) 
+  trimProject( form ) 
 
   for template in templates:
     st = "/Bionimbus/static/" + template
@@ -277,9 +260,6 @@ def create_keys():
   os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
 
   u = URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
-
-  #send e-mail to import e-mail list and users of the project
-  #s = make_slug( id )
 
   sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , kts , list = 'Import' , project = projectid )
   return redirect( u )
