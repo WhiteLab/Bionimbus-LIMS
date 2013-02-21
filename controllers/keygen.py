@@ -26,7 +26,9 @@ def error():
 def projects_for_user():
   d = db.t_user_project
   p = db.t_project
-  pfu = db( d.f_user_id == auth.user_id and d.f_project_id == p.id ).select()
+  pfu = db( ( d.f_user_id == auth.user_id ) &
+            ( d.f_project_id == p.id      ) ).select()
+  print db._lastsql
   projects = []
   for row in pfu:
     projects.append( OPTION( row[ p.f_name ] , _value = row[ d.id ] ) )
