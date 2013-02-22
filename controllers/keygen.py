@@ -46,8 +46,6 @@ def trimProject( form ):
 
 @auth.requires_login()
 def keygen_spreadsheet():
-  db.t_keygen_spreadsheets.f_project.represent = lambda v,r: "Super gay"
-
   form = SQLFORM( db.t_keygen_spreadsheets )
   if form.process().accepted:
     id = int( form.vars.id )
@@ -263,5 +261,8 @@ def create_keys():
 
   u = URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
-  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , kts , list = 'Import' , project = projectid )
+  slug = make_slug( id ) 
+  msg  = "<html>" + slug.xml() + "</html>"
+  
+  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , slug , list = 'Import' , project = projectid )
   return redirect( u )
