@@ -28,12 +28,16 @@ def projects_for_user():
   p = db.t_project
   pfu = db( ( d.f_user_id == auth.user_id ) &
             ( d.f_project_id == p.id      ) ).select()
-  print db._lastsql
-  projects = []
-  for row in pfu:
-    projects.append( OPTION( row[ p.f_name ] , _value = row[ d.id ] ) )
-  return projects
+  return [ ( row[ p.f_name ] , row[ p.id ] ) for row in pfu ]
+  #pfy = db( p ).select()
+  #return [ ( row[ p.f_name ] + '**' , row[ d.id ] ) for row in pfu ]
 
+
+def nameval_to_options( namevals ):
+  options = [ OPTION( "" , _value = "" ) ] 
+  for name , val in namevals:
+    options.append( OPTION( name , _value = val ) )
+  return options 
 
 templates = [ 'Samples_ChIPseq.xls' , 
               'Samples_DNAseq_Whole Genome2.xls' , 
@@ -41,7 +45,9 @@ templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_RNAseq.xls' ]
 
 def trimProject( form ):
-  form[0][0][1][0] = SELECT( *projects_for_user() )
+  pfu = projects_for_user()
+  options = nameval_to_options( pfu )
+  form[0][0][1][0] = SELECT( *options ,  _class="generic-widget" , _id="t_keygen_spreadsheets_f_project" , _name="f_project" )
 
 
 @auth.requires_login()
@@ -262,7 +268,7 @@ def create_keys():
   u = URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
   slug = make_slug( id ) 
-  msg  = "<html>" + slug.xml() + "</html>"
+  msg  = "<html>" + FORM( *slug ).xml() + "</html>"
   
-  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , slug , list = 'Import' , project = projectid )
+  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
   return redirect( u )
