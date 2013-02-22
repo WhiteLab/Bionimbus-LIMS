@@ -15,8 +15,16 @@ def sendMailTo( db , me , subject , content , list = None , project = None ):
 
   import smtplib
   from email.mime.text import MIMEText
+  from email.mime.multipart import MIMEMultipart
 
-  msg = MIMEText( content )
+  msg = MIMEMultipart('alternative')
+  
+  if content.startswith( "<html>" ):
+    msg.attach( MIMEText( content , 'html') )
+  else:
+    msg.attach( MIMEText( content , 'plain') )
+ 
+
   msg[ 'Subject' ] = subject
   msg[ 'From'    ] = me
   msg[ 'To'      ] = ",".join( addys )
