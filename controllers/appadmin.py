@@ -21,7 +21,7 @@ remote_addr = request.env.remote_addr
 try:
     hosts = (http_host, socket.gethostname(),
              socket.gethostbyname(http_host),
-             '::1','127.0.0.1','::ffff:127.0.0.1')
+             '165.68.219.51','::1','127.0.0.1','::ffff:127.0.0.1')
 except:
     hosts = (http_host, )
 

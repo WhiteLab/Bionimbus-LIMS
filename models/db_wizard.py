@@ -10,6 +10,13 @@ db.define_table( 't_platform' ,
     migrate=settings.migrate)
 
 
+db.define_table( 't_cloud' ,
+    Field('f_name', type='string',
+          label=T('Name')),
+    auth.signature,
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
 
 ########################################
 db.define_table('t_mail_list',
@@ -46,6 +53,8 @@ db.define_table('t_project',
           label=T('Description')),
     Field('f_public', type='boolean',
           label=T('Public?')),
+    Field('f_cloud', type='reference t_cloud',
+          label=T('Cloud')),
     Field('f_organism', type='reference t_organism',
           label=T('Organism')),
     Field('f_platform', type='reference t_platform',

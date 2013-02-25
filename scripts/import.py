@@ -8,6 +8,13 @@ def run( str ):
   print str
   return os.popen( str ).readlines()
  
+def file_len( fname ):
+    i = 0
+    with os.popen("zcat "+fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
 potentials = run( 'find /XRaid/bridge/' )
 
 by_project = {}
@@ -34,7 +41,7 @@ for file in potentials:
      if not by_project.has_key( project ):
        by_project[ project ] = []
 
-     by_project[ project ].append( fn ) 
+     by_project[ project ].append( ( file , fn ) ) 
 
      id = db.t_file.insert( f_path = file , f_bionimbus_id = bn_id )
 
@@ -46,7 +53,11 @@ for file in potentials:
      print "**** fin!" 
 
 for project in by_project.keys():
-  files = by_project[ project ]
+  files2 = by_project[ project ]
+  files = []
+  for file,fn in files2:
+    f = "%s ( %d reads )" % ( fn , file_len( file ) )
+
   pname = db.t_project[ project ].f_name
   sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , "\n".join( files ) , list = 'Import' , project = project )
 
