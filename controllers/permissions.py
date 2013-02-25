@@ -23,6 +23,7 @@ def project_manage():
            , db.t_project.f_organism 
            , db.t_project.f_pi  
            , db.t_project.f_public
+           , db.t_project.f_cloud
              ]
     editable = is_user_admin( db , auth )
     form = SQLFORM.grid( db.t_project,fields = fields , 
