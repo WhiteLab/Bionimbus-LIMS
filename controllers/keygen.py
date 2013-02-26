@@ -12,6 +12,7 @@ from applications.Bionimbus.modules.permissions import is_user_admin
 from applications.Bionimbus.modules.permissions import get_experiment_visibility_query
 from applications.Bionimbus.modules.permissions import experiment_project_join
 from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
+from applications.Bionimbus.modules.gui         import nameval_to_options
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
@@ -29,20 +30,13 @@ def projects_for_user():
   pfu = db( ( d.f_user_id == auth.user_id ) &
             ( d.f_project_id == p.id      ) ).select()
   return [ ( row[ p.f_name ] , row[ p.id ] ) for row in pfu ]
-  #pfy = db( p ).select()
-  #return [ ( row[ p.f_name ] + '**' , row[ d.id ] ) for row in pfu ]
 
-
-def nameval_to_options( namevals ):
-  options = [ OPTION( "" , _value = "" ) ] 
-  for name , val in namevals:
-    options.append( OPTION( name , _value = val ) )
-  return options 
 
 templates = [ 'Samples_ChIPseq.xls' , 
               'Samples_DNAseq_Whole Genome2.xls' , 
               'Samples_DNAseq_Whole_Genome.xls' , 
               'Samples_RNAseq.xls' ]
+
 
 def trimProject( form ):
   pfu = projects_for_user()

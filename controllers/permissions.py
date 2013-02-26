@@ -5,6 +5,7 @@ import os
 import xlrd
 
 from applications.Bionimbus.modules.permissions import is_user_admin
+from applications.Bionimbus.modules.gui         import nameval_to_options
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
@@ -34,11 +35,16 @@ def project_manage():
                          deletable = False)
     return locals()
 
+
+def names_for_users():
+  a = db.auth_user
+  ifn = db( a ) .select()
+  return [ ( row[ a.first_name ] + ' ' + row[ a.last_name ] , row[ a.id ] ) for row in ifn ]
+
+
 @auth.requires_login()
 def user_project_manage():
     arg = request.args( 0 )
-
-    print "\n\n**Request:\n" , request , "\n\n"
 
     fields = [
              db.t_user_project.f_project_id
@@ -51,5 +57,11 @@ def user_project_manage():
                          editable  = editable ,
                          deletable = editable ,
                          fields    = fields )
+
+    if arg == 'new':
+      nfu = names_for_users()
+      options = nameval_to_options( nfu )     
+      form[1][0][1][1] = TD( SELECT( *options ,  _class="generic-widget" , _id="t_user_project_f_user_id" , _name="f_user_id" ) )
+   
     return locals()
 
