@@ -57,6 +57,10 @@ def experiment_unit_manage():
         , db.t_experiment_unit.f_is_public 
     ] 
 
+    if arg == 'csv':
+      form = SQLFORM.grid( db.t_experiment_unit )
+      return locals()
+
     form = SQLFORM.grid( get_experiment_visibility_query( db , auth ) , 
                          left = experiment_project_join( db ) , 
                          fields = fields , 
