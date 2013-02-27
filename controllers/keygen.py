@@ -213,11 +213,11 @@ def extractRow( title , row ):
                   experiment = r[ 5 ] ,
                   barcode    = r[ 8 ] )
   if title == 'CS':
-    return Bunch( name       = r[ 1 ] ,
-                  material   = r[ 2 ] ,
+    return Bunch( name       = r[ 0 ] ,
+                  material   = r[ 1 ] ,
                   experiment = r[ 3 ] , 
-                  antibody   = r[ 5 ] ,
-                  barcode    = r[ 10 ] )
+                  antibody   = r[ 4 ] ,
+                  barcode    = r[ 9 ] )
   if title == 'rnaseq':
      return Bunch( name       = r[ 0 ] ,
                    material   = r[ 1 ] ,
