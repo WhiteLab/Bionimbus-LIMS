@@ -223,7 +223,7 @@ def extractRow( title , row ):
                    material   = r[ 1 ] ,
                    antibody   = r[ 3 ] ,
                    experiment = r[ 5 ] , 
-                   barcode    = r[ 9 ] )
+                   barcode    = r[ 8 ] )
 
   
   raise Exception("Invalid spreadsheet")
