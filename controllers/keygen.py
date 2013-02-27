@@ -109,7 +109,7 @@ def get_spreadsheet_info( id ):
   return row , fn , project , projectname , projectid , title , matrix
 
 
-def make_slug( id ):
+def make_slug( id , keys = None ):
   try:
     row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
   except:
@@ -170,7 +170,12 @@ def make_slug( id ):
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
     ar = []
-    ar.append( LABEL( "Row " + str(x) ) )
+    if keys:
+      l = keys[ 0 ]
+      keys = keys[ 1: ] 
+    else:
+      l = "Row " + str(x)
+    ar.append( LABEL( l ) )
     x = x + 1 
     ar.append( values.name ) 
     ar.append( values.material )
@@ -178,7 +183,7 @@ def make_slug( id ):
     ar.append( values.experiment )
     ar.append( values.barcode )
     table.append( TR( *ar ) )
-  slug.append( TABLE( *table ) )
+  slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
   return slug
 
 
@@ -226,7 +231,7 @@ def extractRow( title , row ):
 
 import xmlrpclib
 def generate_key( agent , sample , import_id , project , barcode , spreadsheet_id ):
-  server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org:443/Bionimbus/keys/call/xmlrpc' )
+  server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   key = server.generate_key()
   id = db.t_experiment_unit.insert( f_agent = agent ,
                                     f_bionimbus_id = key ,
@@ -248,12 +253,12 @@ def create_keys():
   row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
 
   keys = ""
-  kts = ""
+  keylist = []
 
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
     key = generate_key( values.antibody , values.material , id , project , values.barcode , id )
-    kts = kts + key + "\n" 
+    keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
 
   #add to google doc 
@@ -261,8 +266,10 @@ def create_keys():
 
   u = URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
-  slug = make_slug( id ) 
+  slug = make_slug( id , keys = keylist ) 
   msg  = "<html>" + FORM( *slug ).xml() + "</html>"
   
+  print msg 
+
   sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
   return redirect( u )
