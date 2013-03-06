@@ -230,10 +230,11 @@ def extractRow( title , row ):
 
 
 import xmlrpclib
-def generate_key( agent , sample , import_id , project , barcode , spreadsheet_id ):
+def generate_key( name , agent , sample , import_id , project , barcode , spreadsheet_id ):
   server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   key = server.generate_key()
-  id = db.t_experiment_unit.insert( f_agent = agent ,
+  id = db.t_experiment_unit.insert( f_name = name , 
+                                    f_agent = agent ,
                                     f_bionimbus_id = key ,
                                     f_project = project ,
                                     f_sample = sample ,
@@ -257,7 +258,7 @@ def create_keys():
 
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
-    key = generate_key( values.antibody , values.material , id , project , values.barcode , id )
+    key = generate_key( values.name , values.antibody , values.material , id , project , values.barcode , id )
     keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
 
