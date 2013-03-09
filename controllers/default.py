@@ -22,7 +22,16 @@ def error():
     return dict()
 
 @auth.requires_login()
-def experiment_unit_manage():
+def my_experiments():
+  return experiment_unit_manage( public = False )
+
+@auth.requires_login()
+def public_experiments():
+  return experiment_unit_manage( public = True )
+
+
+
+def experiment_unit_manage( public ):
     experiment_links = [
          lambda row: A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id])),
          lambda row: A('Files'       , _href=URL( "default" , 'file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % row.f_bionimbus_id ) ) ,
@@ -61,17 +70,25 @@ def experiment_unit_manage():
       form = SQLFORM.grid( db.t_experiment_unit )
       return locals()
 
-    form = SQLFORM.grid( get_experiment_visibility_query( db , auth ) , 
-                         left = experiment_project_join( db ) , 
+    if public == True:
+      q = db.t_experiment_unit.f_is_public == 't'
+    else:
+      if is_user_admin( db , auth ):
+        q = db.t_experiment_unit
+      else:
+        q = ( db.t_experiment_unit.f_project == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
+
+    form = SQLFORM.grid( q , 
                          fields = fields , 
                          links = experiment_links , 
                          editable = editable , 
-                         orderby = db.t_experiment_unit.f_bionimbus_id , 
-                         groupby = db.t_experiment_unit.f_bionimbus_id , 
                          onupdate = auth.archive , 
                          deletable = False , 
-                         create = False 
+                         create = False , 
                         )
+
+    print db._lastsql 
+
     return locals()
 
 
@@ -112,31 +129,6 @@ def metadata():
   row = row[ 0 ] 
   id = row[ db.t_experiment_unit.id ]
   return redirect( 'http://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
-
-
-
-#def add_file_to_push_table( id ):
-#  r = db( db.t_file.id == id ).select()
-#  r = r[ 0 ] 
-#  db.t_cloud_push.insert( f_from      = r.f_newpath , 
-#                          f_to        = '/glusterfs/' + auth.user.username + '/' + r.f_filename , 
-#                          f_synced    = 'n' )
-
-
-#@auth.requires_login()
-#def file_cloud_push():
-#  args = request.env.path_info.split('/')[-1]
-#  add_file_to_push_table( int( args ) )
-
-#@auth.requires_login()
-#def cloud_push():
-#  bn_id = request.env.path_info.split('/')[-1]
-#  print "Pushing to cloud ID: " , bn_id
-#  rows = [ r.id for r in db(db.t_file.f_bionimbus_id==bn_id).select() ]
-#  for r in rows:
-#    print "For id" , bn_id , " pushing id " , r 
-#    add_file_to_push_table( int( r ) )
-
 
 
 def files_for( bn_id ):
@@ -239,17 +231,31 @@ file_links = [
         ]
 
 @auth.requires_login()
-def file_manage():
+def public_file_manage():
+  return file_manage( public = True )
+
+@auth.requires_login()
+def my_file_manage():
+  return file_manage( public = False)
+
+
+@auth.requires_login()
+def file_manage( public ):
     fields = [
               db.t_file.f_filename
             , db.t_file.f_bionimbus_id
             , db.t_file.f_size
              ]
 
-    lefty = db.t_file.f_bionimbus_id == db.t_experiment_unit.f_bionimbus_id 
+    if public == True:
+      q = ( db.t_file.f_bionimbus_id == db.t_experiment_unit.f_bionimbus_id) & ( db.t_experiment_unit.f_is_public == 't' )
+    else:
+      if is_user_admin( db , auth ):
+        q = db.t_file
+      else:
+        q = ( db.t_file.f_bionimbus_id == db.t_experiment_unit.f_bionimbus_id) & ( db.t_experiment_unit.f_project == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
 
-    form = SQLFORM.grid( get_experiment_visibility_query( db , auth ) & lefty ,
-                         left          = experiment_project_join( db ) ,
+    form = SQLFORM.grid( q , 
                          fields        = fields ,
                          field_id      = db.t_file.id ,
                          maxtextlength = 200 , 
