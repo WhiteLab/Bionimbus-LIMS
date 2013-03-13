@@ -78,6 +78,9 @@ def experiment_unit_manage( public ):
       else:
         q = ( db.t_experiment_unit.f_project == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
 
+    db(q).select()
+    print db._lastsql
+
     form = SQLFORM.grid( q , 
                          fields = fields , 
                          links = experiment_links , 
@@ -246,6 +249,7 @@ def file_manage( public ):
               db.t_file.f_filename
             , db.t_file.f_bionimbus_id
             , db.t_file.f_size
+            , db.t_file.f_reads 
              ]
 
     if public == True:
