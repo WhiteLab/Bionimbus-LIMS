@@ -66,9 +66,9 @@ def experiment_unit_manage( public ):
         , db.t_experiment_unit.f_is_public 
     ] 
 
-    if arg == 'csv':
-      form = SQLFORM.grid( db.t_experiment_unit )
-      return locals()
+    #if arg == 'csv':
+    #  form = SQLFORM.grid( db.t_experiment_unit )
+    #  return locals()
 
     if public == True:
       q = db.t_experiment_unit.f_is_public == 't'
@@ -85,6 +85,7 @@ def experiment_unit_manage( public ):
                          onupdate = auth.archive , 
                          deletable = False , 
                          create = False , 
+                         maxtextlength = 150
                         )
 
     print db._lastsql 
