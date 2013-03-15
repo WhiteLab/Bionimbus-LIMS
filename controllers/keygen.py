@@ -95,25 +95,23 @@ def get_user_hash():
 
 
 def get_spreadsheet_info( id ):
-  rows    = db(db.t_keygen_spreadsheets).select( )
-  row     = rows.last()
-  fn      = row.file
-  project = row.f_project
+  rows     = db(db.t_keygen_spreadsheets).select( )
+  row      = rows.last()
+  fn       = row.file
+  project  = row.f_project
+  organism = row.f_organism 
 
   project = db( db.t_project.id == row.f_project ).select()
   project = project[ 0 ] 
   projectname = project[ db.t_project.f_name ]
   projectid   = project[ db.t_project.id ]
 
-  title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
-  return row , fn , project , projectname , projectid , title , matrix
+  title , matrix = spreadsheet_to_matrix( "applications/Bionimbus_test/uploads/" + fn )
+  return row , fn , project , projectname , projectid , title , matrix , organism 
 
 
 def make_slug( id , keys = None ):
-  try:
-    row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
-  except:
-    return HTML( "Error" )
+  row , fn , project , projectname , projectid , title , matrix , organism = get_spreadsheet_info( id )
 
   slug = [ ]
   table = []
@@ -230,7 +228,7 @@ def extractRow( title , row ):
 
 
 import xmlrpclib
-def generate_key( name , agent , sample , import_id , project , barcode , spreadsheet_id ):
+def generate_key( name , agent , sample , import_id , project , barcode , spreadsheet_id , organism ):
   server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   key = server.generate_key()
   id = db.t_experiment_unit.insert( f_name = name , 
@@ -240,7 +238,8 @@ def generate_key( name , agent , sample , import_id , project , barcode , spread
                                     f_sample = sample ,
                                     f_barcode = barcode , 
                                     f_import_id = import_id ,
-                                    f_spreadsheet = spreadsheet_id )
+                                    f_spreadsheet = spreadsheet_id , 
+                                    f_organism = organism )
   return key
 
 
@@ -251,21 +250,22 @@ from applications.Bionimbus.modules.mail import sendMailTo
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
-  row , fn , project , projectname , projectid , title , matrix = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism = get_spreadsheet_info( id )
 
   keys = ""
   keylist = []
 
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
-    key = generate_key( values.name , values.antibody , values.material , id , project , values.barcode , id )
+    key = generate_key( values.name , values.antibody , values.material , id , project , values.barcode , id , organism )
     keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
-
+  
+  db.executesql( 'update t_experiment_unit set f_organism = t_project.f_organism from t_project where t_experiment_unit.f_project = t_project.id and t_experiment_unit.f_organism is null' )
   #add to google doc 
   os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
 
-  u = URL( 'default' , 'experiment_unit_manage?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
+  u = URL( 'default' , 'my_experiments?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
   slug = make_slug( id , keys = keylist ) 
   msg  = "<html>" + FORM( *slug ).xml() + "</html>"
