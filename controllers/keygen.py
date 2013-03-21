@@ -24,12 +24,21 @@ def index():
 def error():
     return dict()
 
+def comma_or_nought( itm ):
+  if itm == None:
+    return '' 
+  return ' ( %s ) ' % itm 
+
 def projects_for_user():
   d = db.t_user_project
   p = db.t_project
+  sub = db.t_subproject
+  lefty = sub.on( p.id == sub.f_parent )
   pfu = db( ( d.f_user_id == auth.user_id ) &
-            ( d.f_project_id == p.id      ) ).select()
-  return [ ( row[ p.f_name ] , row[ p.id ] ) for row in pfu ]
+            ( d.f_project_id == p.id      ) ).select( left = lefty )
+  return [ ( row[ p.f_name ] + comma_or_nought( row[ sub.f_name ] ) ,
+             str( row[ p.id ] ) + ',' + str( row[ sub.id ] ) 
+           ) for row in pfu ]
 
 
 templates = [ 'Samples_ChIPseq.xls' , 
@@ -41,7 +50,8 @@ templates = [ 'Samples_ChIPseq.xls' ,
 def trimProject( form ):
   pfu = projects_for_user()
   options = nameval_to_options( pfu )
-  form[0][0][1][0] = SELECT( *options ,  _class="generic-widget" , _id="t_keygen_spreadsheets_f_project" , _name="f_project" )
+  form[0][0][1][0] = SELECT( *options ,  _class="generic-widget" , 
+                             _id="t_keygen_spreadsheets_f_proj_subproj" , _name="f_proj_subproj" )
 
 
 @auth.requires_login()
@@ -97,21 +107,29 @@ def get_user_hash():
 def get_spreadsheet_info( id ):
   rows     = db(db.t_keygen_spreadsheets).select( )
   row      = rows.last()
+  print row 
   fn       = row.file
-  project  = row.f_project
+  psp  = row.f_proj_subproj
   organism = row.f_organism 
 
-  project = db( db.t_project.id == row.f_project ).select()
-  project = project[ 0 ] 
+  projectid,subproj = psp.split( ',' )
+  projectid = int( projectid ) 
+  project = db.t_project[ projectid ]
   projectname = project[ db.t_project.f_name ]
-  projectid   = project[ db.t_project.id ]
+  subproject  = None
+  try:
+    subproject = int( subproj )
+    subproj_name = db.t_subproject[ subproject ][ db_t_subproject.f_name ]
+    projectname += " ( %s ) " % subproj_name
+  except:
+    pass
 
-  title , matrix = spreadsheet_to_matrix( "applications/Bionimbus_test/uploads/" + fn )
-  return row , fn , project , projectname , projectid , title , matrix , organism 
+  title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
+  return row , fn , project , projectname , projectid , title , matrix , organism , subproject 
 
 
 def make_slug( id , keys = None ):
-  row , fn , project , projectname , projectid , title , matrix , organism = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , subproject = get_spreadsheet_info( id )
 
   slug = [ ]
   table = []
@@ -130,12 +148,12 @@ def make_slug( id , keys = None ):
   table.append( TR( LABEL( "Project" ) ,
                     LABEL( projectname ) ) )
 
-  organism = db( db.t_organism == project[ db.t_project.f_organism ] ).select( db.t_organism.f_name )  
-  organism = organism[ 0 ] 
-  organism = organism[ db.t_organism.f_name ]
+  if subproject <> None:
+    table.append( TR( LABEL( "Subproject" ) ,
+                      LABEL( db.t_subproject[ subproject ].f_name ) ) )
 
   table.append( TR( LABEL( "Organism" ) ,
-                    LABEL( organism ) ) )
+                    LABEL( db.t_organism[ organism ].f_name ) ) )
 
   platform = db( db.t_platform == project[ db.t_project.f_platform ] ).select( db.t_platform.f_name )
   platform = platform[ 0 ]
@@ -228,13 +246,14 @@ def extractRow( title , row ):
 
 
 import xmlrpclib
-def generate_key( name , agent , sample , import_id , project , barcode , spreadsheet_id , organism ):
+def generate_key( name , agent , sample , import_id , project , subproject , barcode , spreadsheet_id , organism ):
   server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   key = server.generate_key()
   id = db.t_experiment_unit.insert( f_name = name , 
                                     f_agent = agent ,
                                     f_bionimbus_id = key ,
                                     f_project = project ,
+                                    f_subproject = subproject , 
                                     f_sample = sample ,
                                     f_barcode = barcode , 
                                     f_import_id = import_id ,
@@ -250,18 +269,19 @@ from applications.Bionimbus.modules.mail import sendMailTo
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
-  row , fn , project , projectname , projectid , title , matrix , organism = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , subproject = get_spreadsheet_info( id )
 
   keys = ""
   keylist = []
 
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
-    key = generate_key( values.name , values.antibody , values.material , id , project , values.barcode , id , organism )
+    key = generate_key( values.name , values.antibody , values.material , id , project , subproject , 
+                        values.barcode , id , organism )
     keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
   
-  db.executesql( 'update t_experiment_unit set f_organism = t_project.f_organism from t_project where t_experiment_unit.f_project = t_project.id and t_experiment_unit.f_organism is null' )
+  #db.executesql( 'update t_experiment_unit set f_organism = t_project.f_organism from t_project where t_experiment_unit.f_project = t_project.id and t_experiment_unit.f_organism is null' )
   #add to google doc 
   os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
 

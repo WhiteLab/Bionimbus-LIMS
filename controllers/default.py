@@ -60,9 +60,9 @@ def experiment_unit_manage( public ):
           db.t_experiment_unit.f_bionimbus_id
         , db.t_experiment_unit.f_name 
         , db.t_experiment_unit.f_project  
+        , db.t_experiment_unit.f_subproject
         , db.t_experiment_unit.f_agent  
         , db.t_experiment_unit.f_organism   
-        , db.t_experiment_unit.f_protein  
         , db.t_experiment_unit.f_is_public 
     ] 
 
