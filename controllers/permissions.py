@@ -36,6 +36,16 @@ def project_manage():
     return locals()
 
 
+@auth.requires_login()
+def subproject_manage():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_subproject,
+                         editable = editable ,
+                         create = editable ,
+                         deletable = False)
+    return locals()
+
+
 def names_for_users():
   a = db.auth_user
   ifn = db( a ) .select()
