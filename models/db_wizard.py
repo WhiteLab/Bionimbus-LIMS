@@ -61,13 +61,21 @@ db.define_table('t_project',
           label=T('Platform')),
     Field('f_pi', type='reference auth_user',
           label=T('Pi')),
-    Field('f_path', type='string',
-          label=T('Path')),
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
 
 db.define_table('t_project_archive',db.t_project,Field('current_record','reference t_project',readable=False,writable=False),migrate=settings.migrate)
+
+db.define_table('t_subproject',
+    Field('f_name', type='string',
+          label=T('Name')),
+    Field('f_parent', type='reference t_project',
+          label=T('Parent Project')),
+    auth.signature,
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
 
 ########################################
 db.define_table('t_file',
@@ -118,6 +126,8 @@ db.define_table('t_experiment_unit',
           label=T('Bionimbus Id')),
     Field('f_project', db.t_project,
           label=T('Project')),
+    Field('f_subproject', db.t_subproject,
+          label=T('Subproject')),
     Field('f_organism', type='reference t_organism',
           label=T('Organism')),
     Field('f_sample', type='string',
@@ -179,7 +189,7 @@ db.define_table('t_facility',
 
 
 db.define_table('t_keygen_spreadsheets', 
-    Field( 'f_project' ,  type = 'reference t_project' , label=T('Project')  ) , 
+    Field( 'f_proj_subproj' ,  type = 'string' , label=T('Project/Subproject')  ) , 
     Field( 'f_platform' , type = 'reference t_platform' , label=T('Platform') ) ,
     Field('f_organism', type='reference t_organism',
           label=T('Organism')),

@@ -10,7 +10,11 @@ response.menu = [
       [T('My Experiments')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_experiments')],
       [T('Public Experiments'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')]
     ]),
-(T('Project'),URL('permissions','project_manage')==URL(),URL('permissions','project_manage'),[]),
+(T('Project'),False,None,
+    [
+      [T('Projects')          ,URL('permissions','project_manage')==URL(),URL('permissions','project_manage')],
+      [T('Subprojects')          ,URL('permissions','subproject_manage')==URL(),URL('permissions','subproject_manage')],
+    ]),
 (T('Organism'),URL('default','organism_manage')==URL(),URL('default','organism_manage'),[]),
 (T('File'),False,None,
    [
