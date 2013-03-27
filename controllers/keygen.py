@@ -244,11 +244,40 @@ def extractRow( title , row ):
   
   raise Exception("Invalid spreadsheet")
 
+def generate_a_key(  ):
+    now = datetime.datetime.now()
+    year = now.year
+    iters = 0
+    bn_id = None
+    print "in keygen"
+    while (iters < 10) & (bn_id == None):
+      print "**"
+      max = db.t_keys.f_index.max()
+      maxid = db(db.t_keys.f_year == year ).select(max).first()[ max ]
+      if maxid == None:
+        maxid = 1
+      else:
+        maxid = maxid + 1
+      try:
+        bn_id = "%d-%d" % ( year , maxid )
+        print "trying to insert" , bn_id
+        db.t_keys.insert( f_year = year , f_index = maxid )
+        db.commit()
+      except:
+        print "exception!"
+        traceback.print_exc(file=sys.stdout)
+        iters = iters + 1
+        bn_id = None
+    print "returning" , bn_id
+    return bn_id
 
-import xmlrpclib
+
+#import xmlrpclib
+import datetime
 def generate_key( name , agent , sample , import_id , project , subproject , barcode , spreadsheet_id , organism ):
-  server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
-  key = server.generate_key()
+  #server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
+  #key = server.generate_a_key()
+  key = generate_a_key()
   id = db.t_experiment_unit.insert( f_name = name , 
                                     f_agent = agent ,
                                     f_bionimbus_id = key ,
