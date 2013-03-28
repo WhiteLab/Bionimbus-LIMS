@@ -30,6 +30,15 @@ db.define_table('t_mail_list',
 
 
 
+db.define_table('t_stage',
+    Field('f_name', type='string',
+          label=T('Name')),
+    auth.signature,
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
+
+
 
 ########################################
 db.define_table('t_organism',
@@ -127,9 +136,11 @@ db.define_table('t_experiment_unit',
     Field('f_project', db.t_project,
           label=T('Project')),
     Field('f_subproject', db.t_subproject,
-          label=T('Subproject')),
+          label=T('Subproject'),default=1),
     Field('f_organism', type='reference t_organism',
           label=T('Organism')),
+    Field('f_stage', type='reference t_stage',
+          label=T('Stage')),
     Field('f_sample', type='string',
           label=T('Sample')),
     Field('f_agent', type='string',
@@ -193,9 +204,11 @@ db.define_table('t_keygen_spreadsheets',
     Field( 'f_platform' , type = 'reference t_platform' , label=T('Platform') ) ,
     Field('f_organism', type='reference t_organism',
           label=T('Organism')),
+    Field('f_stage', type='reference t_stage',
+          label=T('Stage'),default=1),
     Field( 'f_library_prep_type' , type = 'string' , label=T('Library Preparation Type') , 
             requires = IS_IN_SET([  'DNAseq' , 'ChIP-seq' , 'Paired-end' , 'RNAseq' , '16s' ]) ) ,
-    Field( 't_facility' ,  type = 'reference t_facility' , label=T('Facility')  ) ,
+    Field( 't_facility' ,  type = 'reference t_facility' , label=T('Facility')  , default = 1 ) ,
     Field( 'f_lanes_per_sample' , type = 'integer' , label=T('Samples requested per lane') ) , 
     Field( 'f_cycles_per_lane' , type = 'string' , label=T('Cycles requested per lane') ) ,
     Field( 'f_reference_library_to_map_output' , type = 'string' , label=T('Refrence library to map output') ) ,
