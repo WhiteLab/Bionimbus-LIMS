@@ -111,25 +111,26 @@ def get_spreadsheet_info( id ):
   fn       = row.file
   psp  = row.f_proj_subproj
   organism = row.f_organism 
+  stage = row.f_stage
 
-  projectid,subproj = psp.split( ',' )
-  projectid = int( projectid ) 
+  psp = psp.split( ',' )
+  projectid = int( psp[ 0 ] ) 
   project = db.t_project[ projectid ]
   projectname = project[ db.t_project.f_name ]
   subproject  = None
   try:
-    subproject = int( subproj )
+    subproject = int( psp[ 1 ] )
     subproj_name = db.t_subproject[ subproject ][ db_t_subproject.f_name ]
     projectname += " ( %s ) " % subproj_name
   except:
     pass
 
   title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
-  return row , fn , project , projectname , projectid , title , matrix , organism , subproject 
+  return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject 
 
 
 def make_slug( id , keys = None ):
-  row , fn , project , projectname , projectid , title , matrix , organism , subproject = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject = get_spreadsheet_info( id )
 
   slug = [ ]
   table = []
@@ -274,7 +275,7 @@ def generate_a_key(  ):
 
 #import xmlrpclib
 import datetime
-def generate_key( name , agent , sample , import_id , project , subproject , barcode , spreadsheet_id , organism ):
+def generate_key( name , agent , sample , import_id , project , subproject , barcode , spreadsheet_id , organism , stage ):
   #server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   #key = server.generate_a_key()
   key = generate_a_key()
@@ -287,7 +288,8 @@ def generate_key( name , agent , sample , import_id , project , subproject , bar
                                     f_barcode = barcode , 
                                     f_import_id = import_id ,
                                     f_spreadsheet = spreadsheet_id , 
-                                    f_organism = organism )
+                                    f_organism = organism , 
+                                    f_stage = stage )
   return key
 
 
@@ -298,7 +300,7 @@ from applications.Bionimbus.modules.mail import sendMailTo
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
-  row , fn , project , projectname , projectid , title , matrix , organism , subproject = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject = get_spreadsheet_info( id )
 
   keys = ""
   keylist = []
@@ -306,7 +308,7 @@ def create_keys():
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
     key = generate_key( values.name , values.antibody , values.material , id , project , subproject , 
-                        values.barcode , id , organism )
+                        values.barcode , id , organism , stage )
     keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
   
