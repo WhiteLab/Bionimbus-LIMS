@@ -228,6 +228,17 @@ def facility_manage():
                          )
     return locals()
 
+@auth.requires_login()
+def stage_manage():
+    editable = is_user_admin( db , auth )
+
+    form = SQLFORM.grid( db.t_stage ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         )
+    return locals()
+
 
 file_links = [
          lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
