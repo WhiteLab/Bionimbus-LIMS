@@ -240,6 +240,20 @@ def stage_manage():
     return locals()
 
 
+@auth.requires_login()
+def library_type_manage():
+    editable = is_user_admin( db , auth )
+
+    form = SQLFORM.grid( db.t_library_type ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         )
+    return locals()
+
+
+
+
 file_links = [
          lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
          #lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")

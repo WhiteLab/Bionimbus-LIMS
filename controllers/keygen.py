@@ -69,7 +69,9 @@ def keygen_spreadsheet():
     form[ 0 ].insert( 0 , l )
   return locals()
 
-titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ]
+titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' 
+           'ChiPseq' , 'Exome' , 'DNA' , 'RNA' ]
+
 
 def spreadsheet_to_matrix( fn ):
   book = xlrd.open_workbook( fn )
@@ -107,11 +109,10 @@ def get_user_hash():
 def get_spreadsheet_info( id ):
   rows     = db(db.t_keygen_spreadsheets).select( )
   row      = rows.last()
-  print row 
   fn       = row.file
-  psp  = row.f_proj_subproj
+  psp      = row.f_proj_subproj
   organism = row.f_organism 
-  stage = row.f_stage
+  stagea   = row.f_stage
 
   psp = psp.split( ',' )
   projectid = int( psp[ 0 ] ) 
@@ -126,7 +127,19 @@ def get_spreadsheet_info( id ):
     pass
 
   title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
-  return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject 
+  
+  tab = { 'dswg'   : 'DNAseq' , 
+          'dswg2'  : 'DNAseq' ,
+          'rnaseq' : 'RNAseq' , 
+          'CS'     : 'ChIP-seq' ,  
+          'ChiPseq': 'ChIP-seq' , 
+          'RNA'    : 'RNAseq' , 
+          'Exome'  : 'Exome' , 
+          'DNA'    : 'DNAseq' } 
+
+  lib_type = tab[ title ] 
+
+  return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type 
 
 
 def make_slug( id , keys = None ):
