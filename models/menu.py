@@ -34,5 +34,6 @@ if is_user_admin( db , auth ):
    (T('Barcodes'),URL('default','barcode_manage')==URL(),URL('default','barcode_manage'),[]) ,
    (T('Facilities'),URL('default','facility_manage')==URL(),URL('default','facility_manage'),[]) ,
    (T('Mailing Lists'),URL('default','mailing_list_manage')==URL(),URL('default','mailing_list_manage'),[]),
-   (T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[])
+   (T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[]),
+   (T('Platform'),URL('default','platform_manage')==URL(),URL('default','platform_manage'),[])
  ] ) )

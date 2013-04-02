@@ -212,7 +212,7 @@ def organism_manage():
                          fields    = fields , 
                          create    = editable ,
                          editable  = editable ,
-                         deletable = editable ,
+                         deletable = False ,
                          onupdate  = auth.archive 
                          )
     return locals()
@@ -224,18 +224,30 @@ def facility_manage():
     form = SQLFORM.grid( db.t_facility ,
                          create    = editable ,
                          editable  = editable ,
-                         deletable = editable ,
+                         deletable = False ,
                          )
     return locals()
+
+@auth.requires_login()
+def platform_manage():
+    editable = is_user_admin( db , auth )
+
+    form = SQLFORM.grid( db.t_platform ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = False ,
+                         )
+    return locals()
+
 
 @auth.requires_login()
 def stage_manage():
     editable = is_user_admin( db , auth )
 
-    form = SQLFORM.grid( db.t_stage ,
+    form = SQLFORM.grid( db.t_stage.id <> 1 ,
                          create    = editable ,
                          editable  = editable ,
-                         deletable = editable ,
+                         deletable = False ,
                          )
     return locals()
 
