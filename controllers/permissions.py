@@ -39,7 +39,7 @@ def project_manage():
 @auth.requires_login()
 def subproject_manage():
     editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_subproject,
+    form = SQLFORM.grid( db.t_subproject.id <> 1 ,
                          editable = editable ,
                          create = editable ,
                          deletable = False)
