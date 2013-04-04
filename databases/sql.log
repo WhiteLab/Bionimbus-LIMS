@@ -454,3 +454,9 @@ CREATE TABLE t_library_type(
     modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE
 );
 success!
+timestamp: 2013-04-02T19:00:02.679616
+ALTER TABLE t_experiment_unit ADD f_library_type INTEGER REFERENCES t_library_type (id) ON DELETE CASCADE;
+timestamp: 2013-04-02T19:00:02.720724
+ALTER TABLE t_keygen_spreadsheets DROP COLUMN f_library_prep_type;
+timestamp: 2013-04-04T16:42:51.691828
+ALTER TABLE t_experiment_unit ADD f_experiment VARCHAR(512);
