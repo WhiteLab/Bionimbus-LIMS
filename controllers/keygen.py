@@ -69,7 +69,7 @@ def keygen_spreadsheet():
     form[ 0 ].insert( 0 , l )
   return locals()
 
-titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' 
+titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' , 
            'ChiPseq' , 'Exome' , 'DNA' , 'RNA' ]
 
 
@@ -88,7 +88,8 @@ def spreadsheet_to_matrix( fn ):
           title = title.split() 
           title = title[ 0 ] 
           if not title in titles:
-            return 1 / 0 
+            print "Invalid title '%s' " % title
+            raise "Invalid spreadsheet" 
         mr.append( str( r ) )
       matrix.append( mr )
   return title,matrix
@@ -112,12 +113,13 @@ def get_spreadsheet_info( id ):
   fn       = row.file
   psp      = row.f_proj_subproj
   organism = row.f_organism 
-  stagea   = row.f_stage
+  stage    = row.f_stage
 
   psp = psp.split( ',' )
   projectid = int( psp[ 0 ] ) 
   project = db.t_project[ projectid ]
   projectname = project[ db.t_project.f_name ]
+  
   subproject  = None
   try:
     subproject = int( psp[ 1 ] )
@@ -138,12 +140,13 @@ def get_spreadsheet_info( id ):
           'DNA'    : 'DNAseq' } 
 
   lib_type = tab[ title ] 
+  lib_type = db(  db.t_library_type.f_name == lib_type ).select().first().id
 
   return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type 
 
 
 def make_slug( id , keys = None ):
-  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
 
   slug = [ ]
   table = []
@@ -166,6 +169,9 @@ def make_slug( id , keys = None ):
     table.append( TR( LABEL( "Subproject" ) ,
                       LABEL( db.t_subproject[ subproject ].f_name ) ) )
 
+  table.append( TR( LABEL( "Library type" ) , 
+                    LABEL( lib_type ) ) )
+
   table.append( TR( LABEL( "Organism" ) ,
                     LABEL( db.t_organism[ organism ].f_name ) ) )
 
@@ -175,9 +181,6 @@ def make_slug( id , keys = None ):
 
   table.append( TR( LABEL( "Platform" ) ,
                     LABEL( platform ) ) )
-
-  table.append( TR( LABEL( "Library Preparation Type" ) , 
-                    LABEL( row.f_library_prep_type ) ) )
 
   table.append( TR( LABEL( "Lanes required per sample" ) ,
                     LABEL( row.f_lanes_per_sample) ) )
@@ -195,10 +198,12 @@ def make_slug( id , keys = None ):
 
   x = 1
   table = []
-  table.append( TR( "" , "name" , "biological material" , "Antibody/treatment" , "Experiment" , "Barcode" ) ) 
  
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
+    if table == []:
+      table.append( TR( *( [ "" ] + [ v[ 0 ] for v in values ] ) ) )
+
     ar = []
     if keys:
       l = keys[ 0 ]
@@ -207,11 +212,8 @@ def make_slug( id , keys = None ):
       l = "Row " + str(x)
     ar.append( LABEL( l ) )
     x = x + 1 
-    ar.append( values.name ) 
-    ar.append( values.material )
-    ar.append( values.antibody )
-    ar.append( values.experiment )
-    ar.append( values.barcode )
+    for v in values:
+      ar.append( v[ 2 ] )
     table.append( TR( *ar ) )
   slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
   return slug
@@ -223,40 +225,46 @@ def process_key_spreadsheet( id ):
   form = FORM( _action = 'create_keys/' + str( id ) , *slug)
   return locals()
 
-class Bunch:
-  def __init__(self, **kwds):
-    self.__dict__.update(kwds)
+
+basic_lookup = [ [ 'Name'       , 'f_name'       , None ] ,
+                 [ 'Material'   , 'f_sample'   , None ] , 
+                 [ 'Experiment' , 'f_experiment' , None ] ,
+                 [ 'Antibody'   , 'f_agent'   , None ] , 
+                 [ 'Barcode'    , 'f_barcode'    , None ] ]
+
+import copy
+
+def old_sheet( indexes ):
+  res = copy.deepcopy( basic_lookup )
+  for a in range(0,5):
+    res[ a ][ 2 ] = indexes[ a ]
+  return res
 
 def extractRow( title , row ):
-  r = row # [ INPUT( _value = x ) for x in row ]
+  r = row
+  res = None
 
   if title == 'dswg':
-    return Bunch( name       = r[ 0 ] ,
-                  material   = r[ 1 ] ,
-                  antibody   = r[ 2 ] ,
-                  experiment = r[ 4 ] , 
-                  barcode    = r[ 7 ] )
-  if title == 'dswg2':
-    return Bunch( name       = r[ 0 ] ,
-                  material   = r[ 1 ] ,
-                  antibody   = r[ 3 ] ,
-                  experiment = r[ 5 ] ,
-                  barcode    = r[ 8 ] )
-  if title == 'CS':
-    return Bunch( name       = r[ 0 ] ,
-                  material   = r[ 1 ] ,
-                  experiment = r[ 3 ] , 
-                  antibody   = r[ 4 ] ,
-                  barcode    = r[ 9 ] )
-  if title == 'rnaseq':
-     return Bunch( name       = r[ 0 ] ,
-                   material   = r[ 1 ] ,
-                   antibody   = r[ 3 ] ,
-                   experiment = r[ 5 ] , 
-                   barcode    = r[ 8 ] )
+    res = old_sheet( [ 0 , 1 , 2 , 4 , 7 ] )
 
+  if title == 'dswg2':
+    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] ) 
+
+  if title == 'CS':
+    res = old_sheet( [ 0 , 1 , 3 , 4 , 9 ] )
+
+  if title == 'rnaseq':
+    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] )
   
-  raise Exception("Invalid spreadsheet")
+  if res == None:
+    raise Exception( "Invalid spreadsheet" )
+  
+  res = copy.deepcopy( res )
+
+  for r in res:
+    r[ 2 ] = row[ r[ 2 ] ]
+
+  return res
 
 def generate_a_key(  ):
     now = datetime.datetime.now()
@@ -288,21 +296,14 @@ def generate_a_key(  ):
 
 #import xmlrpclib
 import datetime
-def generate_key( name , agent , sample , import_id , project , subproject , barcode , spreadsheet_id , organism , stage ):
+def generate_key( values ):
   #server=xmlrpclib.ServerProxy( 'https://bc.bionimbus.org/Bionimbus/keys/call/xmlrpc' )
   #key = server.generate_a_key()
+
   key = generate_a_key()
-  id = db.t_experiment_unit.insert( f_name = name , 
-                                    f_agent = agent ,
-                                    f_bionimbus_id = key ,
-                                    f_project = project ,
-                                    f_subproject = subproject , 
-                                    f_sample = sample ,
-                                    f_barcode = barcode , 
-                                    f_import_id = import_id ,
-                                    f_spreadsheet = spreadsheet_id , 
-                                    f_organism = organism , 
-                                    f_stage = stage )
+  values[ 'f_bionimbus_id' ] = key
+  id = db.t_experiment_unit.bulk_insert( [values] )
+
   return key
 
 
@@ -313,15 +314,27 @@ from applications.Bionimbus.modules.mail import sendMailTo
 @auth.requires_login()
 def create_keys():
   id = int( request.args( 0 ) )
-  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject = get_spreadsheet_info( id )
+  row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type  = get_spreadsheet_info( id )
 
   keys = ""
   keylist = []
 
   for row in matrix[ 1: ]:
-    values = extractRow( title , row )
-    key = generate_key( values.name , values.antibody , values.material , id , project , subproject , 
-                        values.barcode , id , organism , stage )
+    _values = extractRow( title , row )
+    values = {}
+    for v in _values:
+      values[ v[1] ] = v[2]
+    
+    hash = { 'f_organism' : organism , 
+             'f_stage'    : stage , 
+             'f_project'  : projectid , 
+             'f_subproject' : subproject ,
+             'f_import_id'  : id , 
+             'f_spreadsheet' : id 
+    }
+
+    key = generate_key( dict( values.items() + hash.items() ) ) 
+     
     keylist.append( key )
     keys = keys + " " + key + ' "' + projectname + '" '
   
@@ -336,5 +349,5 @@ def create_keys():
   
   print msg 
 
-  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
+  #sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
   return redirect( u )
