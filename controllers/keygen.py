@@ -234,36 +234,99 @@ basic_lookup = [ [ 'Name'       , 'f_name'       , None ] ,
 
 import copy
 
-def old_sheet( indexes ):
+def old_sheet( indexes , row ):
   res = copy.deepcopy( basic_lookup )
   for a in range(0,5):
-    res[ a ][ 2 ] = indexes[ a ]
+    res[ a ][ 2 ] = row[ indexes[ a ] ]
   return res
+
+def unswizzle( map , values ):
+  res = [] 
+  for (db_key,value) in zip( map , values ):
+    print db_key
+    rr = [ db_key.label , db_key.name , value ]
+    res.append( rr )
+  return res 
 
 def extractRow( title , row ):
   r = row
   res = None
 
   if title == 'dswg':
-    res = old_sheet( [ 0 , 1 , 2 , 4 , 7 ] )
+    res = old_sheet( [ 0 , 1 , 2 , 4 , 7 ] , row )
 
   if title == 'dswg2':
-    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] ) 
+    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] , row ) 
 
   if title == 'CS':
-    res = old_sheet( [ 0 , 1 , 3 , 4 , 9 ] )
+    res = old_sheet( [ 0 , 1 , 3 , 4 , 9 ] , row )
 
   if title == 'rnaseq':
-    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] )
+    res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] , row )
   
+  #### NEW SPREADSHEETS 
+  eu = db.t_experiment_unit
+
+  if title == 'RNA': 
+    res = unswizzle( [ eu.f_name ,
+                       eu.f_sample , 
+                       eu.f_treatment ,
+                       eu.f_prep_preformed_by ,
+                       eu.f_lib_prep_protocol , 
+                       eu.f_barcode , 
+                       eu.f_desired_multiplexing ,
+                       eu.f_read_length , 
+                       eu.f_read_type ,
+                       eu.f_desired_minimum_reads ] , row )
+ 
+  if title == 'DNA':
+    res = unswizzle( [ eu.f_name ,
+                       eu.f_sample ,
+                       eu.f_treatment ,
+                       eu.f_prep_preformed_by ,
+                       eu.f_lib_prep_protocol ,
+                       eu.f_barcode ,
+                       eu.f_desired_multiplexing ,
+                       eu.f_read_length ,
+                       eu.f_read_type ,
+                       eu.f_desired_minimum_reads ] , row )
+
+  if title == 'Exome':
+    res = unswizzle( [ eu.f_name ,
+                       eu.f_sample ,
+                       eu.f_treatment ,
+                       eu.f_prep_preformed_by ,
+                       eu.f_lib_prep_protocol ,
+                       eu.f_barcode ,
+                       eu.f_whole_exome_custom_capture , 
+                       eu.f_capture_protocol , 
+                       eu.f_capture_size , 
+                       eu.f_desired_multiplexing ,
+                       eu.f_read_length ,
+                       eu.f_read_type ,
+                       eu.f_desired_minimum_reads ] , row )
+
+  if title == 'ChiPseq':
+    res = unswizzle( [ eu.f_name ,
+                       eu.f_strain , 
+                       eu.f_tissue , 
+                       eu.f_source , 
+                       eu.f_replicate , 
+                       eu.f_antibody , 
+                       eu.f_target_symbol , 
+                       eu.f_target_ID , 
+                       eu.fb_wb_ID , 
+                       eu.f_treatment ,
+                       eu.f_prep_preformed_by ,
+                       eu.f_lib_prep_protocol ,
+                       eu.f_barcode ,
+                       eu.f_desired_multiplexing ,
+                       eu.f_read_length ,
+                       eu.f_read_type ,
+                       eu.f_desired_minimum_reads ] , row )
   if res == None:
-    raise Exception( "Invalid spreadsheet" )
+    raise Exception( "Invalid spreadsheet " + title  )
   
-  res = copy.deepcopy( res )
-
-  for r in res:
-    r[ 2 ] = row[ r[ 2 ] ]
-
   return res
 
 def generate_a_key(  ):

@@ -460,3 +460,27 @@ timestamp: 2013-04-02T19:00:02.720724
 ALTER TABLE t_keygen_spreadsheets DROP COLUMN f_library_prep_type;
 timestamp: 2013-04-04T16:42:51.691828
 ALTER TABLE t_experiment_unit ADD f_experiment VARCHAR(512);
+timestamp: 2013-04-04T18:00:02.990699
+ALTER TABLE t_experiment_unit ADD f_read_length VARCHAR(512);
+timestamp: 2013-04-04T18:00:02.995968
+ALTER TABLE t_experiment_unit ADD f_reads VARCHAR(512);
+timestamp: 2013-04-04T18:00:02.999139
+ALTER TABLE t_experiment_unit ADD f_read_type VARCHAR(512);
+timestamp: 2013-04-04T18:00:03.002340
+ALTER TABLE t_experiment_unit ADD f_prep_preformed_by VARCHAR(512);
+timestamp: 2013-04-04T18:00:03.003762
+ALTER TABLE t_experiment_unit ADD f_desired_multiplexing VARCHAR(512);
+timestamp: 2013-04-04T18:00:03.004506
+ALTER TABLE t_experiment_unit ADD f_lib_prep_protocol VARCHAR(512);
+timestamp: 2013-04-05T16:07:42.584827
+ALTER TABLE t_experiment_unit ADD f_desired_minimum_reads VARCHAR(512);
+timestamp: 2013-04-05T16:25:42.934045
+ALTER TABLE t_experiment_unit ADD f_capture_size VARCHAR(512);
+timestamp: 2013-04-05T16:25:42.938488
+ALTER TABLE t_experiment_unit ADD f_whole_exome_cistom_capture VARCHAR(512);
+timestamp: 2013-04-05T16:25:42.946600
+ALTER TABLE t_experiment_unit ADD f_capture_protocol VARCHAR(512);
+timestamp: 2013-04-05T16:28:11.538191
+ALTER TABLE t_experiment_unit ADD f_whole_exome_custom_capture VARCHAR(512);
+timestamp: 2013-04-05T16:28:11.540856
+ALTER TABLE t_experiment_unit DROP COLUMN f_whole_exome_cistom_capture;
