@@ -42,7 +42,7 @@ def projects_for_user():
 
 
 templates = [ 'Samples_ChIPseq.xls' , 
-              'Samples_DNAseq_Whole Genome2.xls' , 
+              'Samples_Exomes.xls' ,
               'Samples_DNAseq_Whole_Genome.xls' , 
               'Samples_RNAseq.xls' ]
 
@@ -240,8 +240,10 @@ def old_sheet( indexes , row ):
     res[ a ][ 2 ] = row[ indexes[ a ] ]
   return res
 
-def unswizzle( map , values ):
-  res = [] 
+def unswizzle( title , map , values ):
+  tt = db.t_experiment_unit.f_type
+
+  res = [ [ tt.label , tt.name , title ] ]
   for (db_key,value) in zip( map , values ):
     print db_key
     rr = [ db_key.label , db_key.name , value ]
@@ -268,7 +270,8 @@ def extractRow( title , row ):
   eu = db.t_experiment_unit
 
   if title == 'RNA': 
-    res = unswizzle( [ eu.f_name ,
+    res = unswizzle( 'RNAseq' , 
+                     [ eu.f_name ,
                        eu.f_sample , 
                        eu.f_treatment ,
                        eu.f_prep_preformed_by ,
@@ -280,7 +283,8 @@ def extractRow( title , row ):
                        eu.f_desired_minimum_reads ] , row )
  
   if title == 'DNA':
-    res = unswizzle( [ eu.f_name ,
+    res = unswizzle( 'DNAseq' , 
+                     [ eu.f_name ,
                        eu.f_sample ,
                        eu.f_treatment ,
                        eu.f_prep_preformed_by ,
@@ -292,7 +296,8 @@ def extractRow( title , row ):
                        eu.f_desired_minimum_reads ] , row )
 
   if title == 'Exome':
-    res = unswizzle( [ eu.f_name ,
+    res = unswizzle( 'Exomes' ,
+                     [ eu.f_name ,
                        eu.f_sample ,
                        eu.f_treatment ,
                        eu.f_prep_preformed_by ,
@@ -307,15 +312,16 @@ def extractRow( title , row ):
                        eu.f_desired_minimum_reads ] , row )
 
   if title == 'ChiPseq':
-    res = unswizzle( [ eu.f_name ,
+    res = unswizzle( 'ChiPseq' ,
+                     [ eu.f_name ,
                        eu.f_strain , 
                        eu.f_tissue , 
                        eu.f_source , 
                        eu.f_replicate , 
-                       eu.f_antibody , 
+                       eu.f_agent , 
                        eu.f_target_symbol , 
                        eu.f_target_ID , 
-                       eu.fb_wb_ID , 
+                       eu.f_fb_wb_ID , 
                        eu.f_treatment ,
                        eu.f_prep_preformed_by ,
                        eu.f_lib_prep_protocol ,

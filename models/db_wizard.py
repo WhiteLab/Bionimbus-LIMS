@@ -138,6 +138,8 @@ db.t_user_project.f_user_id.represent = id_to_fullname
 
 ########################################
 db.define_table('t_experiment_unit',
+    Field('f_type', type='string',
+          label=T('Type')),
     Field('f_name', type='string',
           label=T('Name')),
     Field('f_bionimbus_id', type='string', #unique=True,

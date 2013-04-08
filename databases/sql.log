@@ -484,3 +484,19 @@ timestamp: 2013-04-05T16:28:11.538191
 ALTER TABLE t_experiment_unit ADD f_whole_exome_custom_capture VARCHAR(512);
 timestamp: 2013-04-05T16:28:11.540856
 ALTER TABLE t_experiment_unit DROP COLUMN f_whole_exome_cistom_capture;
+timestamp: 2013-04-05T17:00:02.944125
+ALTER TABLE t_experiment_unit ADD f_target_symbol VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.952433
+ALTER TABLE t_experiment_unit ADD f_source VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.953233
+ALTER TABLE t_experiment_unit ADD f_fb_wb_id VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.953856
+ALTER TABLE t_experiment_unit ADD f_strain VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.960141
+ALTER TABLE t_experiment_unit ADD f_target_id VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.972106
+ALTER TABLE t_experiment_unit ADD f_tissue VARCHAR(512);
+timestamp: 2013-04-05T17:00:02.975623
+ALTER TABLE t_experiment_unit ADD f_replicate VARCHAR(512);
+timestamp: 2013-04-08T14:42:31.085422
+ALTER TABLE t_experiment_unit ADD f_type VARCHAR(512);
