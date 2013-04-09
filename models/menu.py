@@ -7,7 +7,15 @@ response.menu = [
 (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
 (T('Experiments'),False,None,
     [ 
-      [T('My Experiments')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_experiments')],
+      [T('My Experiments')    ,False,None,
+        [
+          [T('All')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_experiments')],
+          [T('ChipSeq')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_ChipSeq')],
+          [T('Exomes')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_Exomes')],
+          [T('DNA seq')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_DNAseq')],
+          [T('RNA seq'),URL('default','experiment_unit_manage')==URL(),URL('default','my_RNAseq')]
+        ] 
+      ],
       [T('Public Experiments'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')]
     ]),
 (T('Project'),False,None,
