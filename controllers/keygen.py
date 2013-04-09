@@ -14,6 +14,8 @@ from applications.Bionimbus.modules.permissions import experiment_project_join
 from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
 from applications.Bionimbus.modules.gui         import nameval_to_options
 
+from applications.Bionimbus.modules.cols import * 
+
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
 def call(): return service()
@@ -267,69 +269,15 @@ def extractRow( title , row ):
     res = old_sheet( [ 0 , 1 , 3 , 5 , 8 ] , row )
   
   #### NEW SPREADSHEETS 
-  eu = db.t_experiment_unit
 
   if title == 'RNA': 
-    res = unswizzle( 'RNAseq' , 
-                     [ eu.f_name ,
-                       eu.f_sample , 
-                       eu.f_treatment ,
-                       eu.f_prep_preformed_by ,
-                       eu.f_lib_prep_protocol , 
-                       eu.f_barcode , 
-                       eu.f_desired_multiplexing ,
-                       eu.f_read_length , 
-                       eu.f_read_type ,
-                       eu.f_desired_minimum_reads ] , row )
- 
+    res = unswizzle( 'RNAseq' , rna_cols(db) , row )
   if title == 'DNA':
-    res = unswizzle( 'DNAseq' , 
-                     [ eu.f_name ,
-                       eu.f_sample ,
-                       eu.f_treatment ,
-                       eu.f_prep_preformed_by ,
-                       eu.f_lib_prep_protocol ,
-                       eu.f_barcode ,
-                       eu.f_desired_multiplexing ,
-                       eu.f_read_length ,
-                       eu.f_read_type ,
-                       eu.f_desired_minimum_reads ] , row )
-
+    res = unswizzle( 'DNAseq' , dna_cols(db) , row )
   if title == 'Exome':
-    res = unswizzle( 'Exomes' ,
-                     [ eu.f_name ,
-                       eu.f_sample ,
-                       eu.f_treatment ,
-                       eu.f_prep_preformed_by ,
-                       eu.f_lib_prep_protocol ,
-                       eu.f_barcode ,
-                       eu.f_whole_exome_custom_capture , 
-                       eu.f_capture_protocol , 
-                       eu.f_capture_size , 
-                       eu.f_desired_multiplexing ,
-                       eu.f_read_length ,
-                       eu.f_read_type ,
-                       eu.f_desired_minimum_reads ] , row )
-
+    res = unswizzle( 'Exomes' , exome_cols(db) , row )
   if title == 'ChiPseq':
-    res = unswizzle( 'ChiPseq' ,
-                     [ eu.f_name ,
-                       eu.f_strain , 
-                       eu.f_tissue , 
-                       eu.f_source , 
-                       eu.f_replicate , 
-                       eu.f_agent , 
-                       eu.f_target_symbol , 
-                       eu.f_target_ID , 
-                       eu.f_fb_wb_ID , 
-                       eu.f_treatment ,
-                       eu.f_prep_preformed_by ,
-                       eu.f_lib_prep_protocol ,
-                       eu.f_barcode ,
-                       eu.f_desired_multiplexing ,
-                       eu.f_read_length ,
-                       eu.f_read_type ,
-                       eu.f_desired_minimum_reads ] , row )
+    res = unswizzle( 'ChiPseq' , chipseq_cols(db) , row )
   if res == None:
     raise Exception( "Invalid spreadsheet " + title  )
   
