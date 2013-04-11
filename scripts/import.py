@@ -104,7 +104,7 @@ for project in by_project.keys():
         , db.t_experiment_unit.f_organism
         , db.t_experiment_unit.f_is_public
     ] 
-  res = [ db.t_file.f_path ] + res
+  res = [ db.t_file.f_path , db.t_file.f_reads ] + res
 
   print paths 
   for fpath in paths:
