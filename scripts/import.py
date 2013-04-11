@@ -111,7 +111,7 @@ for project in by_project.keys():
     row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & ( db.t_file.f_path == fpath ) ).select()
     row = row[ 0 ] 
     if content == '':
-      content = '<table>'
+      content = '<html><table border="3">'
       content += '<tr>'
       for r in res:
         content += '<td>' + r.label + '</td>'
@@ -119,10 +119,10 @@ for project in by_project.keys():
     
     content += '<tr>'
     for r in res:
-      content += '<td>' + flatten( row[ r ] ) + '<td>'
+      content += '<td>' + flatten( row[ r ] ) + '</td>'
     content += '</tr>'
 
-  content += '</table>'
+  content += '</table></html>'
 
   pname = db.t_project[ project ].f_name
   if path == test_path:
@@ -134,4 +134,3 @@ for project in by_project.keys():
     sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
 
 db.rollback()
-
