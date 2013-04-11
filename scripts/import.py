@@ -132,5 +132,3 @@ for project in by_project.keys():
     print
   else:
     sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
-
-db.rollback()
