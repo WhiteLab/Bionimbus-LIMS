@@ -14,6 +14,7 @@ def run( str ):
   return os.popen( str ).readlines()
  
 def file_len( fname ):
+  try:
     i = 0
     if fname.endswith( '.gz' ):
       cmd = "zcat "+fname
@@ -24,6 +25,9 @@ def file_len( fname ):
     for i, l in enumerate(f):
       pass
     return i + 1
+  except:
+    return 0
+
 
 path = '/XRaid/bridge/'
 test_path = '/home/dave/tmp/'
@@ -66,7 +70,10 @@ for file in potentials:
      print "going to import" , file , newpath , newname
      run( "mkdir -p " + newpath )
      run( "ln " + fullpath + " " + newname )
-     db( db.t_file.id == id ).update( f_newpath = newname , f_filename = file )
+   
+     reads = file_len( file ) / 4 
+  
+     db( db.t_file.id == id ).update( f_newpath = newname , f_filename = file  , f_reads = reads )
      print "**** fin!" 
 
 
@@ -114,9 +121,6 @@ for project in by_project.keys():
     for r in res:
       content += '<td>' + flatten( row[ r ] ) + '<td>'
     content += '</tr>'
-
-    #f = "%s ( %d reads )" % ( fn , file_len( file ) / 4  )
-    # print f 
 
   content += '</table>'
 
