@@ -104,7 +104,10 @@ for project in by_project.keys():
         , db.t_experiment_unit.f_organism
         , db.t_experiment_unit.f_is_public
     ] 
-  res = [ db.t_file.f_path , db.t_file.f_reads ] + res
+  res = [ db.t_file.f_path , db.t_file.f_reads , 
+          db.db.t_experiment_unit.f_bionimbus_id , db.t_experiment_unit.f_project , db.t_experiment_unit.f_subproject ,
+          db.t_experiment_unit.f_organism , 
+          ] + res
 
   print paths 
   for fpath in paths:
@@ -132,3 +135,6 @@ for project in by_project.keys():
     print
   else:
     sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
+
+if path == test_path:
+  db.rollback()
