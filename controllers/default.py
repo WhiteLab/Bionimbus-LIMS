@@ -41,26 +41,35 @@ basic_experiment_fields = [
         , db.t_experiment_unit.f_is_public
     ]
 
+extracols = [ db.t_experiment_unit.f_bionimbus_id ,
+              db.t_experiment_unit.f_type ,
+              db.t_experiment_unit.f_project ,
+              db.t_experiment_unit.f_subproject ]
+
+
 def my_ChipSeq():
-  cols = [ db.t_experiment_unit.f_bionimbus_id ] + chipseq_cols(db)
+  cols = extracols + chipseq_cols(db)
   return experiment_unit_manage( False , cols , 'ChiPseq' )
 
 def my_Exomes():
-  cols = [ db.t_experiment_unit.f_bionimbus_id ] + exome_cols(db)
+  cols = extracols + exome_cols(db)
   return experiment_unit_manage( False , cols , 'Exomes' )
 
 def my_DNAseq():
-  cols = [ db.t_experiment_unit.f_bionimbus_id ] + dna_cols(db)
+  cols = extracols + dna_cols(db)
   return experiment_unit_manage( False , cols , 'DNAseq' )
 
 def my_RNAseq():
-  cols = [ db.t_experiment_unit.f_bionimbus_id ] + rna_cols(db)
+  cols = extracols + rna_cols(db)
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
+    pub = 'my'
+    if public:
+      pub = 'public'
     experiment_links = [
          lambda row: A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id])),
-         lambda row: A('Files'       , _href=URL( "default" , 'file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % row.f_bionimbus_id ) ) ,
+         lambda row: A('Files'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,row.f_bionimbus_id ) ) ) ,
         ]
 
     editable = True
