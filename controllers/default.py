@@ -192,6 +192,17 @@ def spreadsheet_download():
   response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
   return response.stream( file )
 
+@auth.requires_login()
+def cloud_manage():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_cloud ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         #fields    = fields
+                       )
+    return locals()
+
 
 @auth.requires_login()
 def barcode_manage():
