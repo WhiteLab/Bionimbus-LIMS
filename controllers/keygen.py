@@ -204,7 +204,7 @@ def make_slug( id , keys = None ):
   for row in matrix[ 1: ]:
     values = extractRow( title , row )
     if table == []:
-      table.append( TR( *( [ "" ] + [ v[ 0 ] for v in values ] ) ) )
+      table.append( TR( *( [ "*" ] + [ v[ 0 ] for v in values ] ) ) )
 
     ar = []
     if keys:
