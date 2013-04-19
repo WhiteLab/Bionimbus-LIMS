@@ -106,8 +106,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if type <> None:
       q = q & ( db.t_experiment_unit.f_type == type )
 
-    db(q).select()
-    print db._lastsql
+    #db(q).select()
+    #print db._lastsql
 
     form = SQLFORM.grid( q , 
                          fields = fields , 
