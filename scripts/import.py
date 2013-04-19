@@ -28,7 +28,6 @@ def file_len( fname ):
   except:
     return 0
 
-
 path = '/XRaid/bridge/'
 test_path = '/home/dave/tmp/'
 #path = test_path
@@ -71,7 +70,7 @@ for file in potentials:
      run( "mkdir -p " + newpath )
      run( "ln " + fullpath + " " + newname )
    
-     reads = file_len( file ) / 4 
+     reads = file_len( fullpath ) / 4 
   
      db( db.t_file.id == id ).update( f_newpath = newname , f_filename = file  , f_reads = reads )
      print "**** fin!" 
@@ -84,34 +83,52 @@ for project in by_project.keys():
   content = ''
   print "type =",title 
 
+  extra = [ db.t_file.f_path , db.t_file.f_reads ]
+
+  extra += [ db.t_keygen_spreadsheets.f_platform , 
+             db.t_project.f_name , 
+             db.t_organism.f_name , 
+             db.t_stage.f_name , 
+             db.t_facility.f_name , 
+             db.t_keygen_spreadsheets.f_lanes_per_sample ,
+             db.t_keygen_spreadsheets.f_cycles_per_lane , 
+             db.t_keygen_spreadsheets.f_reference_library_to_map_output , 
+             db.t_keygen_spreadsheets.f_comments ]
+
   res = []
   if title == 'RNAseq':
-    res = rna_cols(db)
+    res = extra + rna_cols(db)
   elif title == 'DNAseq':
-    res = dna_cols(db)
+    res = extra + dna_cols(db)
   elif title == 'Exomes':
-    res = exome_cols(db)
+    res = extra + exome_cols(db)
   elif title == 'ChiPseq':
-    res = chipseq_cols(db)
+    res = extra + chipseq_cols(db)
   else:
     print "****unmatched type" , title
     res = [
           db.t_experiment_unit.f_bionimbus_id
         , db.t_experiment_unit.f_name
-        , db.t_experiment_unit.f_project
-        , db.t_experiment_unit.f_subproject
+        , db.t_project.f_name
         , db.t_experiment_unit.f_agent
-        , db.t_experiment_unit.f_organism
+        , db.t_organism.f_name 
         , db.t_experiment_unit.f_is_public
-    ] 
-  res = [ db.t_file.f_path , db.t_file.f_reads , 
-          db.db.t_experiment_unit.f_bionimbus_id , db.t_experiment_unit.f_project , db.t_experiment_unit.f_subproject ,
-          db.t_experiment_unit.f_organism , 
-          ] + res
+    ]
+
+  db.t_project.f_name.label = 'Project'
+  db.t_organism.f_name.label = 'Organism'
+  db.t_stage.f_name.label    = 'Stage'
+  db.t_facility.f_name.label    = 'Facility'
 
   print paths 
   for fpath in paths:
-    row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & ( db.t_file.f_path == fpath ) ).select()
+    row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & 
+              ( db.t_experiment_unit.f_project      == db.t_project.id ) &
+              ( db.t_experiment_unit.f_organism     == db.t_organism.id ) & 
+              ( db.t_experiment_unit.f_stage        == db.t_stage.id ) &
+              ( db.t_experiment_unit.f_spreadsheet  == db.t_keygen_spreadsheets.id ) &
+              ( db.t_keygen_spreadsheets.t_facility == db.t_facility.id ) &
+              ( db.t_file.f_path == fpath ) ).select()
     row = row[ 0 ] 
     if content == '':
       content = '<html><table border="3">'
@@ -128,7 +145,7 @@ for project in by_project.keys():
   content += '</table></html>'
 
   pname = db.t_project[ project ].f_name
-  if path == test_path:
+  if 1==0:
     print '--------'
     print
     print content
