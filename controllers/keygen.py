@@ -366,5 +366,5 @@ def create_keys():
   
   print msg 
 
-  #sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
+  sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
   return redirect( u )
