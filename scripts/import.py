@@ -85,7 +85,7 @@ for project in by_project.keys():
 
   extra = [ db.t_experiment_unit.f_bionimbus_id , db.t_file.f_path , db.t_file.f_reads ]
 
-  extra += [ db.t_keygen_spreadsheets.f_platform , 
+  extra += [ db.t_platform.f_name , 
              db.t_project.f_name , 
              db.t_organism.f_name , 
              db.t_stage.f_name , 
@@ -118,7 +118,8 @@ for project in by_project.keys():
   db.t_organism.f_name.label = 'Organism'
   db.t_stage.f_name.label    = 'Stage'
   db.t_facility.f_name.label    = 'Facility'
-  
+  db.t_platform.f_name.label    = 'Platform'
+
   print paths 
   for fpath in paths:
     row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & 
@@ -127,6 +128,7 @@ for project in by_project.keys():
               ( db.t_experiment_unit.f_stage        == db.t_stage.id ) &
               ( db.t_experiment_unit.f_spreadsheet  == db.t_keygen_spreadsheets.id ) &
               ( db.t_keygen_spreadsheets.t_facility == db.t_facility.id ) &
+              ( db.t_keygen_spreadsheets.f_platform == db.t_platform.id ) & 
               ( db.t_file.f_path == fpath ) ).select()
     row = row[ 0 ] 
     if content == '':
@@ -144,13 +146,8 @@ for project in by_project.keys():
   content += '</table></html>'
 
   pname = db.t_project[ project ].f_name
-  if 1==0:
-    print '--------'
-    print
-    print content
-    print
-  else:
-    sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
+
+  sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
 
 if path == test_path:
   db.rollback()
