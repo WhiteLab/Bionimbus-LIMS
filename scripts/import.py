@@ -83,7 +83,7 @@ for project in by_project.keys():
   content = ''
   print "type =",title 
 
-  extra = [ db.t_file.f_path , db.t_file.f_reads ]
+  extra = [ db.t_experiment_unit.f_bionimbus_id , db.t_file.f_path , db.t_file.f_reads ]
 
   extra += [ db.t_keygen_spreadsheets.f_platform , 
              db.t_project.f_name , 
@@ -97,29 +97,28 @@ for project in by_project.keys():
 
   res = []
   if title == 'RNAseq':
-    res = extra + rna_cols(db)
+    res = rna_cols(db)
   elif title == 'DNAseq':
-    res = extra + dna_cols(db)
+    res = dna_cols(db)
   elif title == 'Exomes':
-    res = extra + exome_cols(db)
+    res = exome_cols(db)
   elif title == 'ChiPseq':
-    res = extra + chipseq_cols(db)
+    res = chipseq_cols(db)
   else:
     print "****unmatched type" , title
     res = [
-          db.t_experiment_unit.f_bionimbus_id
-        , db.t_experiment_unit.f_name
-        , db.t_project.f_name
+          db.t_experiment_unit.f_name
         , db.t_experiment_unit.f_agent
-        , db.t_organism.f_name 
         , db.t_experiment_unit.f_is_public
     ]
+
+  res = extra + res 
 
   db.t_project.f_name.label = 'Project'
   db.t_organism.f_name.label = 'Organism'
   db.t_stage.f_name.label    = 'Stage'
   db.t_facility.f_name.label    = 'Facility'
-
+  
   print paths 
   for fpath in paths:
     row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & 
@@ -135,12 +134,12 @@ for project in by_project.keys():
       content += '<tr>'
       for r in res:
         content += '<td>' + r.label + '</td>'
-      content += '<tr>'
+      content += '</tr>\n\n'
     
     content += '<tr>'
     for r in res:
       content += '<td>' + flatten( row[ r ] ) + '</td>'
-    content += '</tr>'
+    content += '</tr>\n\n'
 
   content += '</table></html>'
 
