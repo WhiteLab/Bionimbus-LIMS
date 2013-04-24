@@ -171,8 +171,10 @@ def make_slug( id , keys = None ):
     table.append( TR( LABEL( "Subproject" ) ,
                       LABEL( db.t_subproject[ subproject ].f_name ) ) )
 
+  library_name = db.t_library_type[ lib_type ].f_name
+
   table.append( TR( LABEL( "Library type" ) , 
-                    LABEL( lib_type ) ) )
+                    LABEL( library_name ) ) )
 
   table.append( TR( LABEL( "Organism" ) ,
                     LABEL( db.t_organism[ organism ].f_name ) ) )
@@ -365,6 +367,7 @@ def create_keys():
   msg  = "<html>" + FORM( *slug ).xml() + "</html>"
   
   print msg 
-
+  msg = msg.replace( '</tr>' , '</tr>\n' )
+  
   sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Import' , project = projectid )
   return redirect( u )
