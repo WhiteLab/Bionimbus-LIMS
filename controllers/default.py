@@ -116,7 +116,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          onupdate = auth.archive , 
                          deletable = False , 
                          create = False , 
-                         maxtextlength = 150
+                         maxtextlength = 150,
+                         paginate = 100
                         )
 
     print db._lastsql 
