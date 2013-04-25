@@ -157,10 +157,11 @@ def metadata_display():
 def metadata():
   print "here!!!"
   id = request.args( 0 )
+  print "id: " , id 
   row = db( db.t_experiment_unit.f_bionimbus_id == id ).select()
   row = row[ 0 ] 
   id = row[ db.t_experiment_unit.id ]
-  return redirect( 'http://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
+  return redirect( 'https://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
 
 
 def files_for( bn_id ):
