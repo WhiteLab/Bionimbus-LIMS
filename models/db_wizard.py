@@ -249,7 +249,7 @@ db.define_table('t_facility',
 
 
 db.define_table('t_keygen_spreadsheets', 
-    Field( 'f_proj_subproj' ,  type = 'string' , label=T('Project/Subproject')  ) , 
+    Field( 'f_proj_subproj' ,  type = 'string' , label=T('Project/Subproject') , requires=IS_NOT_EMPTY() ) , 
     Field( 'f_platform' , type = 'reference t_platform' , label=T('Platform') ,ondelete='set null'),
     Field('f_organism', type='reference t_organism',ondelete='set null',
           label=T('Organism')),
