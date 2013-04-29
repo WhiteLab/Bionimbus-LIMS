@@ -41,10 +41,18 @@ for file in potentials:
    fullpath = file
    file = file.split( '/' )
    file = file[ -1 ] 
-
+  
    already = db( db.t_file.f_filename == file ).select()
 
    if len( already ) == 0:
+     
+     justpath = fullpath.split( '/' )
+     justpath = justpath[ : -1 ]
+     justpath = '/'.join( justpath )
+
+     if not os.path.exists( justpath + '/import.me' ):
+       continue
+
      fn = file.split( '/' )[ -1 ]
      bn_id = fn.split( '_' )[ 0 ]
      
