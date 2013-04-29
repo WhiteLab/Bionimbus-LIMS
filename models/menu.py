@@ -5,7 +5,7 @@ response.meta.keywords = settings.keywords
 response.meta.description = settings.description
 response.menu = [
 (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
-(T('Experiments'),False,None,
+(T('Experiments/Files'),False,None,
     [ 
       [T('My Experiments')    ,False,None,
         [
@@ -24,11 +24,11 @@ response.menu = [
       [T('Subprojects')          ,URL('permissions','subproject_manage')==URL(),URL('permissions','subproject_manage')],
     ]),
 (T('Organism'),URL('default','organism_manage')==URL(),URL('default','organism_manage'),[]),
-(T('File'),False,None,
-   [
-     ['My files'     , True , URL('default','my_file_manage')],
-     ['Public Files' , True , URL('default','public_file_manage')]
-   ]),
+#(T('File'),False,None,
+#   [
+#     ['My files'     , True , URL('default','my_file_manage')],
+#     ['Public Files' , True , URL('default','public_file_manage')]
+#   ]),
 #(T('Sample'),URL('default','sample_manage')==URL(),URL('default','sample_manage'),[]),
 #(T('Agent'),URL('default','agent_manage')==URL(),URL('default','agent_manage'),[]),
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
