@@ -30,11 +30,12 @@ def file_len( fname ):
 
 path = '/XRaid/bridge/'
 test_path = '/home/dave/tmp/'
-#path = test_path
+path = test_path
 
 potentials = run( 'find ' + path  )
 
 by_project = {}
+fullreport = []
 
 for file in potentials:
    file = file.strip()
@@ -60,6 +61,9 @@ for file in potentials:
      if len( row ) <> 1:
        #print "malformed bionimbus ID:" , bn_id 
        continue 
+
+     fullreport.append( ( bn_id , fn ) )
+
      row = row[ 0 ] 
      type = row[ db.t_experiment_unit.f_type ]
      if type == None:
@@ -156,6 +160,18 @@ for project in by_project.keys():
   pname = db.t_project[ project ].f_name
 
   sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
+
+fullLen = len( fullreport )
+if fullLen > 0:
+  report  = '<html>\n'
+  report += '<table border="3">\n'
+  report += 'Number of files: %d' % fullLen 
+  report += '<br>\n'
+  for row in fullreport:
+    report += '<tr><td>%s</td><td>%s</td></tr>\n' % row 
+  report += '</html>'
+
+sendMailTo( db , 'dhanley@uchicago.edu' , 'Import report' , report , list = 'Import Report' )
 
 if path == test_path:
   db.rollback()
