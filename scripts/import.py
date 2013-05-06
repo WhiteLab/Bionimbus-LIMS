@@ -136,6 +136,9 @@ for project in by_project.keys():
   for fpath in paths:
     row = db(
               ( db.t_file.f_path == fpath ) & ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select( 
+              db.t_project.ALL , db.t_organism.ALL , db.t_stage.ALL , 
+              db.t_keygen_spreadsheets.ALL , db.t_facility.ALL , db.t_platform.ALL , 
+              db.t_file.ALL , db.t_experiment_unit.ALL , 
      left = [ 
               db.t_project.on( db.t_experiment_unit.f_project      == db.t_project.id ) ,
               db.t_organism.on( db.t_experiment_unit.f_organism     == db.t_organism.id ) ,
