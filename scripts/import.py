@@ -28,9 +28,9 @@ def file_len( fname ):
   except:
     return 0
 
-path = '/XRaid/bridge/'
+path = '/XRaid/bridge/130418_SN484_0205_BD1L1AACXX/2013-25_130418_SN484_0205_BD1L1AACXX_7_1_sequence.txt.gz'
 test_path = '/home/dave/tmp/'
-path = test_path
+#path = test_path
 
 potentials = run( 'find ' + path  )
 
@@ -134,26 +134,36 @@ for project in by_project.keys():
 
   print paths 
   for fpath in paths:
-    row = db( ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) & 
-              ( db.t_experiment_unit.f_project      == db.t_project.id ) &
-              ( db.t_experiment_unit.f_organism     == db.t_organism.id ) & 
-              ( db.t_experiment_unit.f_stage        == db.t_stage.id ) &
-              ( db.t_experiment_unit.f_spreadsheet  == db.t_keygen_spreadsheets.id ) &
-              ( db.t_keygen_spreadsheets.t_facility == db.t_facility.id ) &
-              ( db.t_keygen_spreadsheets.f_platform == db.t_platform.id ) & 
-              ( db.t_file.f_path == fpath ) ).select()
-    row = row[ 0 ] 
+    row = db(
+              ( db.t_file.f_path == fpath ) & ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select( 
+     left = [ 
+              db.t_project.on( db.t_experiment_unit.f_project      == db.t_project.id ) ,
+              db.t_organism.on( db.t_experiment_unit.f_organism     == db.t_organism.id ) ,
+              db.t_stage.on( db.t_experiment_unit.f_stage        == db.t_stage.id ) ,
+              db.t_keygen_spreadsheets.on( db.t_experiment_unit.f_spreadsheet  == db.t_keygen_spreadsheets.id ) ,
+              db.t_facility.on( db.t_keygen_spreadsheets.t_facility == db.t_facility.id ) ,
+              db.t_platform.on( db.t_keygen_spreadsheets.f_platform == db.t_platform.id ) ] ) 
+     
     if content == '':
       content = '<html><table border="3">'
       content += '<tr>'
       for r in res:
         content += '<td>' + r.label + '</td>'
       content += '</tr>\n\n'
-    
-    content += '<tr>'
-    for r in res:
-      content += '<td>' + flatten( row[ r ] ) + '</td>'
-    content += '</tr>\n\n'
+   
+    if len( row ) > 0:
+      row = row[ 0 ] 
+      content += '<tr>'
+      for r in res:
+        c = 'None'
+        try:
+          c = flatten( row[ r ] )
+        except:
+          pass
+        content += '<td>' + c + '</td>'
+      content += '</tr>\n\n'
+    else:
+      content += '<tr><td>'+fpath+'</td></tr>'
 
   content += '</table></html>'
 
@@ -170,8 +180,7 @@ if fullLen > 0:
   for row in fullreport:
     report += '<tr><td>%s</td><td>%s</td></tr>\n' % row 
   report += '</html>'
-
-sendMailTo( db , 'dhanley@uchicago.edu' , 'Import report' , report , list = 'Import Report' )
+  sendMailTo( db , 'dhanley@uchicago.edu' , 'Import report' , report , list = 'Import Report' )
 
 if path == test_path:
   db.rollback()
