@@ -28,6 +28,7 @@ def file_len( fname ):
   except:
     return 0
 
+path = '/XRaid/bridge/130418_SN484_0205_BD1L1AACXX/'
 path = '/XRaid/bridge/'
 test_path = '/home/dave/tmp/'
 #path = test_path
@@ -65,10 +66,13 @@ for file in potentials:
      fullreport.append( ( bn_id , fn ) )
 
      row = row[ 0 ] 
-     type = row[ db.t_experiment_unit.f_type ]
-     if type == None:
-       type = ''
-     project = str( row[ db.t_experiment_unit.f_project ] ) + ',' + type
+     type = row[ db.t_experiment_unit.f_library_type ]
+     if type <> None:
+       typename = db.t_library_type[ type ].f_name
+     else:
+       typename = ''
+
+     project = str( row[ db.t_experiment_unit.f_project ] ) + ',' + typename
 
      if not by_project.has_key( project ):
        by_project[ project ] = []
