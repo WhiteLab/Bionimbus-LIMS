@@ -42,18 +42,18 @@ basic_experiment_fields = [
     ]
 
 extracols = [ db.t_experiment_unit.f_bionimbus_id ,
-              db.t_experiment_unit.f_type ,
+              db.t_experiment_unit.f_library_type ,
               db.t_experiment_unit.f_project ,
               db.t_experiment_unit.f_subproject ]
 
 
 def my_ChipSeq():
   cols = extracols + chipseq_cols(db)
-  return experiment_unit_manage( False , cols , 'ChiPseq' )
+  return experiment_unit_manage( False , cols , 'ChIP-seq' )
 
 def my_Exomes():
   cols = extracols + exome_cols(db)
-  return experiment_unit_manage( False , cols , 'Exomes' )
+  return experiment_unit_manage( False , cols , 'Exome' )
 
 def my_DNAseq():
   cols = extracols + dna_cols(db)
@@ -64,6 +64,8 @@ def my_RNAseq():
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
+    if type<>None:
+      type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
     pub = 'my'
     if public:
       pub = 'public'
@@ -104,7 +106,7 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
         q = ( db.t_experiment_unit.f_project == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
 
     if type <> None:
-      q = q & ( db.t_experiment_unit.f_type == type )
+      q = q & ( db.t_experiment_unit.f_library_type == type )
 
     #db(q).select()
     #print db._lastsql

@@ -245,7 +245,7 @@ def old_sheet( indexes , row ):
   return res
 
 def unswizzle( title , map , values ):
-  tt = db.t_experiment_unit.f_type
+  tt = db.t_experiment_unit.f_library_type
 
   res = [ [ tt.label , tt.name , title ] ]
   for (db_key,value) in zip( map , values ):
@@ -349,6 +349,7 @@ def create_keys():
              'f_project'  : projectid , 
              'f_subproject' : subproject ,
              'f_import_id'  : id , 
+             'f_library_type' : lib_type , 
              'f_spreadsheet' : id 
     }
 
