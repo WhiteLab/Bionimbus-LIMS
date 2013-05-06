@@ -1,7 +1,7 @@
 import os
 
 def run( str ):
-  print str
+  #print str
   os.popen( str ).readlines()
 
 def PAL( id , p_name , is_pub , really_at , fn , cloud ):
@@ -19,7 +19,7 @@ def PAL( id , p_name , is_pub , really_at , fn , cloud ):
   if not os.path.exists( p_path ):
     cmd = 'mkdir -p ' + p_path
     run( cmd  )
-  print really_at , p_name 
+  #print really_at , p_name 
   if not os.path.exists( p_name ):
     cmd = 'ln ' + really_at + ' ' + p_name
     run( cmd )
