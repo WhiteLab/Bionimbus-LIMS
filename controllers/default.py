@@ -215,6 +215,9 @@ def barcode_manage():
                          create    = editable ,
                          editable  = editable ,
                          deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+
                          #fields    = fields 
                        )
     return locals()
@@ -226,6 +229,8 @@ def mailing_list_manage():
                          create    = editable ,
                          editable  = editable ,
                          deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
                          #fields    = fields
                        )
     return locals()
@@ -256,7 +261,9 @@ def organism_manage():
                          create    = editable ,
                          editable  = editable ,
                          deletable = False ,
-                         onupdate  = auth.archive 
+                         onupdate  = auth.archive ,
+                         paginate = 1000 ,
+                         maxtextlength = 150
                          )
     return locals()
 
@@ -291,6 +298,8 @@ def stage_manage():
                          create    = editable ,
                          editable  = editable ,
                          deletable = False ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
                          )
     return locals()
 
@@ -347,7 +356,9 @@ def file_manage( public ):
                          deletable     = False ,
                          editable      = False ,
                          links         = file_links ,
-                         create        = False 
+                         create        = False ,
+                         paginate = 1000 
+
                        )
     return locals()
 

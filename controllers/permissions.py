@@ -32,6 +32,8 @@ def project_manage():
                          editable = editable , 
                          create = editable , 
                          onupdate = auth.archive , 
+                         paginate = 1000 , 
+                         maxtextlength = 150,
                          deletable = False)
     return locals()
 
@@ -66,6 +68,8 @@ def user_project_manage():
                          create    = editable ,
                          editable  = editable ,
                          deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
                          fields    = fields )
 
     if arg == 'new':
