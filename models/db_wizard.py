@@ -131,7 +131,7 @@ db.define_table( 't_user_project' ,
 def id_to_fullname( id , row ):
   id = row[ db.t_user_project.f_user_id ]
   r2 = db.auth_user[ id ]
-  return r2.first_name + ' ' + r2.last_name 
+  return r2.first_name + ' ' + r2.last_name + ' ( ' + r2.email + ' ) '
 
 db.t_user_project.f_user_id.represent = id_to_fullname
 
