@@ -179,6 +179,9 @@ def make_slug( id , keys = None ):
   table.append( TR( LABEL( "Organism" ) ,
                     LABEL( db.t_organism[ organism ].f_name ) ) )
 
+  table.append( TR( LABEL( "Stage" ) ,
+                    LABEL( db.t_stage[ stage ].f_name ) ) )
+
   platform = db( db.t_platform == project[ db.t_project.f_platform ] ).select( db.t_platform.f_name )
   platform = platform[ 0 ]
   platform = platform[ db.t_platform.f_name ]
