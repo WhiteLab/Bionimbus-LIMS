@@ -38,6 +38,11 @@ db.define_table('t_mail_list',
     migrate=settings.migrate)
 
 
+def pu_id_to_fullname( id , row ):
+  return id_to_fullname( row , 'f_user' )
+
+db.t_mail_list.f_user.represent = pu_id_to_fullname
+
 
 db.define_table('t_stage',
     Field('f_name', type='string',
@@ -82,6 +87,13 @@ db.define_table('t_project',
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
+
+def project_id_to_fullname( id , row ):
+  return id_to_fullname( row , 'f_pi' )
+
+db.t_project.f_pi.represent = project_id_to_fullname
+
+
 
 db.define_table('t_project_archive',db.t_project,Field('current_record','reference t_project',readable=False,writable=False),migrate=settings.migrate)
 
@@ -128,12 +140,18 @@ db.define_table( 't_user_project' ,
     format='%(f_name)s',
     migrate=settings.migrate)
 
-def id_to_fullname( id , row ):
-  id = row[ db.t_user_project.f_user_id ]
+
+def id_to_fullname( row , col ):
+  id = row[ col ]
+  if id == None:
+    return None
   r2 = db.auth_user[ id ]
   return r2.first_name + ' ' + r2.last_name + ' ( ' + r2.email + ' ) '
 
-db.t_user_project.f_user_id.represent = id_to_fullname
+def pu_id_to_fullname( id , row ):
+  return id_to_fullname( row , 'f_user_id' )
+
+db.t_user_project.f_user_id.represent = pu_id_to_fullname
 
 
 ########################################
