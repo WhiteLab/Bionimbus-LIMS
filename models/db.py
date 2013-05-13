@@ -62,6 +62,8 @@ crud, service, plugins = Crud(db), Service(), PluginManager()
 
 ########################################
 db.define_table('auth_user',
+    Field('nicename' , type='string',
+          label=T('Name')),
     Field('username', type='string',
           label=T('Username')),
     Field('first_name', type='string',
@@ -88,7 +90,7 @@ db.define_table('auth_user',
           writable=False,readable=False),
     Field('registration_id',default='',
           writable=False,readable=False),
-    format='%(username)s',
+    format='%(first_name)s %(last_name)s ( %(email)s )',
     migrate=settings.migrate)
 
 scheme = True
