@@ -110,7 +110,7 @@ def get_user_hash():
 
 
 def get_spreadsheet_info( id ):
-  rows     = db(db.t_keygen_spreadsheets).select( )
+  rows     = db(db.t_keygen_spreadsheets.id==id).select( )
   row      = rows.last()
   fn       = row.file
   psp      = row.f_proj_subproj
@@ -363,7 +363,7 @@ def create_keys():
   
   #db.executesql( 'update t_experiment_unit set f_organism = t_project.f_organism from t_project where t_experiment_unit.f_project = t_project.id and t_experiment_unit.f_organism is null' )
   #add to google doc 
-  os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
+  #os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
 
   u = URL( 'default' , 'my_experiments?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
