@@ -28,7 +28,6 @@ def file_len( fname ):
   except:
     return 0
 
-path = '/XRaid/bridge/130418_SN484_0205_BD1L1AACXX/'
 path = '/XRaid/bridge/'
 test_path = '/home/dave/tmp/'
 #path = test_path
