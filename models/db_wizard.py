@@ -253,7 +253,7 @@ db.define_table('t_keygen_spreadsheets',
     Field( 'f_cycles_per_lane' , type = 'string' , label=T('Cycles requested per lane') ) ,
     Field( 'f_reference_library_to_map_output' , type = 'string' , label=T('Refrence library to map output') ) ,
     Field( 'f_comments' , type = 'text' , label=T('Comments') ) ,
-    Field( 'f_added_to_tracking_sheet' , type = 'boolean' , label=T('Added to tracking sheet') ) ,
+    Field( 'f_added_to_tracking_sheet' , type = 'boolean' , label=T('Added to tracking sheet') , default = 'f' ) ,
     Field('file','upload', requires = IS_NOT_EMPTY() ) , 
     migrate=settings.migrate )
 
