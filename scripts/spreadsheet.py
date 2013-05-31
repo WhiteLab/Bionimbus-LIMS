@@ -19,6 +19,7 @@ for ss in db( db.t_keygen_spreadsheets ).select():
       args.append( id[ db.t_experiment_unit.f_bionimbus_id ] )
       args.append( id[ db.t_project.f_name ] )
     if len( args ) > 0:
+      args = [ '"%s"' % a for a in args ]
       arg = " ".join( args )
       os.popen( "~/write_ids_to_tracking_sheet.pl " + arg ).readlines()
     db( db.t_keygen_spreadsheets.id == sheet_id ).update( f_added_to_tracking_sheet = True )

@@ -61,6 +61,7 @@
 'Exomes': 'Exomes',
 'Experiment': 'Experiment',
 'Experiments': 'Experiments',
+'Experiments/Files': 'Experiments/Files',
 'export as csv file': 'exportovat do csv souboru',
 'Facility': 'Facility',
 'File': 'File',

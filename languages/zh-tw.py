@@ -18,6 +18,7 @@
 'about': '關於',
 'About': '關於',
 'About application': '關於本應用程式',
+'Added to tracking sheet': 'Added to tracking sheet',
 'Admin is disabled because insecure channel': '管理功能(Admin)在不安全連線環境下自動關閉',
 'Admin is disabled because unsecure channel': '管理功能(Admin)在不安全連線環境下自動關閉',
 'Administrative interface': '點此處進入管理介面',
