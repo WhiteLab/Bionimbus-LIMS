@@ -107,7 +107,7 @@ if settings[ 'login_with_openid' ] == 'True':
   auth.settings.login_form = RPXAccount(request,
     api_key = settings[ 'api_key' ] ,
     domain = settings[ 'domain' ] ,
-    url = u )
+    url = u , embed = True )
 
 db.auth_user.first_name.requires = IS_NOT_EMPTY(error_message=auth.messages.is_empty)
 db.auth_user.last_name.requires = IS_NOT_EMPTY(error_message=auth.messages.is_empty)
