@@ -100,7 +100,7 @@ def recent_keys( count ):
           ( db.t_experiment_unit.f_project == db.t_project.id ) ).select( *fields ,
                                                                           orderby = db.t_experiment_unit.created_on |
                                                                             db.t_experiment_unit.f_bionimbus_id ,
-                                                                          limitby = ( 0 , 100 ) )
+                                                                          limitby = ( 0 , count ) )
   l = []
   for r in re:
     l.append( [ r[f] for f in fields ] )
