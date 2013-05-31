@@ -85,7 +85,26 @@ def does_key_exist( key ):
     return True
   except:
     return False 
-  
+
+@service.xmlrpc
+def recent_keys( count ):
+  fields = [ db.t_experiment_unit.f_bionimbus_id ,
+                                                                          db.auth_user.first_name ,
+                                                                          db.auth_user.last_name ,
+                                                                          db.t_experiment_unit.created_on ,
+                                                                          db.t_library_type.f_name ,
+                                                                          db.t_project.f_name
+  ]
+  re = db( ( db.t_experiment_unit.created_by == db.auth_user.id ) &
+          ( db.t_experiment_unit.f_library_type == db.t_library_type.id ) &
+          ( db.t_experiment_unit.f_project == db.t_project.id ) ).select( *fields ,
+                                                                          orderby = db.t_experiment_unit.created_on |
+                                                                            db.t_experiment_unit.f_bionimbus_id ,
+                                                                          limitby = ( 0 , 100 ) )
+  l = []
+  for r in re:
+    l.append( [ r[f] for f in fields ] )
+  return l 
 
 def call():
     return service()
