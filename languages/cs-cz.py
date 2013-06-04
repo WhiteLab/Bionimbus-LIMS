@@ -5,6 +5,7 @@
 '%s rows updated': '%s upravených záznamů',
 '%Y-%m-%d': '%d.%m.%Y',
 '%Y-%m-%d %H:%M:%S': '%d.%m.%Y %H:%M:%S',
+'Added to tracking sheet': 'Added to tracking sheet',
 'Administrative interface': 'pro administrátorské rozhranie kliknite sem',
 'Agent': 'Agent',
 'All': 'All',
