@@ -46,23 +46,27 @@ extracols = [ db.t_experiment_unit.f_bionimbus_id ,
               db.t_experiment_unit.f_project ,
               db.t_experiment_unit.f_subproject ]
 
-
+@auth.requires_login()
 def my_ChipSeq():
   cols = extracols + chipseq_cols(db)
   return experiment_unit_manage( False , cols , 'ChIP-seq' )
 
+@auth.requires_login()
 def my_Exomes():
   cols = extracols + exome_cols(db)
   return experiment_unit_manage( False , cols , 'Exome' )
 
+@auth.requires_login()
 def my_DNAseq():
   cols = extracols + dna_cols(db)
   return experiment_unit_manage( False , cols , 'DNAseq' )
 
+@auth.requires_login()
 def my_RNAseq():
   cols = extracols + rna_cols(db)
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
+@auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
     if type<>None:
       type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
@@ -306,7 +310,7 @@ def stage_manage():
 
 @auth.requires_login()
 def library_type_manage():
-    editable = is_user_admin( db , auth )
+    editable = False # is_user_admin( db , auth )
 
     form = SQLFORM.grid( db.t_library_type ,
                          create    = editable ,
