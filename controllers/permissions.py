@@ -17,25 +17,38 @@ def index():
 def error():
     return dict()
 
-@auth.requires_login()
-def project_manage():
+def proj( q ):
     fields = [
-             db.t_project.f_name 
-           , db.t_project.f_organism 
-           , db.t_project.f_pi  
+             db.t_project.f_name
+           , db.t_project.f_organism
+           , db.t_project.f_pi
            , db.t_project.f_public
            , db.t_project.f_cloud
              ]
     editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_project,fields = fields , 
-                         #links = project_links , 
-                         editable = editable , 
-                         create = editable , 
-                         onupdate = auth.archive , 
-                         paginate = 1000 , 
+
+    form = SQLFORM.grid( q , fields = fields ,
+                         #links = project_links ,
+                         editable = editable ,
+                         create = editable ,
+                         onupdate = auth.archive ,
+                         paginate = 1000 ,
                          maxtextlength = 150,
                          deletable = False)
     return locals()
+
+@auth.requires_login()
+def project_manage():
+    if is_user_admin( db , auth ):
+      q = db.t_project.id <> -1
+    else:
+      q = ( db.t_project.id == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
+    return proj( q ) 
+
+@auth.requires_login()
+def public_project_manage():
+    q = db.t_project.f_public == True
+    return proj( q )
 
 
 @auth.requires_login()
