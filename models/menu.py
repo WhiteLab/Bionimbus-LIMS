@@ -20,7 +20,8 @@ response.menu = [
     ]),
 (T('Project'),False,None,
     [
-      [T('Projects')          ,URL('permissions','project_manage')==URL(),URL('permissions','project_manage')],
+      [T('My Projects')          ,URL('permissions','project_manage')==URL(),URL('permissions','project_manage')],
+      [T('Public Projects')      ,URL('permissions','project_manage')==URL(),URL('permissions','public_project_manage')],
       [T('Subprojects')          ,URL('permissions','subproject_manage')==URL(),URL('permissions','subproject_manage')],
     ]),
 (T('Organism'),URL('default','organism_manage')==URL(),URL('default','organism_manage'),[]),
