@@ -127,8 +127,8 @@ def import_cycle():
   #find all non-hidden real files. 
   ls = run( "find -L import/ \( ! -regex '.*/\..*' \) -type f" )
   random.shuffle( ls )
-  if len(ls)>51:
-    ls = ls[ : 50 ]
+  #if len(ls)>51:
+  #  ls = ls[ : 50 ]
 
   for filepath in ls:
     filepath = filepath.strip()

@@ -16,7 +16,8 @@ response.menu = [
           [T('RNA seq'),URL('default','experiment_unit_manage')==URL(),URL('default','my_RNAseq')]
         ] 
       ],
-      [T('Public Experiments'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')]
+      [T('Public Experiments'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')],
+      [T('Selected Files'),    URL('default','selected_files')==URL(),URL('default','selected_files')]
     ]),
 (T('Project'),False,None,
     [

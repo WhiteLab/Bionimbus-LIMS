@@ -67,6 +67,37 @@ def my_RNAseq():
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
 @auth.requires_login()
+def selected_files():
+    form = SQLFORM.grid( db.t_selected_files , 
+                         fields = [ db.t_selected_files.f_id ] ,
+                         editable = False ,
+                         #deletable = False ,
+                         create = False ,
+                         paginate = 100 ,
+                         maxtextlength = 150
+                       )
+    return locals()
+
+def add_bn_id( ids ):
+  print "called add bm id's with" , ids 
+  ids_to_add = []
+  for id in ids:
+    rows = db( ( db.t_experiment_unit.id == id ) & 
+               ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select()
+    for row in rows:
+      ids_to_add.append( row[ db.t_file.id ] )
+  print "id's to add:" , ids_to_add
+  userid = auth.user_id
+
+  for id in ids_to_add:
+    likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
+    if len( likethis ) == 0:
+      db.t_selected_files.insert( f_id = id , f_user = userid )
+    else:
+      print "didn't add duplicate:" , id , userid
+      
+
+@auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
     if type<>None:
       type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
@@ -112,9 +143,6 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if type <> None:
       q = q & ( db.t_experiment_unit.f_library_type == type )
 
-    #db(q).select()
-    #print db._lastsql
-
     form = SQLFORM.grid( q , 
                          fields = fields , 
                          links = experiment_links , 
@@ -123,10 +151,10 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          deletable = False , 
                          create = False , 
                          maxtextlength = 150,
-                         paginate = 100
+                         paginate = 100 , 
+                         selectable = lambda ids: add_bn_id(ids) 
                         )
-
-    print db._lastsql 
+    #form[ -1 ] = T('Delete selected articles')
 
     return locals()
 
@@ -162,9 +190,7 @@ def metadata_display():
 
 
 def metadata():
-  print "here!!!"
   id = request.args( 0 )
-  print "id: " , id 
   row = db( db.t_experiment_unit.f_bionimbus_id == id ).select()
   row = row[ 0 ] 
   id = row[ db.t_experiment_unit.id ]

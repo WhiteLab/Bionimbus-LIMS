@@ -1,6 +1,5 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
-
 db.define_table( "t_library_type" , 
     Field('f_name', type='string',
           label=T('Name')),
@@ -111,7 +110,7 @@ db.define_table('t_file',
     Field( 'f_reads' , type = 'bigint' , 
           label=T('Reads') ) , 
     auth.signature,
-    format='%(f_name)s',
+    format='%(f_filename)s',
     migrate=settings.migrate)
 
 db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_file',readable=False,writable=False),migrate=settings.migrate)
@@ -281,3 +280,14 @@ db.define_table( 't_key_metadata' ,
           label=T('value')) ,
        migrate=settings.migrate
 )
+
+db.define_table( "t_selected_files" ,
+    Field('f_id', type=db.t_file,
+          label=T('File')),
+    Field('f_user', type=db.auth_user,
+          label=T('User')),
+    auth.signature,
+    migrate=settings.migrate)
+
+
+
