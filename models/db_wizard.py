@@ -289,5 +289,20 @@ db.define_table( "t_selected_files" ,
     auth.signature,
     migrate=settings.migrate)
 
+db.define_table( "t_dropbox_keys" ,
+    Field('f_hash', type="string",
+          label=T('Hash' ) , 
+          unique=True),
+    auth.signature,
+    migrate=settings.migrate)
+
+db.define_table( "t_dropbox_files" ,
+    Field('f_dropbox', type=db.t_dropbox_keys,
+          label=T('Key')),
+    Field('f_file', type=db.t_file,
+          label=T('File')),
+    auth.signature,
+    migrate=settings.migrate)
+
 
 

@@ -66,9 +66,12 @@ def my_RNAseq():
   cols = extracols + rna_cols(db)
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
+
 @auth.requires_login()
 def selected_files():
-    form = SQLFORM.grid( db.t_selected_files , 
+    q = db.t_selected_files.f_user == auth.user_id 
+
+    form = SQLFORM.grid( q , 
                          fields = [ db.t_selected_files.f_id ] ,
                          editable = False ,
                          #deletable = False ,
@@ -78,6 +81,23 @@ def selected_files():
                        )
     return locals()
 
+
+@auth.requires_login()
+def clearSelected():
+  db( db.t_selected_files.f_user == auth.user_id ).delete()
+  return selected_files()
+ 
+@auth.requires_login()
+def boxFor():
+  db( db.t_selected_files.f_user == auth.user_id ).select()
+  
+  # try to insert random keys until one inserts successfully, 
+  # the database's uniqueness constraint doing the lifting. Save the insert id
+
+  # insert files into the dropbox content table
+ 
+  # return a URL for the user
+  
 def add_bn_id( ids ):
   print "called add bm id's with" , ids 
   ids_to_add = []
@@ -95,7 +115,8 @@ def add_bn_id( ids ):
       db.t_selected_files.insert( f_id = id , f_user = userid )
     else:
       print "didn't add duplicate:" , id , userid
-      
+  return redirect( URL( "selected_files" ) )
+
 
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):

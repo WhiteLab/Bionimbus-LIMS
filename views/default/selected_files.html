@@ -3,4 +3,7 @@
 <INPUT type="button" value="Make Dropbox"
 onclick="location.href='{{=URL(r=request,f='boxFor/%d'%auth.user_id)}}'"/>
 
+<INPUT type="button" value="Clear selected"
+onclick="location.href='{{=URL(r=request,f='clearSelected/%d'%auth.user_id)}}'"/>
+
 <h2>Selected Files</h2><p>{{=form}}</p>
