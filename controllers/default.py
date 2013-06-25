@@ -87,17 +87,45 @@ def clearSelected():
   db( db.t_selected_files.f_user == auth.user_id ).delete()
   return selected_files()
  
+import string
+import random
+def generate_key( length = 6 ):
+  chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+  return ''.join(random.sample(chars*length,length))
+
 @auth.requires_login()
 def boxFor():
-  db( db.t_selected_files.f_user == auth.user_id ).select()
-  
-  # try to insert random keys until one inserts successfully, 
+  # try to insert random keys until one inserts successfully,
   # the database's uniqueness constraint doing the lifting. Save the insert id
+  box_id = None
+  iters = 0
+  while box_id == None and iters < 10:
+    try:
+      hash = generate_key()
+      box_id = db.t_dropbox_keys.insert( f_hash = hash )
+    except:
+      print hash , "seems to be a duplicate"
+    iters = iters + 1 
+  
+  print "hash" , hash
 
   # insert files into the dropbox content table
- 
+
+  files = db( db.t_selected_files.f_user == auth.user_id ).select()
+  print "files" , files 
+
+  fids = []
+  for file in files:
+    fids.append( file[ db.t_selected_files.f_id ] )
+  print "fids" , fids
+
+  for fid in fids:
+    print "fid" , fid 
+    db.t_dropbox_files.insert( f_dropbox = box_id , f_file = fid )
+    
   # return a URL for the user
-  
+  return HTML( "your dropbox : " , URL( "default/dropbox" , hash , scheme=True ) )
+
 def add_bn_id( ids ):
   print "called add bm id's with" , ids 
   ids_to_add = []
@@ -222,6 +250,12 @@ def files_for( bn_id ):
   rows = [ r.f_newpath for r in db(db.t_file.f_bionimbus_id==bn_id).select() ]
   return rows
 
+def download_fullpaths_tar( name , fullpaths ):
+  instream = os.popen( "tar --dereference -czf - " + " ".join( fullpaths ) )
+  response.headers[ 'Content-Type' ] = '.gz'
+  response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % name
+  return response.stream( instream , chunk_size = 256 * 256 )
+
 @auth.requires_login()
 def bn_download():
   args = request.env.path_info.split('/')[3:]
@@ -231,14 +265,17 @@ def bn_download():
     return HTML( "You don't have permissions to download that experiment" )  # + db._lastsql )
 
   rows = files_for( bn_id )
-  #if len( rows ) == 0 or None in rows:
-  #  response.flash = "Sorry, that experiment has no files" 
-  #  return redirect(URL('experiment_unit_manage'))
-  instream = os.popen( "tar --dereference -czf - " + " ".join( rows ) )
-  response.headers[ 'Content-Type' ] = '.gz'
-  response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % bn_id
-  return response.stream( instream , chunk_size = 256 * 256 )
+  return download_fullpaths_tar( bn_id , rows )
 
+@auth.requires_login()
+def dropbox():
+  key = request.args( 0 )
+  files = db( ( db.t_dropbox_keys.f_hash == key ) & 
+              ( db.t_dropbox_keys.id == db.t_dropbox_files.f_dropbox ) & 
+              ( db.t_dropbox_files.f_file == db.t_file.id ) ).select( db.t_file.f_newpath )
+  files = [ f[ db.t_file.f_newpath ] for f in files ]
+  #return ",".join( files ) 
+  return download_fullpaths_tar( key , files ) 
 
 def spreadsheet_download():
   args = request.env.path_info.split('/')[3:]
