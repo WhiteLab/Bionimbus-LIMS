@@ -1,0 +1,11 @@
+{{extend 'layout.html'}}
+
+<h2>Selected Files</h2>
+
+<INPUT type="button" value="Make Dropbox"
+onclick="location.href='{{=URL(r=request,f='selected_files/make/')}}'"/>
+
+<INPUT type="button" value="Clear selected"
+onclick="location.href='{{=URL(r=request,f='selected_files/clear/')}}'"/>
+
+<p>{{=form}}</p>
