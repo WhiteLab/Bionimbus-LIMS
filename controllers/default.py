@@ -69,23 +69,35 @@ def my_RNAseq():
 
 @auth.requires_login()
 def selected_files():
-    q = db.t_selected_files.f_user == auth.user_id 
+  arg = request.args( 0 )
 
-    form = SQLFORM.grid( q , 
-                         fields = [ db.t_selected_files.f_id ] ,
-                         editable = False ,
-                         #deletable = False ,
-                         create = False ,
-                         paginate = 100 ,
-                         maxtextlength = 150
-                       )
-    return locals()
+  q = db.t_selected_files.f_user == auth.user_id
+  form = SQLFORM.grid( q , 
+                       fields = [ db.t_selected_files.f_id ] ,
+                       editable = False ,
+                       #deletable = False ,
+                       searchable = False , 
+                       create = False ,
+                       paginate = 100 ,
+                       maxtextlength = 150 ,
+                       user_signature=False
+                     )
+
+  if arg == 'make':
+    key = boxFor()
+    u = URL( "default/dropbox" , key , scheme=True )
+    form[0].insert( 0 , u )
+  if arg == 'clear':
+    clearSelected()
+    response.flash = 'cleared'
+
+
+  return locals()
 
 
 @auth.requires_login()
 def clearSelected():
   db( db.t_selected_files.f_user == auth.user_id ).delete()
-  return selected_files()
  
 import string
 import random
@@ -93,7 +105,6 @@ def generate_key( length = 6 ):
   chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
   return ''.join(random.sample(chars*length,length))
 
-@auth.requires_login()
 def boxFor():
   # try to insert random keys until one inserts successfully,
   # the database's uniqueness constraint doing the lifting. Save the insert id
@@ -124,7 +135,8 @@ def boxFor():
     db.t_dropbox_files.insert( f_dropbox = box_id , f_file = fid )
     
   # return a URL for the user
-  return HTML( "your dropbox : " , URL( "default/dropbox" , hash , scheme=True ) )
+  clearSelected()
+  return hash
 
 def add_bn_id( ids ):
   print "called add bm id's with" , ids 
