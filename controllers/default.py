@@ -70,10 +70,12 @@ def my_RNAseq():
 @auth.requires_login()
 def selected_files():
   arg = request.args( 0 )
-
   q = db.t_selected_files.f_user == auth.user_id
+  if arg == 'clear':
+    clearSelected()
+    response.flash = 'cleared'
   form = SQLFORM.grid( q , 
-                       fields = [ db.t_selected_files.f_id ] ,
+                       fields = [ db.t_selected_files.f_id , db.t_selected_files.f_counts , db.t_selected_files.f_size ] ,
                        editable = False ,
                        #deletable = False ,
                        searchable = False , 
@@ -82,16 +84,10 @@ def selected_files():
                        maxtextlength = 150 ,
                        user_signature=False
                      )
-
   if arg == 'make':
     key = boxFor()
     u = URL( "default/dropbox" , key , scheme=True )
     form[0].insert( 0 , u )
-  if arg == 'clear':
-    clearSelected()
-    response.flash = 'cleared'
-
-
   return locals()
 
 
@@ -145,14 +141,14 @@ def add_bn_id( ids ):
     rows = db( ( db.t_experiment_unit.id == id ) & 
                ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select()
     for row in rows:
-      ids_to_add.append( row[ db.t_file.id ] )
+      ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
   print "id's to add:" , ids_to_add
   userid = auth.user_id
 
-  for id in ids_to_add:
+  for id,size,counts in ids_to_add:
     likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
     if len( likethis ) == 0:
-      db.t_selected_files.insert( f_id = id , f_user = userid )
+      db.t_selected_files.insert( f_id = id , f_user = userid , f_size = size , f_counts = counts )
     else:
       print "didn't add duplicate:" , id , userid
   return redirect( URL( "selected_files" ) )
