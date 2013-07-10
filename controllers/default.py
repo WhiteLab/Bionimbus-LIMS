@@ -209,10 +209,9 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          create = False , 
                          maxtextlength = 150,
                          paginate = 100 , 
-                         selectable = lambda ids: add_bn_id(ids) 
+                         selectable = lambda ids: add_bn_id(ids) ,
                         )
-    #form[ -1 ] = T('Delete selected articles')
-
+    form.submit_button = 'Add Files'
     return locals()
 
 
@@ -427,6 +426,25 @@ def public_file_manage():
 def my_file_manage():
   return file_manage( public = False)
 
+def add_file_id( ids ):
+  ids_to_add = []
+  for id in ids:
+    rows = db( 
+               ( db.t_file.id == id ) ).select()
+    for row in rows:
+      ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
+  print "id's to add:" , ids_to_add
+  userid = auth.user_id
+
+  for id,size,counts in ids_to_add:
+    likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
+    if len( likethis ) == 0:
+      db.t_selected_files.insert( f_id = id , f_user = userid , f_size = size , f_counts = counts )
+    else:
+      print "didn't add duplicate:" , id , userid
+  return redirect( URL( "selected_files" ) )
+
+
 
 @auth.requires_login()
 def file_manage( public ):
@@ -453,8 +471,8 @@ def file_manage( public ):
                          editable      = False ,
                          links         = file_links ,
                          create        = False ,
-                         paginate = 1000 
-
+                         paginate = 1000 ,
+                         selectable = lambda ids: add_file_id(ids) ,
                        )
     return locals()
 

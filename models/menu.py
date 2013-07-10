@@ -5,9 +5,9 @@ response.meta.keywords = settings.keywords
 response.meta.description = settings.description
 response.menu = [
 (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
-(T('Experiments/Files'),False,None,
+(T('Libraries/Files'),False,None,
     [ 
-      [T('My Experiments')    ,False,None,
+      [T('My Libraries')    ,False,None,
         [
           [T('All')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_experiments')],
           [T('ChipSeq')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_ChipSeq')],
@@ -16,7 +16,7 @@ response.menu = [
           [T('RNA seq'),URL('default','experiment_unit_manage')==URL(),URL('default','my_RNAseq')]
         ] 
       ],
-      [T('Public Experiments'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')],
+      [T('Public Libraries'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')],
       [T('Selected Files'),    URL('default','selected_files')==URL(),URL('default','selected_files')]
     ]),
 (T('Project'),False,None,
