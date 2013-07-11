@@ -27,12 +27,18 @@ def proj( q ):
              ]
     editable = is_user_admin( db , auth )
 
+    links = [
+         lambda row: A('Files'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row.id ) ) ) ,
+        ]
+
+
     form = SQLFORM.grid( q , fields = fields ,
                          #links = project_links ,
                          editable = editable ,
                          create = editable ,
                          onupdate = auth.archive ,
                          paginate = 1000 ,
+                         links = links , 
                          maxtextlength = 150,
                          deletable = False)
     return locals()
