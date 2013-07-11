@@ -117,7 +117,7 @@ for project in by_project.keys():
     res = dna_cols(db)
   elif title == 'Exomes':
     res = exome_cols(db)
-  elif title == 'ChIPseq':
+  elif title == 'ChIP-seq':
     res = chipseq_cols(db)
   else:
     print "****unmatched type" , title
