@@ -18,7 +18,7 @@ def error():
     return dict()
 
 def proj( q ):
-    fields = [
+    fields = [ db.t_project.id ,
              db.t_project.f_name
            , db.t_project.f_organism
            , db.t_project.f_pi
@@ -28,7 +28,7 @@ def proj( q ):
     editable = is_user_admin( db , auth )
 
     links = [
-         lambda row: A('Files'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row.id ) ) ) ,
+         lambda row: A('Files'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row[ db.t_project.id ] ) ) ) ,
         ]
 
 
@@ -67,10 +67,10 @@ def subproject_manage():
     return locals()
 
 
-def names_for_users():
-  a = db.auth_user
-  ifn = db( a ) .select()
-  return [ ( row[ a.first_name ] + ' ' + row[ a.last_name ] , row[ a.id ] ) for row in ifn ]
+#def names_for_users():
+#  a = db.auth_user
+#  ifn = db( a ) .select()
+#  return [ ( row[ a.first_name ] + ' ' + row[ a.last_name ] , row[ a.id ] ) for row in ifn ]
 
 
 @auth.requires_login()
@@ -91,10 +91,10 @@ def user_project_manage():
                          maxtextlength = 150,
                          fields    = fields )
 
-    if arg == 'new':
-      nfu = names_for_users()
-      options = nameval_to_options( nfu )     
-      form[1][0][1][1] = TD( SELECT( *options ,  _class="generic-widget" , _id="t_user_project_f_user_id" , _name="f_user_id" ) )
+    #if arg == 'new':
+    #  nfu = names_for_users()
+    #  options = nameval_to_options( nfu )     
+    #  form[1][0][1][1] = TD( SELECT( *options ,  _class="generic-widget" , _id="t_user_project_f_user_id" , _name="f_user_id" ) )
    
     return locals()
 
