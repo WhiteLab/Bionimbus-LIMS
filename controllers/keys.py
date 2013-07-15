@@ -98,12 +98,12 @@ def recent_keys( count ):
   re = db( ( db.t_experiment_unit.created_by == db.auth_user.id ) &
           ( db.t_experiment_unit.f_library_type == db.t_library_type.id ) &
           ( db.t_experiment_unit.f_project == db.t_project.id ) ).select( *fields ,
-                                                                          orderby = db.t_experiment_unit.created_on |
-                                                                            db.t_experiment_unit.f_bionimbus_id ,
+                                                                          orderby = ~db.t_experiment_unit.id ,
                                                                           limitby = ( 0 , count ) )
   l = []
   for r in re:
     l.append( [ r[f] for f in fields ] )
+  l.reverse()
   return l 
 
 def call():
