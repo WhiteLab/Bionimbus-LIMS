@@ -49,6 +49,7 @@ for file in potentials:
      
      justpath = fullpath.split( '/' )
      justpath = justpath[ : -1 ]
+     run_id = justpath[ -1 ] 
      justpath = '/'.join( justpath )
 
      if not os.path.exists( justpath + '/import.me' ):
@@ -71,7 +72,7 @@ for file in potentials:
      else:
        typename = ''
 
-     project = str( row[ db.t_experiment_unit.f_project ] ) + ',' + typename
+     project = str( row[ db.t_experiment_unit.f_project ] ) + ',' + typename + ',' + run_id
 
      if not by_project.has_key( project ):
        by_project[ project ] = []
@@ -93,7 +94,7 @@ for file in potentials:
 
 for project in by_project.keys():
   paths = by_project[ project ]
-  project,title = project.split( ',' )
+  project,title,run = project.split( ',' )
 
   content = ''
   print "type =",title 
@@ -175,7 +176,8 @@ for project in by_project.keys():
 
   pname = db.t_project[ project ].f_name
 
-  sendMailTo( db , 'dhanley@uchicago.edu' , "Files imported to " + pname , content , list = 'Import' , project = project )
+  msg = "Files imported to " + pname + " from run " + run
+  sendMailTo( db , 'dhanley@uchicago.edu' , msg , content , list = 'Import' , project = project )
 
 fullLen = len( fullreport )
 if fullLen > 0:
