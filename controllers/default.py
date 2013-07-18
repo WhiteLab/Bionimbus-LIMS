@@ -171,7 +171,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
 
     if ( arg == 'view' ):
       experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
-      experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
+      if db.t_experiment_unit[ request.args[ 2 ] ].f_spreadsheet <> None:
+        experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
 
     if ( arg == 'edit' ):
       if is_user_admin( db , auth ):
@@ -286,10 +287,13 @@ def dropbox():
 
 def spreadsheet_download():
   args = request.env.path_info.split('/')[3:]
-  ss_id = int( args[ 1 ] )
-  (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
-  response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
-  return response.stream( file )
+  try:
+    ss_id = int( args[ 1 ] )
+    (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
+    response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
+    return response.stream( file )
+  except:
+    return HTML( "That key was not created with a spreadsheet" )
 
 @auth.requires_login()
 def cloud_manage():
