@@ -355,6 +355,10 @@ def organism_manage():
              ]
     editable = is_user_admin( db , auth )
     
+    links = [
+         lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
+        ]
+
     form = SQLFORM.grid( db.t_organism , 
                          fields    = fields , 
                          create    = editable ,
@@ -362,7 +366,8 @@ def organism_manage():
                          deletable = False ,
                          onupdate  = auth.archive ,
                          paginate = 1000 ,
-                         maxtextlength = 150
+                         maxtextlength = 150 ,
+                         links = links 
                          )
     return locals()
 
