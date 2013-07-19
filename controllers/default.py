@@ -153,6 +153,15 @@ def add_bn_id( ids ):
       print "didn't add duplicate:" , id , userid
   return redirect( URL( "selected_files" ) )
 
+def fileRow( pub , row ):
+  bn_id = row.f_bionimbus_id
+  if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
+    return A('Libraries'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,bn_id) ) )
+
+def downloadRow( row ):
+  bn_id = row.f_bionimbus_id
+  if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
+    return A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id]))
 
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
@@ -162,16 +171,17 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if public:
       pub = 'public'
     experiment_links = [
-         lambda row: A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id])),
-         lambda row: A('Files'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,row.f_bionimbus_id ) ) ) ,
+         lambda row: downloadRow( row ),
+         lambda row: fileRow( pub , row )
         ]
 
     editable = True
     arg = request.args( 0 ) 
 
     if ( arg == 'view' ):
-      experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
-      experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
+      #experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
+      if db.t_experiment_unit[ request.args[ 2 ] ].f_spreadsheet <> None:
+        experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
 
     if ( arg == 'edit' ):
       if is_user_admin( db , auth ):
@@ -286,10 +296,13 @@ def dropbox():
 
 def spreadsheet_download():
   args = request.env.path_info.split('/')[3:]
-  ss_id = int( args[ 1 ] )
-  (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
-  response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
-  return response.stream( file )
+  try:
+    ss_id = int( args[ 1 ] )
+    (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
+    response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
+    return response.stream( file )
+  except:
+    return HTML( "That key was not created with a spreadsheet" )
 
 @auth.requires_login()
 def cloud_manage():
@@ -351,6 +364,10 @@ def organism_manage():
              ]
     editable = is_user_admin( db , auth )
     
+    links = [
+         lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
+        ]
+
     form = SQLFORM.grid( db.t_organism , 
                          fields    = fields , 
                          create    = editable ,
@@ -358,7 +375,8 @@ def organism_manage():
                          deletable = False ,
                          onupdate  = auth.archive ,
                          paginate = 1000 ,
-                         maxtextlength = 150
+                         maxtextlength = 150 ,
+                         links = links 
                          )
     return locals()
 
