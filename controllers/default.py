@@ -156,7 +156,7 @@ def add_bn_id( ids ):
 def fileRow( pub , row ):
   bn_id = row.f_bionimbus_id
   if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
-    return A('Files'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,bn_id) ) )
+    return A('Libraries'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,bn_id) ) )
 
 def downloadRow( row ):
   bn_id = row.f_bionimbus_id
