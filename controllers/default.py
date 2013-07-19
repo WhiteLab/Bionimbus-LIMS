@@ -153,6 +153,15 @@ def add_bn_id( ids ):
       print "didn't add duplicate:" , id , userid
   return redirect( URL( "selected_files" ) )
 
+def fileRow( pub , row ):
+  bn_id = row.f_bionimbus_id
+  if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
+    return A('Files'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,bn_id) ) )
+
+def downloadRow( row ):
+  bn_id = row.f_bionimbus_id
+  if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
+    return A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id]))
 
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
@@ -162,15 +171,15 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if public:
       pub = 'public'
     experiment_links = [
-         lambda row: A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id])),
-         lambda row: A('Files'       , _href=URL( "default" , '%s_file_manage?keywords=t_file.f_bionimbus_id+=+"%s"' % (pub,row.f_bionimbus_id ) ) ) ,
+         lambda row: downloadRow( row ),
+         lambda row: fileRow( pub , row )
         ]
 
     editable = True
     arg = request.args( 0 ) 
 
     if ( arg == 'view' ):
-      experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
+      #experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn%s" % row.f_bionimbus_id )
       if db.t_experiment_unit[ request.args[ 2 ] ].f_spreadsheet <> None:
         experiment_links.append( lambda row: A('Spreadsheet Download'    , _href=URL("default","spreadsheet_download",             args=[row.f_spreadsheet])))
 
