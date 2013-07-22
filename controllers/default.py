@@ -221,7 +221,11 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          paginate = 100 , 
                          selectable = lambda ids: add_bn_id(ids) ,
                         )
-    form.submit_button = 'Add Files'
+    #need this try-catch in case the table is empty, and therefore has no submit button
+    try:
+      form.element('.web2py_table input[type=submit]')['_value'] = T('Add To Dropbox')
+    except:
+      pass
     return locals()
 
 
