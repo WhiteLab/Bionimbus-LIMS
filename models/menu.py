@@ -46,5 +46,7 @@ if is_user_admin( db , auth ):
    (T('Mailing Lists'),URL('default','mailing_list_manage')==URL(),URL('default','mailing_list_manage'),[]),
    (T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[]),
    (T('Platform'),URL('default','platform_manage')==URL(),URL('default','platform_manage'),[]),
-   (T('Library Types'),URL('default','library_type_manage')==URL(),URL('default','library_type_manage'),[])
- ] ) )
+   (T('Library Types'),URL('default','library_type_manage')==URL(),URL('default','library_type_manage'),[]),
+   (T('Archives'),URL('default','archives')==URL(),URL('default','archives'),[])
+    ] ) )
+
