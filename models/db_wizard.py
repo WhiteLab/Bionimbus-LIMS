@@ -115,7 +115,12 @@ db.define_table('t_file',
 
 db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_file',readable=False,writable=False),migrate=settings.migrate)
 
-
+#try:
+  #db.executesql( "create index bn_file_index on t_file(f_bionimbus_id)" )
+  #db.commit()
+#except:
+  #pass
+  #index alreafy exists
 ########################################
 db.define_table( 't_user_project' ,
     Field('f_project_id' , type = 'reference t_project' ,

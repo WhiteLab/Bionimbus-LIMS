@@ -66,6 +66,10 @@ def my_RNAseq():
   cols = extracols + rna_cols(db)
   return experiment_unit_manage( False , cols , 'RNAseq' )
 
+@auth.requires_login()
+def archives():
+  cols = extracols + [ db.t_experiment_unit.is_active ]
+  return experiment_unit_manage( False , cols , None , False )
 
 @auth.requires_login()
 def selected_files():
@@ -153,6 +157,7 @@ def add_bn_id( ids ):
       print "didn't add duplicate:" , id , userid
   return redirect( URL( "selected_files" ) )
 
+
 def fileRow( pub , row ):
   bn_id = row.f_bionimbus_id
   if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
@@ -163,8 +168,22 @@ def downloadRow( row ):
   if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
     return A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id]))
 
+
 @auth.requires_login()
-def experiment_unit_manage( public , fields = basic_experiment_fields , type = None ):
+def bn_restore():
+  arg = request.args( 0 )
+  url = request.args( 1 ) 
+  db( db.t_experiment_unit.f_bionimbus_id == arg ).update( is_active = True )
+  return redirect( URL ( "archives" ) )
+
+@auth.requires_login()
+def bn_archive():
+  arg = request.args( 0 )
+  db( db.t_experiment_unit.f_bionimbus_id == arg ).update( is_active = False )
+  return redirect( URL ( "archives" ) )
+
+@auth.requires_login()
+def experiment_unit_manage( public , fields = basic_experiment_fields , type = None , is_active = True ):
     if type<>None:
       type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
     pub = 'my'
@@ -174,6 +193,9 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
          lambda row: downloadRow( row ),
          lambda row: fileRow( pub , row )
         ]
+
+    if is_active == False:
+      experiment_links.insert( 0 , lambda row: A('Restore', _href=URL( "default" , "bn_restore",args=[row.f_bionimbus_id,request.env.path_info])))
 
     editable = True
     arg = request.args( 0 ) 
@@ -186,6 +208,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if ( arg == 'edit' ):
       if is_user_admin( db , auth ):
         editable = True
+        if is_active == True:
+          experiment_links.insert( 0 , lambda row: A('Archive', _href=URL( "default" , "bn_archive",args=[row.f_bionimbus_id])))
       else:    
         id = int( request.args( 2 ) )
         rows = db( ( db.t_user_project.f_user_id    == auth.user_id ) & ( db.t_experiment_unit.id == id ) ).select( db.t_experiment_unit.id , left = experiment_project_join(db) )
@@ -203,12 +227,17 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
       q = db.t_experiment_unit.f_is_public == 't'
     else:
       if is_user_admin( db , auth ):
-        q = db.t_experiment_unit.id <> -1 
+        q = ( db.t_experiment_unit.id <> -1 )
       else:
         q = ( db.t_experiment_unit.f_project == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
 
     if type <> None:
       q = q & ( db.t_experiment_unit.f_library_type == type )
+
+    q = q & ( db.t_experiment_unit.is_active == is_active )
+
+    #db( q ).select()
+    #print db._lastsql
 
     form = SQLFORM.grid( q , 
                          fields = fields , 
@@ -219,9 +248,14 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          create = False , 
                          maxtextlength = 150,
                          paginate = 100 , 
+                         headers = { 0 : 'poopy' } , 
                          selectable = lambda ids: add_bn_id(ids) ,
                         )
-    form.submit_button = 'Add Files'
+    #need this try-catch in case the table is empty, and therefore has no submit button
+    try:
+      form.element('.web2py_table input[type=submit]')['_value'] = T('Add To Dropbox')
+    except:
+      pass
     return locals()
 
 

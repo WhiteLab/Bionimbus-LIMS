@@ -353,7 +353,8 @@ def create_keys():
              'f_subproject' : subproject ,
              'f_import_id'  : id , 
              'f_library_type' : lib_type , 
-             'f_spreadsheet' : id 
+             'f_spreadsheet' : id ,
+             'is_active' : True 
     }
 
     key = generate_key( dict( values.items() + hash.items() ) ) 
