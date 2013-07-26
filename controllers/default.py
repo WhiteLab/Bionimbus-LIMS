@@ -25,10 +25,12 @@ def error():
 
 @auth.requires_login()
 def my_experiments():
+    """show experiment units owned by the user"""
     return experiment_unit_manage( public = False )
 
 @auth.requires_login()
 def public_experiments():
+    """show public experiments"""
     return experiment_unit_manage( public = True )
 
 basic_experiment_fields = [
@@ -172,9 +174,8 @@ def downloadRow( row ):
 @auth.requires_login()
 def bn_restore():
     arg = request.args( 0 )
-    url = request.args( 1 )
     db( db.t_experiment_unit.f_bionimbus_id == arg ).update( is_active = True )
-    return redirect( URL ( "archives" ) )
+    return redirect( URL( "archives" ) )
 
 @auth.requires_login()
 def bn_archive():
@@ -290,11 +291,11 @@ def metadata_display():
 
 
 def metadata():
-    id = request.args( 0 )
-    row = db( db.t_experiment_unit.f_bionimbus_id == id ).select()
+    bn_id = request.args( 0 )
+    row = db( db.t_experiment_unit.f_bionimbus_id == bn_id ).select()
     row = row[ 0 ]
-    id = row[ db.t_experiment_unit.id ]
-    return redirect( 'https://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( id ) )
+    eu_id = row[ db.t_experiment_unit.id ]
+    return redirect( 'https://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( eu_id ) )
 
 
 def files_for( bn_id ):
@@ -332,9 +333,9 @@ def spreadsheet_download():
     args = request.env.path_info.split('/')[3:]
     try:
         ss_id = int( args[ 1 ] )
-        (filename,file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
+        (filename, ss_file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
         response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
-        return response.stream( file )
+        return response.stream( ss_file )
     except:
         return HTML( "That key was not created with a spreadsheet" )
 
@@ -480,20 +481,20 @@ def my_file_manage():
 
 def add_file_id( ids ):
     ids_to_add = []
-    for id in ids:
+    for file_id in ids:
         rows = db(
-                   ( db.t_file.id == id ) ).select()
+                   ( db.t_file.id == file_id ) ).select()
         for row in rows:
             ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
     print "id's to add:" , ids_to_add
     userid = auth.user_id
 
-    for id,size,counts in ids_to_add:
-        likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
+    for file_id,size,counts in ids_to_add:
+        likethis = db( ( db.t_selected_files.f_id == file_id ) & ( db.t_selected_files.f_user == userid ) ).select()
         if len( likethis ) == 0:
-            db.t_selected_files.insert( f_id = id , f_user = userid , f_size = size , f_counts = counts )
+            db.t_selected_files.insert( f_id = file_id , f_user = userid , f_size = size , f_counts = counts )
         else:
-            print "didn't add duplicate:" , id , userid
+            print "didn't add duplicate:" , file_id , userid
     return redirect( URL( "selected_files" ) )
 
 
