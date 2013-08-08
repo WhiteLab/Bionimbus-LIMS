@@ -36,6 +36,12 @@ response.menu = [
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
 ]
 
+u = A('User Documentation',_href='https://docs.google.com/document/d/17BrXs28Gc1nMmRo94NAajwf3Cu8gAyuOi5YVIhZ0FuA/edit?usp=sharing')
+response.menu.append( ( 'Docs' , True , None , [
+  (T('Documentation'),False,u,[])
+] ) )
+
+
 from applications.Bionimbus.modules.permissions import is_user_admin
 
 if is_user_admin( db , auth ):
