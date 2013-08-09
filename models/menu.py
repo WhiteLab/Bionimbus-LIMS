@@ -36,7 +36,8 @@ response.menu = [
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
 ]
 
-u = A('User Documentation',_href='https://docs.google.com/document/d/17BrXs28Gc1nMmRo94NAajwf3Cu8gAyuOi5YVIhZ0FuA/edit?usp=sharing')
+u = A('User Documentation',_href='https://docs.google.com/document/d/17BrXs28Gc1nMmRo94NAajwf3Cu8gAyuOi5YVIhZ0FuA/edit?usp=sharing',_target='docs')
+
 response.menu.append( ( 'Docs' , True , None , [
   (T('Documentation'),False,u,[])
 ] ) )
@@ -46,6 +47,7 @@ from applications.Bionimbus.modules.permissions import is_user_admin
 
 if is_user_admin( db , auth ):
   response.menu.append( ( 'Admin' , True , None , [ 
+   (T('Sample Tracking'),URL('default','sample_tracking')==URL(),URL('default','sample_tracking'),[]) ,
    (T('Project Users'),URL('permissions','user_project_manage')==URL(),URL('permissions','user_project_manage'),[]) ,
    (T('Barcodes'),URL('default','barcode_manage')==URL(),URL('default','barcode_manage'),[]) ,
    (T('Facilities'),URL('default','facility_manage')==URL(),URL('default','facility_manage'),[]) ,
