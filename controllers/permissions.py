@@ -28,7 +28,7 @@ def proj( q ):
     editable = is_user_admin( db , auth )
 
     links = [
-         lambda row: A('Files'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row[ db.t_project.id ] ) ) ) ,
+         lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row[ db.t_project.id ] ) ) ) ,
         ]
 
 
