@@ -8,11 +8,11 @@ import traceback
 
 from gluon.custom_import import track_changes; track_changes(True)
 
-from applications.Bionimbus.modules.permissions import is_user_admin
-from applications.Bionimbus.modules.permissions import get_experiment_visibility_query
-from applications.Bionimbus.modules.permissions import experiment_project_join
-from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
-from applications.Bionimbus.modules.gui         import nameval_to_options
+from applications.LIMS.modules.permissions import is_user_admin
+from applications.LIMS.modules.permissions import get_experiment_visibility_query
+from applications.LIMS.modules.permissions import experiment_project_join
+from applications.LIMS.modules.permissions import can_user_access_bionimbus_id
+from applications.LIMS.modules.gui         import nameval_to_options
 
 from applications.Bionimbus.modules.cols import * 
 
@@ -364,7 +364,7 @@ def create_keys():
   
   #db.executesql( 'update t_experiment_unit set f_organism = t_project.f_organism from t_project where t_experiment_unit.f_project = t_project.id and t_experiment_unit.f_organism is null' )
   #add to google doc 
-  #os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
+  os.popen( "~/write_ids_to_tracking_sheet.pl " + keys ).readlines()
 
   u = URL( 'default' , 'my_experiments?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
