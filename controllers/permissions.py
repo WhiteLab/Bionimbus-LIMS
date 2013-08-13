@@ -38,7 +38,7 @@ def proj( q ):
                          create = editable ,
                          onupdate = auth.archive ,
                          paginate = 1000 ,
-                         links = links , 
+                         links = links ,
                          maxtextlength = 150,
                          deletable = False)
     return locals()
@@ -46,10 +46,10 @@ def proj( q ):
 @auth.requires_login()
 def project_manage():
     if is_user_admin( db , auth ):
-      q = db.t_project.id <> -1
+        q = db.t_project.id <> -1
     else:
-      q = ( db.t_project.id == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
-    return proj( q ) 
+        q = ( db.t_project.id == db.t_user_project.f_project_id ) & ( db.t_user_project.f_user_id == auth.user_id )
+    return proj( q )
 
 @auth.requires_login()
 def public_project_manage():
@@ -93,8 +93,7 @@ def user_project_manage():
 
     #if arg == 'new':
     #  nfu = names_for_users()
-    #  options = nameval_to_options( nfu )     
+    #  options = nameval_to_options( nfu )
     #  form[1][0][1][1] = TD( SELECT( *options ,  _class="generic-widget" , _id="t_user_project_f_user_id" , _name="f_user_id" ) )
-   
-    return locals()
 
+    return locals()
