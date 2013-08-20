@@ -2,7 +2,6 @@
 ### required - do no delete
 
 import os
-import xlrd
 
 from gluon.custom_import import track_changes; track_changes(True)
 
@@ -48,6 +47,18 @@ extracols = [ db.t_experiment_unit.f_bionimbus_id ,
               db.t_experiment_unit.f_project ,
               db.t_experiment_unit.f_subproject ]
 
+@auth.requires_login()
+def sample_tracking():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_sample_tracking ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+                       )
+    return locals()
+ 
 @auth.requires_login()
 def my_ChipSeq():
     cols = extracols + chipseq_cols(db)
