@@ -37,6 +37,8 @@ potentials = run( 'find ' + path  )
 by_project = {}
 fullreport = []
 
+manifests = {} 
+
 for file in potentials:
    file = file.strip()
    fullpath = file
@@ -55,8 +57,26 @@ for file in potentials:
      if not os.path.exists( justpath + '/import.me' ):
        continue
 
+     if not manifests.has_key( justpath ):
+       manifest = {}
+       manifests[ justpath ] = manifest
+       mf = justpath + '/MANIFEST'
+       if os.path.exists( mf ):
+         mfh = open( mf )
+         for ml in mfh.readlines():
+           ml = ml.strip().split(',')
+           print 'ml',ml
+           manifest[ ml[ 1 ] ] = ml[ 0 ]
+       print 'read manifest',manifest
+
+
+     manifest = manifests[ justpath ]
+
      fn = file.split( '/' )[ -1 ]
-     bn_id = fn.split( '_' )[ 0 ]
+     if manifest.has_key( fn ):
+       bn_id = manifest[ fn ] 
+     else:
+       bn_id = fn.split( '_' )[ 0 ]
      
      row = db( db.t_experiment_unit.f_bionimbus_id == bn_id ).select()
      if len( row ) <> 1:
