@@ -224,16 +224,20 @@ def make_slug( id , keys = None ):
         table.append( TR( *ar ) )
     if len( table ) == 0:
         slug = HTML( "That spreadhseet has no data. Please go back and re-upload a spreadsheet with data!" )
+        return slug,False
     else:
         slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
-    return slug
+    return slug,True
 
 
 def process_key_spreadsheet( id ):
-    slug = make_slug( id )
-    slug.append( INPUT( value = 'Create Keys' , _type = 'submit' , _action = URL( 'page_two' ) )  )
-    form = FORM( _action = 'create_keys/' + str( id ) , *slug)
-    return locals()
+    slug,ok = make_slug( id )
+    if ok:
+      slug.append( INPUT( value = 'Create Keys' , _type = 'submit' , _action = URL( 'page_two' ) )  )
+      form = FORM( _action = 'create_keys/' + str( id ) , *slug)
+      return locals()
+    else:
+      return slug
 
 
 basic_lookup = [ [ 'Name'       , 'f_name'       , None ] ,
@@ -371,7 +375,7 @@ def create_keys():
 
     u = URL( 'default' , 'my_experiments?keywords=t_experiment_unit.f_import_id+=+"%d"' % id )
 
-    slug = make_slug( id , keys = keylist )
+    slug,ok = make_slug( id , keys = keylist )
     msg  = "<html>" + FORM( *slug ).xml() + "</html>"
 
     print msg
