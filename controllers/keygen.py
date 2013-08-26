@@ -222,7 +222,10 @@ def make_slug( id , keys = None ):
         for v in values:
             ar.append( v[ 2 ] )
         table.append( TR( *ar ) )
-    slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
+    if len( table ) == 0:
+        slug = HTML( "That spreadhseet has no data. Please go back and re-upload a spreadsheet with data!" )
+    else:
+        slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
     return slug
 
 
