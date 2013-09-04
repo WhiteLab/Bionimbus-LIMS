@@ -3,10 +3,9 @@ response.subtitle = settings.subtitle
 response.meta.author = '%(author)s <%(author_email)s>' % settings
 response.meta.keywords = settings.keywords
 response.meta.description = settings.description
-response.menu = [
-(T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
-(T('Libraries/Files'),False,None,
-    [ 
+
+main = (T('Libraries/Files'),False,None,
+    [
       [T('My Libraries')    ,False,None,
         [
           [T('All')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_experiments')],
@@ -14,11 +13,18 @@ response.menu = [
           [T('Exomes')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_Exomes')],
           [T('DNA seq')    ,URL('default','experiment_unit_manage')==URL(),URL('default','my_DNAseq')],
           [T('RNA seq'),URL('default','experiment_unit_manage')==URL(),URL('default','my_RNAseq')]
-        ] 
+        ]
       ],
       [T('Public Libraries'),URL('default','experiment_unit_manage')==URL(),URL('default','public_experiments')],
       [T('Selected Files'),    URL('default','selected_files')==URL(),URL('default','selected_files')]
-    ]),
+    ])
+
+if settings.cghub == True:
+  main = (T('CGhub'),URL('default','my_CGhub')==URL(),URL('default','my_CGhub'),[])
+
+response.menu = [
+(T('Home'),URL('default','index')==URL(),URL('default','index'),[]),
+    main,
 (T('Project'),False,None,
     [
       [T('My Projects')          ,URL('permissions','project_manage')==URL(),URL('permissions','project_manage')],

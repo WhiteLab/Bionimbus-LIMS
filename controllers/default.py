@@ -76,12 +76,10 @@ def my_DNAseq():
 
 @auth.requires_login()
 def my_CGhub():
-    c = []
+    c = [ db.t_experiment_unit.f_bionimbus_id ]
     for f in cg_fields_def:
       c.append( db.t_experiment_unit[ f[0] ] )
-    cols = extracols + c
-    print cols 
-    return experiment_unit_manage( False , cols )
+    return experiment_unit_manage( False , c , 'CG' )
 
 
 @auth.requires_login()
