@@ -2,7 +2,11 @@ from gluon.storage import Storage
 settings = Storage()
 
 settings.migrate = True
+settings.cghub = True
 settings.title = 'Bionimbus WEB'
+if settings.cghub == True:
+  settings.title = 'CGHUB genomic data'
+
 settings.subtitle = '' # developed by LAC'
 settings.author = 'David Hanley'
 settings.author_email = 'dhanley@uchicago.edu'

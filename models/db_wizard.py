@@ -64,12 +64,29 @@ db.define_table( 't_sample_tracking' ,
           label=T('Desired # of Reads per sample') ),
     Field('f_index_tag_name' , type = 'string' ,
           label=T('Index Tag Name (IL1-12 or TS1-24)') ),
+
+
+    Field('f_index_tag_name' , type = 'string' ,
+          label=T('Index Tag Name (IL1-12 or TS1-24)') ),
+
+    
+
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
 
     
 #db.t_sample_tracking.drop()   
+
+args = [ Field('f_name', type='string',
+          label=T('Name')),
+    auth.signature ]
+
+db.define_table( 't_platform2' ,
+    *args , 
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
 
 
 db.define_table( 't_platform' , 
@@ -196,10 +213,7 @@ db.define_table( 't_user_project' ,
     migrate=settings.migrate)
 
 
-
-########################################
-db.define_table('t_experiment_unit',
-    Field('f_name', type='string',
+eu_fields = [ Field('f_name', type='string',
           label=T('Name')),
     Field('f_bionimbus_id', type='string', #unique=True,
           label=T('Bionimbus Id'),writable=False),
@@ -259,13 +273,48 @@ db.define_table('t_experiment_unit',
           label=T('Target ID')),
     Field('f_fb_wb_ID', type='string',
           label=T('Flybase/Wormbase ID')),
-    Field('f_is_public' , type = 'boolean' , 
+    Field('f_is_public' , type = 'boolean' ,
           label=T('Public')),
     Field('f_import_id' , type = 'integer' ,
           label=T('Import ID'),writable=False),
     Field('f_spreadsheet' , type = 'integer' ,
-          label=T('Spreadsheet'),writable=False),
-    auth.signature,
+          label=T('Spreadsheet'),writable=False)
+]
+
+
+cg_fields_def = [
+    [ 'f_alias' , 'Alias' ] , 
+    [ 'f_aliquot_id' , 'Aliquot ID' ] , 
+    [ 'f_analysis_accession' , 'Analysis Accession' ] , 
+    [ 'f_analysis_id' , 'Analysis ID' ] , 
+    [ 'f_analysis_type' , 'Analysis Type' ] , 
+    [ 'f_analyte_code' , 'Analyte Code' ] , 
+    [ 'f_center_name' , 'Center Name' ] , 
+    [ 'f_disease_abbr' , 'Disease Abbreviation' ] , 
+    [ 'f_filename' , 'Filename' ] ,
+    [ 'f_last_modified' , 'Last Modified' ] , 
+    [ 'f_library_strategy' , 'Library Strategy' ] , 
+    [ 'f_participant_id' , 'Participant ID' ] , 
+    [ 'f_platform' , 'Platform' ] , 
+    [ 'f_sample_accession' , 'Sample Accession' ] , 
+    [ 'f_sample_id' , 'Sample ID' ] , 
+    [ 'f_sample_type' , 'Sample Type' ] , 
+    [ 'f_xml_text' , 'Search XML Text' ] , 
+    [ 'f_state' , 'State' ] , 
+    [ 'f_study' , 'Study' ] , 
+    [ 'f_tss_id' , 'Tissue Source Site' ] , 
+    [ 'f_title' , 'Title' ] ]
+
+
+for f in cg_fields_def:
+  eu_fields.append( Field( f[0] , type='string' , label=f[1] ) )
+
+eu_fields.append( auth.signature )
+
+
+########################################
+db.define_table('t_experiment_unit',
+    *eu_fields , 
     format='%(f_name)s',
     migrate=settings.migrate)
 

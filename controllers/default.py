@@ -75,6 +75,16 @@ def my_DNAseq():
     return experiment_unit_manage( False , cols , 'DNAseq' )
 
 @auth.requires_login()
+def my_CGhub():
+    c = []
+    for f in cg_fields_def:
+      c.append( db.t_experiment_unit[ f[0] ] )
+    cols = extracols + c
+    print cols 
+    return experiment_unit_manage( False , cols )
+
+
+@auth.requires_login()
 def my_RNAseq():
     cols = extracols + rna_cols(db)
     return experiment_unit_manage( False , cols , 'RNAseq' )
