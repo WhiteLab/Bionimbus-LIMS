@@ -79,7 +79,7 @@ def my_CGhub():
     c = [ db.t_experiment_unit.f_bionimbus_id ]
     for f in cg_fields_def:
       c.append( db.t_experiment_unit[ f[0] ] )
-    return experiment_unit_manage( False , c , 'CG' )
+    return experiment_unit_manage( True , c , 'CG' )
 
 
 @auth.requires_login()
@@ -256,8 +256,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
 
     q = q & ( db.t_experiment_unit.is_active == is_active )
 
-    #db( q ).select()
-    #print db._lastsql
+    db( q ).select()
+    print db._lastsql
 
     form = SQLFORM.grid( q ,
                          fields = fields ,

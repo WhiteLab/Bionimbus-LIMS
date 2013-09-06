@@ -20,7 +20,7 @@ main = (T('Libraries/Files'),False,None,
     ])
 
 if settings.cghub == True:
-  main = (T('CGhub'),URL('default','my_CGhub')==URL(),URL('default','my_CGhub'),[])
+  main = (T('Cancer Genomics'),URL('default','my_CGhub')==URL(),URL('default','my_CGhub'),[])
 
 response.menu = [
 (T('Home'),URL('default','index')==URL(),URL('default','index'),[]),

@@ -68,12 +68,17 @@ db.define_table( 't_sample_tracking' ,
 
     Field('f_index_tag_name' , type = 'string' ,
           label=T('Index Tag Name (IL1-12 or TS1-24)') ),
-
-    
-
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
+
+db.define_table( 't_sample_state_list' ,
+    Field('f_name' , type = 'string' ,
+          label=T('Name') ),
+    format='%(f_name)s',
+    migrate=settings.migrate)
+
+
 
     
 #db.t_sample_tracking.drop()   
