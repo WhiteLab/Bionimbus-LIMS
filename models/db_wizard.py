@@ -75,9 +75,18 @@ db.define_table( 't_sample_tracking' ,
 db.define_table( 't_sample_state_list' ,
     Field('f_name' , type = 'string' ,
           label=T('Name') ),
+    auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
 
+db.define_table( 't_sample_state' ,
+    Field('f_bionimbus_id', type='string',
+          label=T('Bionimbus ID'),requires=[IS_IN_DB(db,"t_experiment_unit.f_bionimbus_id",'%(f_bionimbus_id)s')]),
+    Field('f_state' , type = db.t_sample_state_list ,
+          label=T('State') ),
+    auth.signature,
+    format='%(f_name)s',
+    migrate=settings.migrate)
 
 
     
@@ -222,6 +231,11 @@ eu_fields = [ Field('f_name', type='string',
           label=T('Name')),
     Field('f_bionimbus_id', type='string', #unique=True,
           label=T('Bionimbus Id'),writable=False),
+    Field('f_sample_state', type=db.t_sample_state_list,
+          label=T('Sample State'),writable=False),
+    Field('f_sample_state_updated', type='datetime',
+          label=T('Sample State Updated'),writable=False),
+
     Field('f_project', db.t_project,
           label=T('Project')),
     Field('f_library_type', db.t_library_type,ondelete='set null',

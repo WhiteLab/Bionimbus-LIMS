@@ -59,6 +59,17 @@ def sample_tracking():
                        )
     return locals()
  
+def sample_states():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_sample_state ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+                       )
+    return locals()
+
 @auth.requires_login()
 def my_ChipSeq():
     cols = extracols + chipseq_cols(db)
