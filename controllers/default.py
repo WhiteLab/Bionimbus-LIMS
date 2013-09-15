@@ -22,6 +22,20 @@ def index():
 def error():
     return dict()
 
+
+def basic_login():
+  auth.settings.register_onaccept = []
+  auth.settings.register_onvalidation = []
+  email = 'dave2@the.internet'
+  password = 'dave'
+  username = email.split("@")[ 0 ] 
+  thehash = 'pbkdf2(1000,20,sha512)$b164702638613452$4966e835aa003ed8797d5322602ea8384b71e1d7'
+  if len( db( db.auth_user.username == username).select() ) == 0 :
+    db.auth_user.insert( username = username , email = email , password = thehash ) 
+
+  user = auth.login_bare(username,password)
+  return redirect( URL( "my_experiments" ) )
+
 @auth.requires_login()
 def my_experiments():
     """show experiment units owned by the user"""
