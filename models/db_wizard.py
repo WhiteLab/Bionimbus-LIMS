@@ -84,6 +84,9 @@ db.define_table( 't_sample_state' ,
           label=T('Bionimbus ID'),requires=[IS_IN_DB(db,"t_experiment_unit.f_bionimbus_id",'%(f_bionimbus_id)s')]),
     Field('f_state' , type = db.t_sample_state_list ,
           label=T('State') ),
+    Field('f_updated' , type = 'datetime' ,
+          label=T('Updated') ),
+
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
