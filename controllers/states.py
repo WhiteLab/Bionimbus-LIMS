@@ -25,19 +25,19 @@ service = Service()
 def get_states( keys ):
     ssl = db.t_sample_state_list
     states = db( ssl ).select( ssl.id , ssl.f_name )
-    sl = []
+    state_list = []
     for s in states:
-      sl.append( ( s[ ssl.id ] , s[ ssl.f_name ] ) )
+      state_list.append( ( s[ ssl.id ] , s[ ssl.f_name ] ) )
 
     ksl = []
     ss = db.t_sample_state
     for key in keys:
-      sl = []
+      sl = [key]
       states = db( ss.f_bionimbus_id == key ).select()
       for s in states:
-        sl.append( [ s[ ss.f_bionimbus_id ] , s[ ss.f_state ] , s[ ss.f_updated ] ] )
+        sl.append( [ int( s[ ss.f_state ] ) , s[ ss.f_updated ] ] )
       ksl.append( sl ) 
-    return sl #,ksl
+    return state_list ,ksl
  
 # add to states
 @service.xmlrpc
