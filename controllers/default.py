@@ -214,6 +214,10 @@ def downloadRow( row ):
     if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
         return A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id]))
 
+def stateRow( row ):
+    bn_id = row.f_bionimbus_id
+    if len(db(db.t_sample_state.f_bionimbus_id == bn_id ).select())>0:
+        return A('State'       , _href=URL( "default" , 'sample_states?keywords=t_sample_state.f_bionimbus_id+=+"%s"' % bn_id ) )
 
 @auth.requires_login()
 def bn_restore():
@@ -236,7 +240,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
         pub = 'public'
     experiment_links = [
          lambda row: downloadRow( row ),
-         lambda row: fileRow( pub , row )
+         lambda row: fileRow( pub , row ),
+         lambda row: stateRow( row )
         ]
 
     if is_active == False:
