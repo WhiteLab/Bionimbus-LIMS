@@ -300,7 +300,12 @@ eu_fields = [ Field('f_name', type='string',
     Field('f_import_id' , type = 'integer' ,
           label=T('Import ID'),writable=False),
     Field('f_spreadsheet' , type = 'integer' ,
-          label=T('Spreadsheet'),writable=False)
+          label=T('Spreadsheet'),writable=False),
+    Field('f_sample_state' , type='ref t_sample_state_list',
+          label=T('Sample State'),writable=False),
+    Field('f_sample_state_changed' , type='datetime',
+          label=T('Sample State Changed'),writable=False),
+
 ]
 
 

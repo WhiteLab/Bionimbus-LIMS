@@ -53,7 +53,9 @@ basic_experiment_fields = [
         , db.t_experiment_unit.f_subproject
         , db.t_experiment_unit.f_agent
         , db.t_experiment_unit.f_organism
-        , db.t_experiment_unit.f_is_public
+        , db.t_experiment_unit.f_is_public 
+        , db.t_experiment_unit.f_sample_state  
+        , db.t_experiment_unit.f_sample_state_changed
     ]
 
 extracols = [ db.t_experiment_unit.f_bionimbus_id ,
@@ -286,10 +288,10 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
 
     q = q & ( db.t_experiment_unit.is_active == is_active )
 
-    db( q ).select()
-    print db._lastsql
+    #db( q ).select()
+    #print db._lastsql
 
-    form = SQLFORM.grid( q ,
+    form = SQLFORM.grid( q , 
                          fields = fields ,
                          links = experiment_links ,
                          editable = editable ,

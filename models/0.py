@@ -2,7 +2,7 @@ from gluon.storage import Storage
 settings = Storage()
 
 
-settings.cghub = True
+#settings.cghub = True
 
 
 settings.migrate = True
