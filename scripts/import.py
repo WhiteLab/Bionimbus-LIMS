@@ -29,10 +29,12 @@ def file_len( fname ):
     return 0
 
 path = '/XRaid/bridge/'
-test_path = '/home/dave/tmp/'
-#path = test_path
+test_path = '/home/bionimbus-import/'
+path = test_path
 
-potentials = run( 'find ' + path  )
+cmd = 'find ' + path
+print cmd 
+potentials = run( cmd )
 
 by_project = {}
 fullreport = []
@@ -45,6 +47,8 @@ for file in potentials:
    file = file.split( '/' )
    file = file[ -1 ] 
   
+   print file 
+
    already = db( db.t_file.f_filename == file ).select()
 
    if len( already ) == 0:
@@ -65,8 +69,11 @@ for file in potentials:
          mfh = open( mf )
          for ml in mfh.readlines():
            ml = ml.strip().split(',')
-           print 'ml',ml
-           manifest[ ml[ 1 ] ] = ml[ 0 ]
+           #print 'ml',ml
+           try:
+             manifest[ ml[ 1 ] ] = ml[ 0 ]
+           except:
+             pass
        print 'read manifest',manifest
 
 

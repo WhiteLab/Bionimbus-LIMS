@@ -22,6 +22,20 @@ def index():
 def error():
     return dict()
 
+
+def basic_login():
+  auth.settings.register_onaccept = []
+  auth.settings.register_onvalidation = []
+  email = 'dave2@the.internet'
+  password = 'dave'
+  username = email.split("@")[ 0 ] 
+  thehash = 'pbkdf2(1000,20,sha512)$b164702638613452$4966e835aa003ed8797d5322602ea8384b71e1d7'
+  if len( db( db.auth_user.username == username).select() ) == 0 :
+    db.auth_user.insert( username = username , email = email , password = thehash ) 
+
+  user = auth.login_bare(username,password)
+  return redirect( URL( "my_experiments" ) )
+
 @auth.requires_login()
 def my_experiments():
     """show experiment units owned by the user"""
@@ -39,7 +53,9 @@ basic_experiment_fields = [
         , db.t_experiment_unit.f_subproject
         , db.t_experiment_unit.f_agent
         , db.t_experiment_unit.f_organism
-        , db.t_experiment_unit.f_is_public
+        , db.t_experiment_unit.f_is_public 
+        , db.t_experiment_unit.f_sample_state  
+        , db.t_experiment_unit.f_sample_state_changed
     ]
 
 extracols = [ db.t_experiment_unit.f_bionimbus_id ,
@@ -59,6 +75,17 @@ def sample_tracking():
                        )
     return locals()
  
+def sample_states():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_sample_state ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+                       )
+    return locals()
+
 @auth.requires_login()
 def my_ChipSeq():
     cols = extracols + chipseq_cols(db)
@@ -73,6 +100,14 @@ def my_Exomes():
 def my_DNAseq():
     cols = extracols + dna_cols(db)
     return experiment_unit_manage( False , cols , 'DNAseq' )
+
+@auth.requires_login()
+def my_CGhub():
+    c = [ db.t_experiment_unit.f_bionimbus_id ]
+    for f in cg_fields_def:
+      c.append( db.t_experiment_unit[ f[0] ] )
+    return experiment_unit_manage( True , c , 'CG' )
+
 
 @auth.requires_login()
 def my_RNAseq():
@@ -181,6 +216,10 @@ def downloadRow( row ):
     if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
         return A('Download'    , _href=URL( "default" , "bn_download",             args=[row.f_bionimbus_id]))
 
+def stateRow( row ):
+    bn_id = row.f_bionimbus_id
+    if len(db(db.t_sample_state.f_bionimbus_id == bn_id ).select())>0:
+        return A('State'       , _href=URL( "default" , 'sample_states?keywords=t_sample_state.f_bionimbus_id+=+"%s"' % bn_id ) )
 
 @auth.requires_login()
 def bn_restore():
@@ -203,7 +242,8 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
         pub = 'public'
     experiment_links = [
          lambda row: downloadRow( row ),
-         lambda row: fileRow( pub , row )
+         lambda row: fileRow( pub , row ),
+         lambda row: stateRow( row )
         ]
 
     if is_active == False:
@@ -251,7 +291,7 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     #db( q ).select()
     #print db._lastsql
 
-    form = SQLFORM.grid( q ,
+    form = SQLFORM.grid( q , 
                          fields = fields ,
                          links = experiment_links ,
                          editable = editable ,
