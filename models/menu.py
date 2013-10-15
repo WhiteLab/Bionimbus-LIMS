@@ -51,7 +51,7 @@ response.menu.append( ( 'Docs' , True , None , [
 ] ) )
 
 
-from applications.Bionimbus.modules.permissions import is_user_admin
+from permissions import is_user_admin
 
 if is_user_admin( db , auth ):
   response.menu.append( ( 'Admin' , True , None , [ 

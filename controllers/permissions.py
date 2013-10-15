@@ -4,8 +4,8 @@
 import os
 import xlrd
 
-from applications.Bionimbus.modules.permissions import is_user_admin
-from applications.Bionimbus.modules.gui         import nameval_to_options
+from permissions import is_user_admin
+from gui         import nameval_to_options
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
