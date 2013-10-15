@@ -5,12 +5,12 @@ import os
 
 from gluon.custom_import import track_changes; track_changes(True)
 
-from applications.Bionimbus.modules.permissions import is_user_admin
-from applications.Bionimbus.modules.permissions import get_experiment_visibility_query
-from applications.Bionimbus.modules.permissions import experiment_project_join
-from applications.Bionimbus.modules.permissions import can_user_access_bionimbus_id
+from permissions import is_user_admin
+from permissions import get_experiment_visibility_query
+from permissions import experiment_project_join
+from permissions import can_user_access_bionimbus_id
 
-from applications.Bionimbus.modules.cols import *
+from cols import *
 
 def user(): return dict(form=auth())
 def download(): return response.download(request,db)
