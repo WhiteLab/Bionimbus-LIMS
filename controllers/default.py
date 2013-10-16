@@ -24,16 +24,15 @@ def error():
 
 
 def basic_login():
+  auth.settings.allow_basic_login = True
   auth.settings.register_onaccept = []
   auth.settings.register_onvalidation = []
-  email = 'dave2@the.internet'
-  password = 'dave'
+  email = 'dave@the.internet'
   username = email.split("@")[ 0 ] 
-  thehash = 'pbkdf2(1000,20,sha512)$b164702638613452$4966e835aa003ed8797d5322602ea8384b71e1d7'
-  if len( db( db.auth_user.username == username).select() ) == 0 :
-    db.auth_user.insert( username = username , email = email , password = thehash ) 
-
-  user = auth.login_bare(username,password)
+  if len( db( db.auth_user.email == email).select() ) == 0 :
+    db.auth_user.insert( username = username , email = email ) 
+  user = db( db.auth_user.email == email ).select().first()
+  auth.login_user(user)
   return redirect( URL( "my_experiments" ) )
 
 @auth.requires_login()
