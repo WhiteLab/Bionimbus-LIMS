@@ -42,7 +42,7 @@ response.menu = [
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
 ]
 
-u = A('User Documentation',_href='https://docs.google.com/document/d/17BrXs28Gc1nMmRo94NAajwf3Cu8gAyuOi5YVIhZ0FuA/view?usp=sharing',_target='docs')
+u = A('User Documentation',_href='/Bionimbus/static/bd/Bionimbusdocumentation.html',_target='docs')
 u2 = A('Quick start',_href='https://docs.google.com/document/d/1RPb8UEQsDgsZmuDCW_rTEMHtAgGCDnNYTm7BaRsmgAo/view?usp=sharing',_target='docs')
 
 response.menu.append( ( 'Docs' , True , None , [
