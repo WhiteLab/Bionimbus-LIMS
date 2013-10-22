@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Mac OS X (vers 31 October 2006 - Apple Inc. build 15.3.6), see www.w3.org">
+
+  <title>Bionimbus documentation</title>
+  <meta content="text/html; charset=us-ascii" http-equiv=
+  "content-type">
+  <style type="text/css">
+ol{margin:0;padding:0}.c3{color:#1155cc;font-size:9pt;background-color:#ffffff;text-decoration:underline}.c6{max-width:468pt;background-color:#ffffff;padding:72pt 72pt 72pt 72pt}.c2{color:#777777;font-size:9pt;background-color:#ffffff}.c4{color:inherit;text-decoration:inherit}.c5{font-size:30pt;font-weight:bold}.c1{height:11pt}.c0{direction:ltr}.title{padding-top:0pt;line-height:1.15;text-align:left;color:#000000;font-size:21pt;font-family:"Trebuchet MS";padding-bottom:0pt}.subtitle{padding-top:0pt;line-height:1.15;text-align:left;color:#666666;font-style:italic;font-size:13pt;font-family:"Trebuchet MS";padding-bottom:10pt}li{color:#000000;font-size:11pt;font-family:"Arial"}p{color:#000000;font-size:11pt;margin:0;font-family:"Arial"}h1{padding-top:10pt;line-height:1.15;text-align:left;color:#000000;font-size:16pt;font-family:"Trebuchet MS";padding-bottom:0pt}h2{padding-top:10pt;line-height:1.15;text-align:left;color:#000000;font-size:13pt;font-family:"Trebuchet MS";font-weight:bold;padding-bottom:0pt}h3{padding-top:8pt;line-height:1.15;text-align:left;color:#666666;font-size:12pt;font-family:"Trebuchet MS";font-weight:bold;padding-bottom:0pt}h4{padding-top:8pt;line-height:1.15;text-align:left;color:#666666;font-size:11pt;text-decoration:underline;font-family:"Trebuchet MS";padding-bottom:0pt}h5{padding-top:8pt;line-height:1.15;text-align:left;color:#666666;font-size:11pt;font-family:"Trebuchet MS";padding-bottom:0pt}h6{padding-top:8pt;line-height:1.15;text-align:left;color:#666666;font-style:italic;font-size:11pt;font-family:"Trebuchet MS";padding-bottom:0pt}
+  </style>
+</head>
+
+<body class="c6">
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>Bionimbus is a system for managing keys and
+  data associated with bioinformatics datasets.</span></p>
+
+  <p class="c0 c1"></p>
+
+  <p class="c0"><span>A dataset ( one or more files ) is associated
+  with a key. &nbsp;A bionumbus key is the year the key was
+  generated followed by the index. So the first key generated in
+  2013 would be 2013-1, the 1000th, 2013-1000.</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>Keys have a plethora of metadata associated
+  with them, such as antibody, treatment, organism, name, etc. What
+  metadata is associated and required is based on the type of data
+  associated with the Key, be it CHIpSeq. &nbsp;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>Keys have security and limited visibility.
+  &nbsp;Every key is a member of a project, and users can see keys
+  that are public, or in which they are a member of the project
+  that contains the key. &nbsp;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>If you navigate to the projects tab, you will
+  see a list of the projects you have access to:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="272" src="images/image07.png" width=
+  "717"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>Scroll to the right, and you will see a
+  libraries button, which will display the libraries associated
+  with the project. &nbsp;You can also see all the libraries you
+  have access to or a list of all the public libraries, via the
+  &ldquo;libraries&rdquo; tab. &nbsp;If you do not have access to a
+  project that contains the data you need, you need to contact an
+  administrator to add you to the project. Please contact</span>
+  <span class="c3"><a class="c4" href=
+  "mailto:jhtuteja@uchicago.edu">jhtuteja@uchicago.edu</a></span><span class="c2">&nbsp;or</span>
+  <span class="c3"><a class="c4" href=
+  "mailto:dhanley@uchicago.edu">dhanley@uchicago.edu</a></span><span class="c2">&nbsp;</span><span>and
+  explain your connection to the project</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="288" src="images/image04.png" width=
+  "716"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>You may have access to too many libraries to
+  make scrolling through them practical. In this case, there is a
+  sophisticated search function that allows you to find a set of
+  libraries based off of any of the displayed metadata.</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>If you click the search text area, you are
+  presented with a query building tool. &nbsp;You can simply enter
+  a textual query if you want, for example:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="183" src="images/image00.png" width=
+  "715"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>For more sophisticated operations than
+  looking for a simple string, you will want to use the query
+  builder. &nbsp;Some fields, such as project and organism, cannot
+  be searched with a simple text query. &nbsp;You can choose a part
+  of a query, then populate the text box with it, then choose
+  another part of a query, and whether you want to search it
+  &ldquo;and&rdquo; or &ldquo;or&rdquo; what is in the text box. So
+  you can build a query like this:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>t_experiment_unit.f_project = "57" &nbsp;and
+  t_experiment_unit.f_organism = "10"</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>And find the three records that match that.
+  &nbsp;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="262" src="images/image03.png" width=
+  "714"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>The main view when looking at a library only
+  displays a subset of the available metadata based on the type of
+  the library. &nbsp;If you scroll to the right, you will have the
+  option to view more detailed metadata, view the files, edit the
+  metadata, or download the files:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>Viewing:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>&nbsp;If you click View you are presented
+  with detailed metadata for the Library:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="595" src="images/image06.png" width=
+  "717"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>From here, or from the previous screen, if
+  you are the administrator, or a project admin, you can select
+  edit to edit the library's metadata:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="752" src="images/image02.png" width=
+  "719"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>From here, you can edit any of the
+  library&rsquo;s metadata except the Bionimbus key. &nbsp;You can
+  even change the project, which may cause you to lose access to
+  the library, but is important as a way to clean up miscategorized
+  data. &nbsp;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>To the left of the libraries are checkboxes.
+  &nbsp;You can click one or more of these, then scroll to the
+  bottom and click &ldquo;add to dropbox.&rdquo;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>This creates a collection of files associated
+  with those keys. &nbsp;You will be taken right to the
+  collection:</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><img height="324" src="images/image01.png" width=
+  "715"></p>
+
+  <p class="c0"><span>You can go back to libraries and choose more
+  libraries &amp; files to add. &nbsp;Or, you can return to your
+  dropbox by choosing &ldquo;selected files&rdquo; under
+  &ldquo;libraries&rdquo;. &nbsp;You can scroll to the right and
+  &lsquo;delete&rsquo; items from the dropbox--it will not delete
+  the files. &nbsp;There is no way to delete files or keys in the
+  system</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>There will be more options in the future,
+  such as pushing collections of files to specific clouds,
+  processing files, but from here, you can create a dropbox with
+  &ldquo;make dropbox&rdquo;</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>What that will do is create a short URL that
+  you can use to download all the files in the collection. &nbsp;It
+  is a mechanism to allow sets of files to be shared with
+  collaborators, or even transferred to other systems using
+  mechanisms like get or curl.</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span class="c5">Key generation</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>One of the most important functions of the
+  bionimbus system is the generation of keys. &nbsp;To generate
+  keys, the user needs access to the project the keys are to be
+  generated in. &nbsp;If the user cannot select the project from
+  the key generation page, she needs to contact an administrator to
+  add her to the project.</span></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>To generate keys, the user must download and
+  fill in a gey generation template spreadsheet. What sheet you
+  download will be determined by the type of library you will be
+  generating, RNAseq, DNAseq ,ChIPseq, or Exome. &nbsp;Furthermore,
+  several options, such as Platform, Organism, Stage, and Facility
+  are present on the interface, so if you are generating keys for
+  Various organisms and Stages, you will need to create key
+  generation spreadsheets for each of these. &nbsp;</span></p>
+
+  <p class="c0"><img height="1074" src="images/image05.png" width=
+  "800"></p>
+
+  <p class="c1 c0"></p>
+
+  <p class="c0"><span>After filling this sheet in, you will proceed
+  to a verification page that shows all your filled-in data plus
+  the contents of your spreadsheet. &nbsp;</span></p>
+</body>
+</html>
