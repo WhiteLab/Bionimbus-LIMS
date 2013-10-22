@@ -30,7 +30,7 @@ def file_len( fname ):
 
 path = '/XRaid/bridge/'
 test_path = '/home/bionimbus-import/'
-path = test_path
+#path = test_path
 
 cmd = 'find ' + path
 print cmd 
