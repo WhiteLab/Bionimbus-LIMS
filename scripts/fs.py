@@ -9,9 +9,7 @@ def PAL( id , p_name , is_pub , really_at , fn , cloud ):
     fn = really_at.split( '/' )
     fn = fn[ -1 ]
     db( db.t_file.id == id ).update( f_filename = fn )
-  goesto = 'public'
-  if cloud == 2:
-    goesto = 'private'
+  goesto = cloud
   p_name = ( '/XRaid/share/%s/' % goesto ) + p_name.replace( ' ' , '_' ) + '/' + fn
   p_path = p_name.split( '/' )
   p_path = p_path[ : -1 ]
@@ -24,10 +22,11 @@ def PAL( id , p_name , is_pub , really_at , fn , cloud ):
     cmd = 'ln ' + really_at + ' ' + p_name
     run( cmd )
 
-rows = db( ( db.t_project.id == db.t_experiment_unit.f_project ) &
+rows = db( ( db.t_project.id                     == db.t_experiment_unit.f_project ) &
+           ( db.t_project.f_cloud                == db.t_cloud.id ) & 
            ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select( )
 
 for row in rows:
   PAL( row[ db.t_file.id ] , 
                                        row[ db.t_project.f_name ] , row[ db.t_experiment_unit.f_is_public  ] , 
-                                       row[ db.t_file.f_newpath ] , row[ db.t_file.f_filename ] , row[ db.t_project.f_cloud ] )
+                                       row[ db.t_file.f_newpath ] , row[ db.t_file.f_filename ] , row[ db.t_cloud.f_folder ] )
