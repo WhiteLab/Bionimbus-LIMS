@@ -117,6 +117,8 @@ db.define_table( 't_platform' ,
 db.define_table( 't_cloud' ,
     Field('f_name', type='string',
           label=T('Name')),
+    Field('f_folder', type='string',
+          label=T('Folder')),
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
