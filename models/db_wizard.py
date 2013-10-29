@@ -332,7 +332,10 @@ cg_fields_def = [
     [ 'f_state' , 'State' ] , 
     [ 'f_study' , 'Study' ] , 
     [ 'f_tss_id' , 'Tissue Source Site' ] , 
-    [ 'f_title' , 'Title' ] ]
+    [ 'f_title' , 'Title' ] , 
+    [ 'f_flybase_wormbase_id' , "Flybase / Wormbase ID" ] , 
+    [ 'f_genotype' , 'Genotype' ] 
+]
 
 
 for f in cg_fields_def:
