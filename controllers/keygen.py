@@ -46,7 +46,9 @@ def projects_for_user():
 templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_Exomes.xls' ,
               'Samples_DNAseq_Whole_Genome.xls' ,
-              'Samples_RNAseq.xls' ]
+              'Samples_RNAseq.xls' ,
+              'New_SampleFlyMetaSubmission.xls' , 
+              'UCseq_worm_metadata_v3.xls' ]
 
 
 def trimProject( form ):
@@ -72,7 +74,8 @@ def keygen_spreadsheet():
     return locals()
 
 titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ,
-           'ChiPseq' , 'Exome' , 'DNA' , 'RNA' ]
+           'ChiPseq' , 'Exome' , 'DNA' , 'RNA' , 
+           'Fly' , 'Worm' ]
 
 
 def spreadsheet_to_matrix( fn ):
@@ -139,7 +142,9 @@ def get_spreadsheet_info( id ):
             'ChiPseq': 'ChIP-seq' ,
             'RNA'    : 'RNAseq' ,
             'Exome'  : 'Exome' ,
-            'DNA'    : 'DNAseq' }
+            'DNA'    : 'DNAseq' , 
+            'Fly'    : 'ChIP-seq' , 
+            'Worm'   : 'ChIP-seq' }
 
     lib_type = tab[ title ]
     lib_type = db(  db.t_library_type.f_name == lib_type ).select().first().id
@@ -290,9 +295,12 @@ def extractRow( title , row ):
         res = unswizzle( 'Exomes' , exome_cols(db) , row )
     if title == 'ChiPseq':
         res = unswizzle( 'ChiPseq' , chipseq_cols(db) , row )
+    if title == 'Worm':
+        res = unswizzle( 'Worm' , worm_cols(db) , row )
+    if title == 'Fly':
+        res = unswizzle( 'Fly' , fly_cols(db) , row )
     if res == None:
         raise Exception( "Invalid spreadsheet " + title  )
-
     return res
 
 def generate_a_key(  ):
