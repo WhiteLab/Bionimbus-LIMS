@@ -61,6 +61,9 @@ def chipseq_cols( db ):
                        eu.f_read_type ,
                        eu.f_desired_minimum_reads ]
 
+def worm_cols( db ):
+  return fly_cols( db )
+
 def fly_cols( db ):
   eu = db.t_experiment_unit
   return [ eu.f_name , 
