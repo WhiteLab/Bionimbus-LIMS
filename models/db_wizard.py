@@ -117,6 +117,8 @@ db.define_table( 't_platform' ,
 db.define_table( 't_cloud' ,
     Field('f_name', type='string',
           label=T('Name')),
+    Field('f_folder', type='string',
+          label=T('Folder')),
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
@@ -330,7 +332,10 @@ cg_fields_def = [
     [ 'f_state' , 'State' ] , 
     [ 'f_study' , 'Study' ] , 
     [ 'f_tss_id' , 'Tissue Source Site' ] , 
-    [ 'f_title' , 'Title' ] ]
+    [ 'f_title' , 'Title' ] , 
+    [ 'f_flybase_wormbase_id' , "Flybase / Wormbase ID" ] , 
+    [ 'f_genotype' , 'Genotype' ] 
+]
 
 
 for f in cg_fields_def:

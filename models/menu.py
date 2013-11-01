@@ -42,12 +42,12 @@ response.menu = [
 (T('Key Generation'),URL('keygen','keygen_spreadsheet')==URL(),URL('keygen','keygen_spreadsheet'),[]),
 ]
 
-u = A('User Documentation',_href='/Bionimbus/static/bd/Bionimbusdocumentation.html',_target='docs')
-u2 = A('Quick start',_href='https://docs.google.com/document/d/1RPb8UEQsDgsZmuDCW_rTEMHtAgGCDnNYTm7BaRsmgAo/view?usp=sharing',_target='docs')
+u = A('User Documentation',_href='/Bionimbus/static/bd/bd.html',_target='docs')
+#u2 = A('Quick start',_href='https://docs.google.com/document/d/1RPb8UEQsDgsZmuDCW_rTEMHtAgGCDnNYTm7BaRsmgAo/view?usp=sharing',_target='docs')
 
 response.menu.append( ( 'Docs' , True , None , [
   (T('Documentation'),False,u,[]),
-  (T('Quick Start'),False,u2,[])
+  #(T('Quick Start'),False,u2,[])
 ] ) )
 
 
@@ -61,6 +61,7 @@ if is_user_admin( db , auth ):
    (T('Facilities'),URL('default','facility_manage')==URL(),URL('default','facility_manage'),[]) ,
    (T('Mailing Lists'),URL('default','mailing_list_manage')==URL(),URL('default','mailing_list_manage'),[]),
    (T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[]),
+   (T('Clouds'),URL('default','cloud_manage')==URL(),URL('default','cloud_manage'),[]),
    (T('Platform'),URL('default','platform_manage')==URL(),URL('default','platform_manage'),[]),
    (T('Library Types'),URL('default','library_type_manage')==URL(),URL('default','library_type_manage'),[]),
    (T('Archives'),URL('default','archives')==URL(),URL('default','archives'),[])
