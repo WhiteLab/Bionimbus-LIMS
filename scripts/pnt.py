@@ -2,7 +2,7 @@
 import pyinotify
 import os
 
-base_directory = '/home/dave/FILES'
+base_directory = '/home/ubuntu/FILES' # must not have trailing slash 
 
 base_length = len( base_directory.split( '/' ) )
 
@@ -21,7 +21,10 @@ def handle_manifest_close( cwp ):
   
   key = '/'.join( path ) 
 
+  #print 'opening' , cwp 
   manifest_ids = open( cwp ).readlines()
+  #print manifest_ids
+
   new_manifest = {}
   for id in manifest_ids:
     new_manifest[ id.strip() ] = []
@@ -69,7 +72,9 @@ class EventHandler(pyinotify.ProcessEvent):
 
 fs = os.popen( "find %s -name MANIFEST" % base_directory ).readlines()
 for f in fs:
-  handle_manifest_close( f.strip() )
+  f = f.strip()
+  print f 
+  handle_manifest_close( f )
 
 
 handler = EventHandler()
