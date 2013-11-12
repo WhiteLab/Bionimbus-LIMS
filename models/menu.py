@@ -43,11 +43,11 @@ response.menu = [
 ]
 
 u = A('User Documentation',_href='/Bionimbus/static/bd/bd.html',_target='docs')
-u2 = A('Quick start',_href='https://docs.google.com/document/d/1RPb8UEQsDgsZmuDCW_rTEMHtAgGCDnNYTm7BaRsmgAo/view?usp=sharing',_target='docs')
+#u2 = A('Quick start',_href='https://docs.google.com/document/d/1RPb8UEQsDgsZmuDCW_rTEMHtAgGCDnNYTm7BaRsmgAo/view?usp=sharing',_target='docs')
 
 response.menu.append( ( 'Docs' , True , None , [
   (T('Documentation'),False,u,[]),
-  (T('Quick Start'),False,u2,[])
+  #(T('Quick Start'),False,u2,[])
 ] ) )
 
 
