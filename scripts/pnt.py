@@ -2,11 +2,40 @@
 import pyinotify
 import os
 
-base_directory = '/home/ubuntu/FILES' # must not have trailing slash 
+base_directory = '/home/ubuntu/FILES/' # must not have trailing slash 
 
+while( base_directory[ -1 ] == '/' ):
+  base_directory = base_directory[ : -1 ] 
 base_length = len( base_directory.split( '/' ) )
 
 manifest_hash = {}
+
+
+import sqlite3
+conn = c = None
+def find_file( user , id ):
+  global conn , c 
+  #print 'ff' , user , id 
+  if c == None:
+    conn = sqlite3.connect( 'cloud_drive.db' )
+    c = conn.cursor()
+    try:
+      c.execute( 'create table cdm ( user , id , kind , path )' )
+      c.commit()
+    except:
+      pass
+  ki = ( user , id )
+  #print ki 
+  rows = c.execute( 'select kind,path from cdm where user = ? and id = ? ' , ki )
+  row = rows.fetchone()
+  print row
+  return row[0],row[1]
+
+
+def mount_file( kind , basepath , file_from ):
+   ff = file_from.split( '/' )
+   fn = ff[ -1 ]
+   print 'ln -s %s %s/%s' % ( file_from , basepath , fn )
 
 def handle_manifest_close( cwp ):
   pathparts = cwp.split( '/' )
@@ -20,6 +49,8 @@ def handle_manifest_close( cwp ):
   user = path[ 0 ] 
   
   key = '/'.join( path ) 
+
+  path_to_manifest = '/'.join( pathparts[ : -1 ] )
 
   #print 'opening' , cwp 
   manifest_ids = open( cwp ).readlines()
@@ -35,11 +66,14 @@ def handle_manifest_close( cwp ):
 
   for oldie in old_manifest.keys():
     if not new_manifest.has_key( oldie ):
+      file_file( user , oldie )
       print "deleting file" , oldie
 
   for newbie in new_manifest.keys():
     if not old_manifest.has_key( newbie ):
-      print "adding file" , newbie 
+      kind , path = find_file( user , newbie )
+      mount_file( kind , path_to_manifest , path )
+    
 
   manifest_hash[ key ] = new_manifest
 
@@ -60,7 +94,7 @@ class EventHandler(pyinotify.ProcessEvent):
 
     def process_IN_DELETE(self, event):
         pass
-        #print "Removing:", event.pathname
+        print "Removing:", event.pathname
     
     def process_IN_CREATE(self, event):
         path = event.pathname
