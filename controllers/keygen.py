@@ -82,7 +82,7 @@ def spreadsheet_to_matrix( fn ):
     book = xlrd.open_workbook( fn )
     title = None
     matrix = []
-    for sheet_name in book.sheet_names():
+    for sheet_name in book.sheet_names()[0:1]:
         sh = book.sheet_by_name(sheet_name)
         for rownum in range(sh.nrows):
             mr = []
