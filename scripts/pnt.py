@@ -6,7 +6,7 @@ import os
 base_directory = '/home/ubuntu/FILES/' # must not have trailing slash 
 
 # where to look for the gluster files
-gluster_base = '/gluster'
+gluster_base = '/glusterfs'
 swift_base   = '/home/ubuntu/cloudfuse/mnt'
 
 # in case there is a trailing slash, strip it/them
@@ -50,15 +50,18 @@ def find_file( user , id ):
   row = rows.fetchone()
   return row[0],row[1]
 
+def run( str ):
+  print "Running" , str
+  os.popen( str ).readlines()
 
 def mount_file( kind , basepath , file_from ):
  ff = file_from.split( '/' )
  fn = ff[ -1 ]
  #used an IF here to accoutn for different mounting procedures
  if kind == 'gluster':
-   os.popen( 'ln %s/%s %s/%s' % ( gluster_base , file_from , basepath , fn ) ).readlines()
+   run( 'ln -s %s/%s %s/%s' % ( gluster_base , file_from , basepath , fn ) )
  elif kind == 'swift':
-   print 'ln -s %s/%s %s/%s' % ( swift_base , file_from , basepath , fn )
+   run( 'ln -s %s/%s %s/%s' % ( swift_base , file_from , basepath , fn ) )
 
 def handle_manifest_close( cwp ):
   pathparts = cwp.split( '/' )
