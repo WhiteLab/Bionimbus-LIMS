@@ -271,6 +271,7 @@
 'Source': 'Source',
 'Spreadsheet': 'Spreadsheet',
 'Stage': 'Stage',
+'Stages': 'Stages',
 'starts with': 'starts with',
 'state': '狀態',
 'State': 'State',

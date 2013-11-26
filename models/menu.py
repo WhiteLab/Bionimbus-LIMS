@@ -32,6 +32,7 @@ response.menu = [
       [T('Subprojects')          ,URL('permissions','subproject_manage')==URL(),URL('permissions','subproject_manage')],
     ]),
 (T('Organism'),URL('default','organism_manage')==URL(),URL('default','organism_manage'),[]),
+(T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[]),
 #(T('File'),False,None,
 #   [
 #     ['My files'     , True , URL('default','my_file_manage')],
@@ -60,7 +61,6 @@ if is_user_admin( db , auth ):
    (T('Barcodes'),URL('default','barcode_manage')==URL(),URL('default','barcode_manage'),[]) ,
    (T('Facilities'),URL('default','facility_manage')==URL(),URL('default','facility_manage'),[]) ,
    (T('Mailing Lists'),URL('default','mailing_list_manage')==URL(),URL('default','mailing_list_manage'),[]),
-   (T('Stages'),URL('default','stage_manage')==URL(),URL('default','stage_manage'),[]),
    (T('Clouds'),URL('default','cloud_manage')==URL(),URL('default','cloud_manage'),[]),
    (T('Platform'),URL('default','platform_manage')==URL(),URL('default','platform_manage'),[]),
    (T('Library Types'),URL('default','library_type_manage')==URL(),URL('default','library_type_manage'),[]),
