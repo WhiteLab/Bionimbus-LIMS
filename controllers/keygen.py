@@ -264,7 +264,7 @@ def unswizzle( title , map , values ):
 
     res = [ [ tt.label , tt.name , title ] ]
     for (db_key,value) in zip( map , values ):
-        print db_key
+        #print db_key
         rr = [ db_key.label , db_key.name , value ]
         res.append( rr )
     return res
@@ -308,9 +308,9 @@ def generate_a_key(  ):
     year = now.year
     iters = 0
     bn_id = None
-    print "in keygen"
+    #print "in keygen"
     while (iters < 10) & (bn_id == None):
-        print "**"
+        #print "**"
         max = db.t_keys.f_index.max()
         maxid = db(db.t_keys.f_year == year ).select(max).first()[ max ]
         if maxid == None:
@@ -319,15 +319,15 @@ def generate_a_key(  ):
             maxid = maxid + 1
         try:
             bn_id = "%d-%d" % ( year , maxid )
-            print "trying to insert" , bn_id
+            #print "trying to insert" , bn_id
             db.t_keys.insert( f_year = year , f_index = maxid )
             db.commit()
         except:
-            print "exception!"
-            traceback.print_exc(file=sys.stdout)
+            #print "exception!"
+            #traceback.print_exc(file=sys.stdout)
             iters = iters + 1
             bn_id = None
-    print "returning" , bn_id
+    #print "returning" , bn_id
     return bn_id
 
 
@@ -339,6 +339,15 @@ def generate_key( values ):
 
     key = generate_a_key()
     values[ 'f_bionimbus_id' ] = key
+
+    if values.has_key( 'f_stage' ):
+      stage_name = values[ 'f_stage' ]
+      #print "SN:" , stage_name 
+      try:
+        dummy = int( stage_name )
+      except:
+        db.t_stage.update_or_insert( f_name = stage_name )
+        values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
     id = db.t_experiment_unit.bulk_insert( [values] )
 
     return key
@@ -372,8 +381,15 @@ def create_keys():
                  'is_active' : True
         }
 
-        new_row = dict( values.items() + hash.items() )
-        key = generate_key( new_row )
+        #print "sheet values:" , values
+        #print "base hash:" , hash 
+
+        if values.has_key( 'f_stage' ):
+          hash[ 'f_stage' ] = values[ 'f_stage' ]
+
+        v = values.copy()
+        v.update( hash ) 
+        key = generate_key( v )
 
         keylist.append( key )
         keys = keys + " " + key + ' "' + projectname + '" '
@@ -387,7 +403,7 @@ def create_keys():
     slug,ok = make_slug( id , keys = keylist )
     msg  = "<html>" + FORM( *slug ).xml() + "</html>"
 
-    print msg
+    #print msg
     msg = msg.replace( '</tr>' , '</tr>\n' )
 
     sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Key Creation' , project = projectid )
