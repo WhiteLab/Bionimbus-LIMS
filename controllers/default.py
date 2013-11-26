@@ -490,7 +490,7 @@ def platform_manage():
 
 @auth.requires_login()
 def stage_manage():
-    editable = is_user_admin( db , auth )
+    editable = True # is_user_admin( db , auth )
 
     form = SQLFORM.grid( db.t_stage.id <> 1 ,
                          create    = editable ,
