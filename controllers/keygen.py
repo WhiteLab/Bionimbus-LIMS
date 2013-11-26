@@ -372,7 +372,8 @@ def create_keys():
                  'is_active' : True
         }
 
-        key = generate_key( dict( values.items() + hash.items() ) )
+        new_row = dict( values.items() + hash.items() )
+        key = generate_key( new_row )
 
         keylist.append( key )
         keys = keys + " " + key + ' "' + projectname + '" '
