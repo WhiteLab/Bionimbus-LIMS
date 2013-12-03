@@ -47,8 +47,7 @@ templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_Exomes.xls' ,
               'Samples_DNAseq_Whole_Genome.xls' ,
               'Samples_RNAseq.xls' ,
-              'New_SampleFlyMetaSubmission.xls' , 
-              'UCseq_worm_metadata_v3.xls' ]
+              'UCseq_ChIPseq.xls' ]
 
 
 def trimProject( form ):
@@ -295,10 +294,8 @@ def extractRow( title , row ):
         res = unswizzle( 'Exomes' , exome_cols(db) , row )
     if title == 'ChiPseq':
         res = unswizzle( 'ChiPseq' , chipseq_cols(db) , row )
-    if title == 'Worm':
-        res = unswizzle( 'Worm' , worm_cols(db) , row )
-    if title == 'Fly':
-        res = unswizzle( 'Fly' , fly_cols(db) , row )
+    if title == 'TF':
+        res = unswizzle( 'UC_ChiPseq' , UCSEQ_cols(db) , row )
     if res == None:
         raise Exception( "Invalid spreadsheet " + title  )
     return res
