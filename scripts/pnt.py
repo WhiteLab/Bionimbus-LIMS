@@ -31,6 +31,8 @@ import sqlite3
 # the two persistent globals
 conn = c = None
 
+
+
 def find_file( user , id ):
   global conn , c 
   # if there's no database connection, make the connection, and try to make
@@ -50,9 +52,13 @@ def find_file( user , id ):
   row = rows.fetchone()
   return row[0],row[1]
 
+
+
 def run( str ):
   print "Running" , str
   os.popen( str ).readlines()
+
+
 
 def mount_file( kind , basepath , file_from ):
  ff = file_from.split( '/' )
@@ -62,6 +68,8 @@ def mount_file( kind , basepath , file_from ):
    run( 'ln -s %s/%s %s/%s' % ( gluster_base , file_from , basepath , fn ) )
  elif kind == 'swift':
    run( 'ln -s %s/%s %s/%s' % ( swift_base , file_from , basepath , fn ) )
+
+
 
 def handle_manifest_close( cwp ):
   pathparts = cwp.split( '/' )
@@ -101,7 +109,8 @@ def handle_manifest_close( cwp ):
     if not new_manifest.has_key( oldie ):
       try:
         kind , path = find_file( user , oldie )
-        print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
+        os.unlink( "%s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) )
+        #print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
       except:
         pass
 
@@ -146,16 +155,22 @@ class EventHandler(pyinotify.ProcessEvent):
           print "adding path" , path
           wdd = wm.add_watch( path , mask, rec = True )
 
+
+
 # on startup look for all manifest files; use them to create hashes
 fs = os.popen( "find %s -name MANIFEST" % base_directory ).readlines()
 for f in fs:
   f = f.strip()
   handle_manifest_close( f )
 
+
+
 # create the event handle, and add it to the inotify watch
 handler = EventHandler()
 notifier = pyinotify.Notifier(wm, handler)
 wdd = wm.add_watch( base_directory , mask, rec = True )
+
+
 
 # start watching files 
 notifier.loop()
