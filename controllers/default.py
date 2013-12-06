@@ -381,13 +381,11 @@ def dropbox():
 
 def spreadsheet_download():
     args = request.env.path_info.split('/')[3:]
-    try:
-        ss_id = int( args[ 1 ] )
-        (filename, ss_file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
-        response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
-        return response.stream( ss_file )
-    except:
-        return HTML( "That key was not created with a spreadsheet" )
+    ss_id = int( args[ 1 ] )
+    (filename, ss_file) = db.t_keygen_spreadsheets.file.retrieve(db.t_keygen_spreadsheets[ss_id].file)
+    response.headers[ 'Content-disposition' ] = 'attachment; filename=%s' % filename
+    return response.stream( ss_file )
+    #return HTML( "That key was not created with a spreadsheet" )
 
 @auth.requires_login()
 def cloud_manage():
@@ -490,7 +488,7 @@ def platform_manage():
 
 @auth.requires_login()
 def stage_manage():
-    editable = is_user_admin( db , auth )
+    editable = True # is_user_admin( db , auth )
 
     form = SQLFORM.grid( db.t_stage.id <> 1 ,
                          create    = editable ,
