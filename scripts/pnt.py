@@ -6,7 +6,7 @@ import os
 base_directory = '/home/ubuntu/FILES/' # must not have trailing slash 
 
 # where to look for the gluster files
-gluster_base = '/gluster'
+gluster_base = '/glusterfs'
 swift_base   = '/home/ubuntu/cloudfuse/mnt'
 
 # in case there is a trailing slash, strip it/them
@@ -31,6 +31,8 @@ import sqlite3
 # the two persistent globals
 conn = c = None
 
+
+
 def find_file( user , id ):
   global conn , c 
   # if there's no database connection, make the connection, and try to make
@@ -51,14 +53,23 @@ def find_file( user , id ):
   return row[0],row[1]
 
 
+
+def run( str ):
+  print "Running" , str
+  os.popen( str ).readlines()
+
+
+
 def mount_file( kind , basepath , file_from ):
  ff = file_from.split( '/' )
  fn = ff[ -1 ]
  #used an IF here to accoutn for different mounting procedures
  if kind == 'gluster':
-   os.popen( 'ln %s/%s %s/%s' % ( gluster_base , file_from , basepath , fn ) ).readlines()
+   run( 'ln -s %s/%s %s/%s' % ( gluster_base , file_from , basepath , fn ) )
  elif kind == 'swift':
-   print 'ln -s %s/%s %s/%s' % ( swift_base , file_from , basepath , fn )
+   run( 'ln -s %s/%s %s/%s' % ( swift_base , file_from , basepath , fn ) )
+
+
 
 def handle_manifest_close( cwp ):
   pathparts = cwp.split( '/' )
@@ -98,7 +109,8 @@ def handle_manifest_close( cwp ):
     if not new_manifest.has_key( oldie ):
       try:
         kind , path = find_file( user , oldie )
-        print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
+        os.unlink( "%s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) )
+        #print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
       except:
         pass
 
@@ -143,16 +155,22 @@ class EventHandler(pyinotify.ProcessEvent):
           print "adding path" , path
           wdd = wm.add_watch( path , mask, rec = True )
 
+
+
 # on startup look for all manifest files; use them to create hashes
 fs = os.popen( "find %s -name MANIFEST" % base_directory ).readlines()
 for f in fs:
   f = f.strip()
   handle_manifest_close( f )
 
+
+
 # create the event handle, and add it to the inotify watch
 handler = EventHandler()
 notifier = pyinotify.Notifier(wm, handler)
 wdd = wm.add_watch( base_directory , mask, rec = True )
+
+
 
 # start watching files 
 notifier.loop()
