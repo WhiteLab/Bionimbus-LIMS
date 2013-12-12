@@ -74,7 +74,7 @@ def keygen_spreadsheet():
 
 titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ,
            'ChiPseq' , 'Exome' , 'DNA' , 'RNA' , 
-           'Fly' , 'Worm' ]
+           'TF' ]
 
 
 def spreadsheet_to_matrix( fn ):
@@ -142,8 +142,8 @@ def get_spreadsheet_info( id ):
             'RNA'    : 'RNAseq' ,
             'Exome'  : 'Exome' ,
             'DNA'    : 'DNAseq' , 
-            'Fly'    : 'ChIP-seq' , 
-            'Worm'   : 'ChIP-seq' }
+            'TF'    : 'ChIP-seq'
+          }
 
     lib_type = tab[ title ]
     lib_type = db(  db.t_library_type.f_name == lib_type ).select().first().id
