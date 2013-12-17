@@ -137,6 +137,8 @@ def selected_files():
                        )
     if arg == 'make':
         key = boxFor()
+        if key == None:
+          return HTML( "No files selected" ) 
         u = URL( "default/dropbox" , key , scheme=True )
         form[0].insert( 0 , u )
     return locals()
@@ -155,6 +157,11 @@ def generate_key( length = 6 ):
 def boxFor():
     # try to insert random keys until one inserts successfully,
     # the database's uniqueness constraint doing the lifting. Save the insert id
+
+    files = db( db.t_selected_files.f_user == auth.user_id ).select()
+    if len( files ) == 0:
+      return None
+
     box_id = None
     iters = 0
     while box_id == None and iters < 10:
@@ -168,9 +175,6 @@ def boxFor():
     print "hash" , hash
 
     # insert files into the dropbox content table
-
-    files = db( db.t_selected_files.f_user == auth.user_id ).select()
-    print "files" , files
 
     fids = []
     for file in files:
@@ -186,15 +190,15 @@ def boxFor():
     return hash
 
 def add_bn_id( ids ):
-    print "called add bm id's with" , ids
     ids_to_add = []
     for id in ids:
         rows = db( ( db.t_experiment_unit.id == id ) &
                    ( db.t_experiment_unit.f_bionimbus_id == db.t_file.f_bionimbus_id ) ).select()
         for row in rows:
             ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
-    print "id's to add:" , ids_to_add
     userid = auth.user_id
+    if len( ids_to_add ) == 0:
+      return
 
     for id,size,counts in ids_to_add:
         likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
