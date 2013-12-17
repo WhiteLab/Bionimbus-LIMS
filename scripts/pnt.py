@@ -1,6 +1,9 @@
 
 import pyinotify
 import os
+import sys
+sys.path.append( '.' )
+import tukey
 
 # the one setting.  Where the files go
 base_directory = '/home/ubuntu/FILES/' # must not have trailing slash 
@@ -33,7 +36,7 @@ conn = c = None
 
 
 
-def find_file( user , id ):
+def find_file_sqlite( user , id ):
   global conn , c 
   # if there's no database connection, make the connection, and try to make
   # the one table we use.  Instead of testing for the table, just make it, 
@@ -49,9 +52,19 @@ def find_file( user , id ):
 
   # see if the file exists and is visible for the user. If so, return the kind and 
   rows = c.execute( 'select kind,path from cdm where user = ? and id = ? ' , ( user , id ) )
-  row = rows.fetchone()
-  return row[0],row[1]
+  for row in rows:
+    row = rows.fetchone()
+    yield row[0],row[1]
 
+
+def file_file_tukey( user , id ):
+  print "looking for " , id , " with tukey"
+  md = tukey.get_path_for_id( id )
+  return [ [ md[ 'type' ] , md[ 'filepath' ] ] ]
+
+def find_file( user , id ):
+  #find_file_sqlite( user , id )
+  return file_file_tukey( user , id )
 
 
 def run( str ):
@@ -108,9 +121,9 @@ def handle_manifest_close( cwp ):
   for oldie in old_manifest.keys():
     if not new_manifest.has_key( oldie ):
       try:
-        kind , path = find_file( user , oldie )
-        os.unlink( "%s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) )
-        #print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
+        for kind , path in find_file( user , oldie ):
+          os.unlink( "%s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) )
+        print "unlink %s/%s" % ( path_to_manifest , path.split( '/' )[ -1 ] ) 
       except:
         pass
 
@@ -118,11 +131,12 @@ def handle_manifest_close( cwp ):
   # ( valid key, and we have access ) we mount it 
   for newbie in new_manifest.keys():
     if not old_manifest.has_key( newbie ):
-      try:
-        kind , path = find_file( user , newbie )
+      print "newbie:" , newbie
+      ff = find_file( user , newbie )
+      print ff
+      for kind , path in ff:
+        print kind , path 
         mount_file( kind , path_to_manifest , path )
-      except:
-        pass
     
   #replace the old manifest with the new one. 
   manifest_hash[ key ] = new_manifest
