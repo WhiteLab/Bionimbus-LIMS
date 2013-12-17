@@ -369,7 +369,7 @@ def bn_download():
     rows = files_for( bn_id )
     return download_fullpaths_tar( bn_id , rows )
 
-@auth.requires_login()
+#@auth.requires_login()
 def dropbox():
     key = request.args( 0 )
     files = db( ( db.t_dropbox_keys.f_hash == key ) &
