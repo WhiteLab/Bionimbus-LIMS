@@ -1,5 +1,9 @@
 import os 
 
+#
+# based on a bionimbus ID, give it (a file) a unique storage location & name 
+# 
+
 def generate_name( i , bn_id , fn ):
   # print "Generate name" , i , bn_id , fn 
 

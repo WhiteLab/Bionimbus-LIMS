@@ -1,4 +1,11 @@
 
+
+####
+#
+# function to send mail even from our wonky servers
+#
+####
+
 def sendMailTo( db , me , subject , content , list = None , project = None ):
 
   addys = []

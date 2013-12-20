@@ -1,4 +1,11 @@
 
+#######
+#
+# the columns, because more than one controller uses them
+#
+#######
+
+
 def rna_cols( db ):
   eu = db.t_experiment_unit
   return [ eu.f_name ,

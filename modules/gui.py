@@ -1,4 +1,10 @@
 
+######
+#
+# print a form with all its internal structure, so you can hand-modify a form
+#
+######
+
 from gluon.html import OPTION
 
 
