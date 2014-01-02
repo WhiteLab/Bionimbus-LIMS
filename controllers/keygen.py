@@ -72,9 +72,17 @@ def keygen_spreadsheet():
         form[ 0 ].insert( 0 , l )
     return locals()
 
-titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ,
-           'Chipseq' , 'ChiPseq' , 'Exome' , 'DNA' , 'RNA' , 
-           'TF' ]
+table_types = { 'dswg'   : 'DNAseq' ,
+            'dswg2'  : 'DNAseq' ,
+            'rnaseq' : 'RNAseq' ,
+            'CS'     : 'ChIP-seq' ,
+            'ChiPseq': 'ChIP-seq' ,
+            'Chipseq': 'ChIP-seq' ,
+            'RNA'    : 'RNAseq' ,
+            'Exome'  : 'Exome' ,
+            'DNA'    : 'DNAseq' ,
+            'TF'    : 'ChIP-seq'
+          }
 
 
 def spreadsheet_to_matrix( fn ):
@@ -91,7 +99,7 @@ def spreadsheet_to_matrix( fn ):
                     title = str( r )
                     title = title.split()
                     title = title[ 0 ]
-                    if not title in titles:
+                    if not table_types.has_key( title ):
                         print "Invalid title '%s' " % title
                         raise "Invalid spreadsheet"
                 mr.append( str( r ) )
@@ -134,19 +142,7 @@ def get_spreadsheet_info( id ):
 
     title , matrix = spreadsheet_to_matrix( "applications/Bionimbus/uploads/" + fn )
 
-    tab = { 'dswg'   : 'DNAseq' ,
-            'dswg2'  : 'DNAseq' ,
-            'rnaseq' : 'RNAseq' ,
-            'CS'     : 'ChIP-seq' ,
-            'ChiPseq': 'ChIP-seq' ,
-            'Chipseq': 'ChIP-seq' ,
-            'RNA'    : 'RNAseq' ,
-            'Exome'  : 'Exome' ,
-            'DNA'    : 'DNAseq' , 
-            'TF'    : 'ChIP-seq'
-          }
-
-    lib_type = tab[ title ]
+    lib_type = table_types[ title ]
     lib_type = db(  db.t_library_type.f_name == lib_type ).select().first().id
 
     return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type
