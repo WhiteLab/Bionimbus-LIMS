@@ -193,6 +193,7 @@
 'Source': 'Source',
 'Spreadsheet': 'Spreadsheet',
 'Stage': 'Stage',
+'Stages': 'Stages',
 'State': 'State',
 'state': 'состояние',
 'Strain': 'Strain',
