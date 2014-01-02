@@ -14,11 +14,17 @@ settings.migrate = True
 mpath = request.env.path_info.split('/')
 path = mpath[ 1 ] 
 
-f = open( "applications/%s/config.dat" % path , "r" )
-for line in f.readlines():
-  line = line.strip()
-  (k,v) = [ t.strip() for t in line.split( '=' ) ]
-  settings[ k ] = v 
+#f = open( "applications/%s/config.dat" % path , "r" )
+#for line in f.readlines():
+#  line = line.strip()
+#  (k,v) = [ t.strip() for t in line.split( '=' ) ]
+#  settings[ k ] = v 
+
+import ConfigParser
+parser = ConfigParser.SafeConfigParser()
+parser.read( "applications/%s/config.dat" % path )
+for name,value in parser.items( 'main' ):
+  settings[ name ] = value 
 
 
 if not request.env.web2py_runtime_gae:
