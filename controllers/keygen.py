@@ -101,7 +101,7 @@ def spreadsheet_to_matrix( fn ):
                     title = title[ 0 ]
                     if not table_types.has_key( title ):
                         print "Invalid title '%s' " % title
-                        raise "Invalid spreadsheet"
+                        raise Exception( "Invalid spreadsheet" , '' )
                 mr.append( str( r ) )
             matrix.append( mr )
     return title,matrix
@@ -149,6 +149,7 @@ def get_spreadsheet_info( id ):
 
 
 def make_slug( id , keys = None ):
+  try:
     row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
 
     slug = [ ]
@@ -229,7 +230,8 @@ def make_slug( id , keys = None ):
     else:
         slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
     return slug,True
-
+  except:
+    return HTML( "Unable to process spreadsheet!" ),False
 
 def process_key_spreadsheet( id ):
     slug,ok = make_slug( id )
