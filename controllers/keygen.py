@@ -73,7 +73,7 @@ def keygen_spreadsheet():
     return locals()
 
 titles = [ 'dswg' , 'rnaseq' , 'dswg2' , 'CS' ,
-           'ChiPseq' , 'Exome' , 'DNA' , 'RNA' , 
+           'Chipseq' , 'ChiPseq' , 'Exome' , 'DNA' , 'RNA' , 
            'TF' ]
 
 
@@ -139,6 +139,7 @@ def get_spreadsheet_info( id ):
             'rnaseq' : 'RNAseq' ,
             'CS'     : 'ChIP-seq' ,
             'ChiPseq': 'ChIP-seq' ,
+            'Chipseq': 'ChIP-seq' ,
             'RNA'    : 'RNAseq' ,
             'Exome'  : 'Exome' ,
             'DNA'    : 'DNAseq' , 
@@ -292,7 +293,7 @@ def extractRow( title , row ):
         res = unswizzle( 'DNAseq' , dna_cols(db) , row )
     if title == 'Exome':
         res = unswizzle( 'Exomes' , exome_cols(db) , row )
-    if title == 'ChiPseq':
+    if title == 'ChiPseq' or title == 'Chipseq':
         res = unswizzle( 'ChiPseq' , chipseq_cols(db) , row )
     if title == 'TF':
         res = unswizzle( 'UC_ChiPseq' , UCSEQ_cols(db) , row )

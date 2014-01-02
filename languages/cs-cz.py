@@ -210,6 +210,7 @@
 'Source': 'Source',
 'Spreadsheet': 'Spreadsheet',
 'Stage': 'Stage',
+'Stages': 'Stages',
 'state': 'stav',
 'State': 'State',
 'Strain': 'Strain',
