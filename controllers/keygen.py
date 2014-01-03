@@ -60,9 +60,12 @@ def trimProject( form ):
 @auth.requires_login()
 def keygen_spreadsheet():
     form = SQLFORM( db.t_keygen_spreadsheets )
+    res = None
     if form.process().accepted:
         id = int( form.vars.id )
-        return process_key_spreadsheet( id )
+        res = process_key_spreadsheet( id )
+        if not isinstance( res , str ):
+          return res
 
     trimProject( form )
 
@@ -70,6 +73,9 @@ def keygen_spreadsheet():
         st = "/Bionimbus/static/" + template
         l = A( template , _href = st )
         form[ 0 ].insert( 0 , l )
+    if res <> None:
+        response.flash = res + "\n (you can go back to your previous page)"
+
     return locals()
 
 table_types = { 'dswg'   : 'DNAseq' ,
@@ -225,13 +231,13 @@ def make_slug( id , keys = None ):
             ar.append( v[ 2 ] )
         table.append( TR( *ar ) )
     if len( table ) == 0:
-        slug = HTML( "That spreadhseet has no data. Please go back and re-upload a spreadsheet with data!" )
+        slug = "That spreadhseet has no data. Please go back and re-upload a spreadsheet with data!" 
         return slug,False
-    else:
-        slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
+    slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
     return slug,True
   except:
-    return HTML( "Unable to process spreadsheet!" ),False
+    return "Unable to process spreadsheet!" , False
+
 
 def process_key_spreadsheet( id ):
     slug,ok = make_slug( id )
@@ -253,7 +259,7 @@ import copy
 
 def old_sheet( indexes , row ):
     res = copy.deepcopy( basic_lookup )
-    for a in range(0,5):
+    for a in range( 0 , 5 ):
         res[ a ][ 2 ] = row[ indexes[ a ] ]
     return res
 
@@ -261,7 +267,7 @@ def unswizzle( title , map , values ):
     tt = db.t_experiment_unit.f_library_type
 
     res = [ [ tt.label , tt.name , title ] ]
-    for (db_key,value) in zip( map , values ):
+    for ( db_key , value ) in zip( map , values ):
         #print db_key
         rr = [ db_key.label , db_key.name , value ]
         res.append( rr )
