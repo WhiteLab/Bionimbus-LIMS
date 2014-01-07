@@ -1,0 +1,42 @@
+
+general setup and installation outline:
+
+1) Install web2py. This can either be the standalone web2py or it can be a CGI/persistent CGI under an apache webserver. 
+   if you don’t have python, it will be necessary to install it. 
+
+2) Download and install Bionimbus-LIMS. 
+   It’s likely that you already have done this if you are reading this file, but in any case, it is a good idea to make sure you 
+   have the most current release.  
+
+   After checking out or downloading and unzipping the directory, you can start the server in the base of the web2py directory with:
+      “python web2py.py”
+
+   You should only need to install one package, xlrd. This package is used by the key generation system to parse the metadata spreadsheets that 
+   are used for key generation.  
+
+3) The configuration file:
+
+   some basic configurations are stored in config.dat these include:
+
+sqlite = True / False 
+   The default sqlite3 database the system uses will be adequate for all but the heaviest workloads, so it is unnecessary to use another database,
+   such as postgres. If you need to use another database, set sqlite to False
+
+postgres          = postgres://dstn:cisdstn@localhost:5432/bionimbus
+  if you are using another database, set this to the database URI.  It doesn’t need to be postgres, but the name must remain postgres
+
+login_with_openid = True
+  If you are using the jainrain openid login ( included ) this will leu users log in with their gmail, facebook, twitter, etc id’s.  When logged 
+  in, an admin will need to set their permissions so they can see their projects.  
+
+api_key           = XXXXXXX
+  This is used by the openid jainrain login system.  
+
+domain            = bionimbus
+  This is also used by the janrain system, to tell the server who to log in as 
+
+scheme            = https
+  This determines of we are using http or https by default to access the site
+
+
+
