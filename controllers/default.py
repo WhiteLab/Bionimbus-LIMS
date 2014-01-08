@@ -22,7 +22,11 @@ def index():
 def error():
     return dict()
 
-
+#####
+#
+# log user in by URL. Used for logging into bionimbus from OSDC
+#
+#####
 def basic_login():
   auth.settings.allow_basic_login = True
   auth.settings.register_onaccept = []
@@ -35,6 +39,14 @@ def basic_login():
   auth.login_user(user)
   return redirect( URL( "my_experiments" ) )
 
+
+
+
+#####
+#
+# display functions for the various experiment views
+#
+#####
 @auth.requires_login()
 def my_experiments():
     """show experiment units owned by the user"""
@@ -61,29 +73,6 @@ extracols = [ db.t_experiment_unit.f_bionimbus_id ,
               db.t_experiment_unit.f_library_type ,
               db.t_experiment_unit.f_project ,
               db.t_experiment_unit.f_subproject ]
-
-@auth.requires_login()
-def sample_tracking():
-    editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_sample_tracking ,
-                         create    = editable ,
-                         editable  = editable ,
-                         deletable = editable ,
-                         paginate = 1000 ,
-                         maxtextlength = 150,
-                       )
-    return locals()
- 
-def sample_states():
-    editable = is_user_admin( db , auth )
-    form = SQLFORM.grid( db.t_sample_state ,
-                         create    = editable ,
-                         editable  = editable ,
-                         deletable = editable ,
-                         paginate = 1000 ,
-                         maxtextlength = 150,
-                       )
-    return locals()
 
 @auth.requires_login()
 def my_ChipSeq():
@@ -118,6 +107,46 @@ def archives():
     cols = extracols + [ db.t_experiment_unit.is_active ]
     return experiment_unit_manage( False , cols , None , False )
 
+
+
+
+######
+#
+# sample tracking code. Currently not implemented/used
+#
+######
+@auth.requires_login()
+def sample_tracking():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_sample_tracking ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+                       )
+    return locals()
+
+def sample_states():
+    editable = is_user_admin( db , auth )
+    form = SQLFORM.grid( db.t_sample_state ,
+                         create    = editable ,
+                         editable  = editable ,
+                         deletable = editable ,
+                         paginate = 1000 ,
+                         maxtextlength = 150,
+                       )
+    return locals()
+
+
+
+
+######
+#
+# the files the user has chosen to put into the dropbox
+#
+######
+
 @auth.requires_login()
 def selected_files():
     arg = request.args( 0 )
@@ -144,10 +173,26 @@ def selected_files():
     return locals()
 
 
+
+
+######
+#
+# clear the files the user has chosen. called manually and after the dropbox has been created. 
+#
+######
+
 @auth.requires_login()
 def clearSelected():
     db( db.t_selected_files.f_user == auth.user_id ).delete()
 
+
+
+
+######
+#
+# generate dropbox keys 
+#
+######
 import string
 import random
 def generate_key( length = 6 ):
@@ -189,6 +234,14 @@ def boxFor():
     clearSelected()
     return hash
 
+
+
+
+#####
+#
+# add a bionimbus id's files to the dropbox
+#
+#####
 def add_bn_id( ids ):
     ids_to_add = []
     for id in ids:
@@ -209,6 +262,13 @@ def add_bn_id( ids ):
     return redirect( URL( "selected_files" ) )
 
 
+
+
+#####
+#
+# make the various buttons for the sample sheets
+#
+#####
 def fileRow( pub , row ):
     bn_id = row.f_bionimbus_id
     if len(db(db.t_file.f_bionimbus_id == bn_id ).select())>0:
@@ -235,6 +295,13 @@ def bn_archive():
     arg = request.args( 0 )
     db( db.t_experiment_unit.f_bionimbus_id == arg ).update( is_active = False )
     return redirect( URL ( "archives" ) )
+
+
+######
+#
+# main page giving access to experiment units
+#
+######
 
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None , is_active = True ):
@@ -314,6 +381,13 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     return locals()
 
 
+
+
+######
+#
+# Show metadata details
+#
+######
 def metadata_display():
     experiment_links = [
          lambda row: A('Download',_href=URL("default","bn_download",args=[row.f_bionimbus_id])),
@@ -344,6 +418,13 @@ def metadata_display():
     return locals()
 
 
+
+
+######
+#
+# show detailed metadata for BN id
+#
+######
 def metadata():
     bn_id = request.args( 0 )
     row = db( db.t_experiment_unit.f_bionimbus_id == bn_id ).select()
@@ -352,9 +433,25 @@ def metadata():
     return redirect( 'https://bc.bionimbus.org/Bionimbus/default/metadata_display/view/t_experiment_unit/' + str( eu_id ) )
 
 
+
+
+######
+#
+# list of files for a bionimbus ID
+#
+######
 def files_for( bn_id ):
     rows = [ r.f_newpath for r in db(db.t_file.f_bionimbus_id==bn_id).select() ]
     return rows
+
+
+
+
+######
+#
+# create TAR stream to give files to user
+#
+######
 
 def download_fullpaths_tar( name , fullpaths ):
     instream = os.popen( "tar --dereference -czf - " + " ".join( fullpaths ) )
@@ -362,6 +459,14 @@ def download_fullpaths_tar( name , fullpaths ):
     response.headers[ 'Content-disposition' ] = 'attachment; filename=%s.tgz' % name
     return response.stream( instream , chunk_size = 256 * 256 )
 
+
+
+
+######
+#
+# download a bionimbus ID 
+#
+######
 @auth.requires_login()
 def bn_download():
     args = request.env.path_info.split('/')[3:]
@@ -373,6 +478,14 @@ def bn_download():
     rows = files_for( bn_id )
     return download_fullpaths_tar( bn_id , rows )
 
+
+
+
+######
+#
+# download a dropbox
+#
+######
 #@auth.requires_login()
 def dropbox():
     key = request.args( 0 )
@@ -383,6 +496,14 @@ def dropbox():
     #return ",".join( files )
     return download_fullpaths_tar( key , files )
 
+
+
+
+######
+#
+# allow user to download the spreadheet used to create an ID 
+#
+######
 def spreadsheet_download():
     args = request.env.path_info.split('/')[3:]
     ss_id = int( args[ 1 ] )
@@ -391,6 +512,14 @@ def spreadsheet_download():
     return response.stream( ss_file )
     #return HTML( "That key was not created with a spreadsheet" )
 
+
+
+
+######
+# 
+# cloud table. Enables routing
+#
+######
 @auth.requires_login()
 def cloud_manage():
     editable = is_user_admin( db , auth )
@@ -412,7 +541,6 @@ def barcode_manage():
                          deletable = editable ,
                          paginate = 1000 ,
                          maxtextlength = 150,
-
                          #fields    = fields
                        )
     return locals()
@@ -452,7 +580,8 @@ def organism_manage():
     editable = is_user_admin( db , auth )
 
     links = [
-         lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
+         lambda row: A( 'Libraries' , 
+                        _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
         ]
 
     form = SQLFORM.grid( db.t_organism ,
@@ -531,6 +660,14 @@ def public_file_manage():
 def my_file_manage():
     return file_manage( public = False)
 
+
+
+
+######
+#
+# Add the selected files to the dropbox
+#
+###### 
 def add_file_id( ids ):
     ids_to_add = []
     for file_id in ids:
@@ -551,6 +688,12 @@ def add_file_id( ids ):
 
 
 
+
+######
+#
+# file browser
+#
+######
 @auth.requires_login()
 def file_manage( public ):
     fields = [
@@ -583,6 +726,13 @@ def file_manage( public ):
 
 
 
+
+
+######
+#
+# download an individual file
+#
+######
 @auth.requires_login()
 def file_download():
     args = request.env.path_info.split('/')[3:]
