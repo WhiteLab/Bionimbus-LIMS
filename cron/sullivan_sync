@@ -1,0 +1,1 @@
+rsync --progress --size-only --copy-links --delete-during -rlpgoDv -hh --stats --inplace -B 65536 /XRaid/share/sullivan/ lims@10.103.114.1:/glusterfs/data/droso_downstream/
