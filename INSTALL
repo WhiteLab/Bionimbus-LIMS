@@ -38,5 +38,11 @@ domain            = bionimbus
 scheme            = https
   This determines of we are using http or https by default to access the site
 
+There are a number of scripts that are run by CRON to do needed tasks, such as importing, routing files to clouds, etc.  
+In particular, the convention is that every cloud gets its own synchronization/publishing script. These scripts and the cron 
+is in the cron directory. This makes use of the logit system to prevent scripts from running when their previous incarnation is 
+still executing. This may happen when, for example, 
+
+
 
 
