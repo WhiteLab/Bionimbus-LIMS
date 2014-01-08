@@ -7,7 +7,4 @@ MAILTO=""
 0 * * * *    logit -N -c 1000 --debug syncer        --pipe 'grep -v "failed"'            -- /home/dave/bio-controlled-sync
 0 * * * *    logit -N -c 1000 --debug ssyncer        --pipe 'grep -v "failed"'            -- /home/dave/sullivan_sync
 * * * * *    logit -N -c 1000 --debug popper        --pipe 'grep -v "failed"'            -- /home/dave/populate.sh
-#* * * * *    logit -N -c 1000 --debug new_publish        --pipe 'grep -v "failed"'            --    /home/dave/web2py/applications/BNAdmin/scripts/publish.sh
 #0 * * * *  ls -lR /XRaid/bridge/ > ~/apache-tomcat-6.0.32/webapps/Bionimbus/bridge.txt
-
-
