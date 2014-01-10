@@ -26,11 +26,13 @@ def index():
 def error():
     return dict()
 
-def comma_or_nought( itm ):
+# If there's a string, ut it in parenthesis, else return an empty string. Used for subprojects. 
+def in_paren( itm ):
     if itm == None:
         return ''
     return ' ( %s ) ' % itm
 
+# create a list of the projects a user has access to. 
 def projects_for_user():
     d = db.t_user_project
     p = db.t_project
@@ -38,11 +40,11 @@ def projects_for_user():
     lefty = sub.on( p.id == sub.f_parent )
     pfu = db( ( d.f_user_id == auth.user_id ) &
               ( d.f_project_id == p.id      ) ).select( left = lefty )
-    return [ ( row[ p.f_name ] + comma_or_nought( row[ sub.f_name ] ) ,
+    return [ ( row[ p.f_name ] + is_paren( row[ sub.f_name ] ) ,
                str( row[ p.id ] ) + ',' + str( row[ sub.id ] )
-             ) for row in pfu ]
+               ) for row in pfu ]
 
-
+# the metadata spreadsheet templates. 
 templates = [ 'Samples_ChIPseq.xls' ,
               'Samples_Exomes.xls' ,
               'Samples_DNAseq_Whole_Genome.xls' ,
@@ -50,11 +52,12 @@ templates = [ 'Samples_ChIPseq.xls' ,
               'UCseq_ChIPseq.xls' ]
 
 
+# update the HTML GUI to just show the projects the user has access to, not all of them 
 def trimProject( form ):
     pfu = projects_for_user()
     options = nameval_to_options( pfu )
     form[0][0][1][0] = SELECT( *options ,  _class="generic-widget" ,
-                               _id="t_keygen_spreadsheets_f_proj_subproj" , _name="f_proj_subproj" )
+                                _id="t_keygen_spreadsheets_f_proj_subproj" , _name="f_proj_subproj" )
 
 
 @auth.requires_login()
@@ -65,7 +68,7 @@ def keygen_spreadsheet():
         id = int( form.vars.id )
         res = process_key_spreadsheet( id )
         if not isinstance( res , str ):
-          return res
+            return res
 
     trimProject( form )
 
@@ -79,16 +82,16 @@ def keygen_spreadsheet():
     return locals()
 
 table_types = { 'dswg'   : 'DNAseq' ,
-            'dswg2'  : 'DNAseq' ,
-            'rnaseq' : 'RNAseq' ,
-            'CS'     : 'ChIP-seq' ,
-            'ChiPseq': 'ChIP-seq' ,
-            'Chipseq': 'ChIP-seq' ,
-            'RNA'    : 'RNAseq' ,
-            'Exome'  : 'Exome' ,
-            'DNA'    : 'DNAseq' ,
-            'TF'    : 'ChIP-seq'
-          }
+                'dswg2'  : 'DNAseq' ,
+                'rnaseq' : 'RNAseq' ,
+                'CS'     : 'ChIP-seq' ,
+                'ChiPseq': 'ChIP-seq' ,
+                'Chipseq': 'ChIP-seq' ,
+                'RNA'    : 'RNAseq' ,
+                'Exome'  : 'Exome' ,
+                'DNA'    : 'DNAseq' ,
+                'TF'    : 'ChIP-seq'
+                }
 
 
 def spreadsheet_to_matrix( fn ):
@@ -125,6 +128,7 @@ def get_user_hash():
     return uh
 
 
+# given a spreadsheet ID, get the data for that spreadsheet.  
 def get_spreadsheet_info( id ):
     rows     = db(db.t_keygen_spreadsheets.id==id).select( )
     row      = rows.last()
@@ -154,9 +158,10 @@ def get_spreadsheet_info( id ):
     return row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type
 
 
+# create the HTML version of a metadata spreadsheet.  Used in 2 places, and massaged a bit after, so it's a routing
 def make_slug( id , keys = None ):
-  try:
-    row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
+    try:
+        row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
 
     slug = [ ]
     table = []
@@ -235,18 +240,18 @@ def make_slug( id , keys = None ):
         return slug,False
     slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
     return slug,True
-  except:
+except:
     return "Unable to process spreadsheet!" , False
 
 
 def process_key_spreadsheet( id ):
     slug,ok = make_slug( id )
     if ok:
-      slug.append( INPUT( value = 'Create Keys' , _type = 'submit' , _action = URL( 'page_two' ) )  )
-      form = FORM( _action = 'create_keys/' + str( id ) , *slug)
-      return locals()
+        slug.append( INPUT( value = 'Create Keys' , _type = 'submit' , _action = URL( 'page_two' ) )  )
+        form = FORM( _action = 'create_keys/' + str( id ) , *slug)
+        return locals()
     else:
-      return slug
+        return slug
 
 
 basic_lookup = [ [ 'Name'       , 'f_name'       , None ] ,
@@ -343,12 +348,12 @@ def generate_key( values ):
     values[ 'f_bionimbus_id' ] = key
 
     if values.has_key( 'f_stage' ):
-      stage_name = values[ 'f_stage' ]
+        stage_name = values[ 'f_stage' ]
       #print "SN:" , stage_name 
-      try:
-        dummy = int( stage_name )
-      except:
-        db.t_stage.update_or_insert( f_name = stage_name )
+        try:
+            dummy = int( stage_name )
+        except:
+            db.t_stage.update_or_insert( f_name = stage_name )
         values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
     id = db.t_experiment_unit.bulk_insert( [values] )
 
@@ -381,13 +386,13 @@ def create_keys():
                  'f_library_type' : lib_type ,
                  'f_spreadsheet' : id ,
                  'is_active' : True
-        }
+                 }
 
         #print "sheet values:" , values
         #print "base hash:" , hash 
 
         if values.has_key( 'f_stage' ):
-          hash[ 'f_stage' ] = values[ 'f_stage' ]
+            hash[ 'f_stage' ] = values[ 'f_stage' ]
 
         v = values.copy()
         v.update( hash ) 

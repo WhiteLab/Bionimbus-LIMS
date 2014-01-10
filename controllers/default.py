@@ -28,16 +28,16 @@ def error():
 #
 #####
 def basic_login():
-  auth.settings.allow_basic_login = True
-  auth.settings.register_onaccept = []
-  auth.settings.register_onvalidation = []
-  email = 'dave@the.internet'
-  username = email.split("@")[ 0 ] 
-  if len( db( db.auth_user.email == email).select() ) == 0 :
-    db.auth_user.insert( username = username , email = email ) 
-  user = db( db.auth_user.email == email ).select().first()
-  auth.login_user(user)
-  return redirect( URL( "my_experiments" ) )
+    auth.settings.allow_basic_login = True
+    auth.settings.register_onaccept = []
+    auth.settings.register_onvalidation = []
+    email = 'dave@the.internet'
+    username = email.split("@")[ 0 ] 
+    if len( db( db.auth_user.email == email).select() ) == 0 :
+        db.auth_user.insert( username = username , email = email ) 
+        user = db( db.auth_user.email == email ).select().first()
+        auth.login_user(user)
+        return redirect( URL( "my_experiments" ) )
 
 
 
@@ -58,15 +58,15 @@ def public_experiments():
     return experiment_unit_manage( public = True )
 
 basic_experiment_fields = [
-          db.t_experiment_unit.f_bionimbus_id
-        , db.t_experiment_unit.f_name
-        , db.t_experiment_unit.f_project
-        , db.t_experiment_unit.f_subproject
-        , db.t_experiment_unit.f_agent
-        , db.t_experiment_unit.f_organism
-        , db.t_experiment_unit.f_is_public 
-        , db.t_experiment_unit.f_sample_state  
-        , db.t_experiment_unit.f_sample_state_changed
+    db.t_experiment_unit.f_bionimbus_id
+    , db.t_experiment_unit.f_name
+    , db.t_experiment_unit.f_project
+    , db.t_experiment_unit.f_subproject
+    , db.t_experiment_unit.f_agent
+    , db.t_experiment_unit.f_organism
+    , db.t_experiment_unit.f_is_public 
+    , db.t_experiment_unit.f_sample_state  
+    , db.t_experiment_unit.f_sample_state_changed
     ]
 
 extracols = [ db.t_experiment_unit.f_bionimbus_id ,
@@ -93,7 +93,7 @@ def my_DNAseq():
 def my_CGhub():
     c = [ db.t_experiment_unit.f_bionimbus_id ]
     for f in cg_fields_def:
-      c.append( db.t_experiment_unit[ f[0] ] )
+        c.append( db.t_experiment_unit[ f[0] ] )
     return experiment_unit_manage( True , c , 'CG' )
 
 
@@ -124,7 +124,7 @@ def sample_tracking():
                          deletable = editable ,
                          paginate = 1000 ,
                          maxtextlength = 150,
-                       )
+                         )
     return locals()
 
 def sample_states():
@@ -135,7 +135,7 @@ def sample_states():
                          deletable = editable ,
                          paginate = 1000 ,
                          maxtextlength = 150,
-                       )
+                         )
     return locals()
 
 
@@ -163,11 +163,11 @@ def selected_files():
                          paginate = 100 ,
                          maxtextlength = 150 ,
                          user_signature=False
-                       )
+                         )
     if arg == 'make':
         key = boxFor()
         if key == None:
-          return HTML( "No files selected" ) 
+            return HTML( "No files selected" ) 
         u = URL( "default/dropbox" , key , scheme=True )
         form[0].insert( 0 , u )
     return locals()
@@ -205,7 +205,7 @@ def boxFor():
 
     files = db( db.t_selected_files.f_user == auth.user_id ).select()
     if len( files ) == 0:
-      return None
+        return None
 
     box_id = None
     iters = 0
@@ -251,7 +251,7 @@ def add_bn_id( ids ):
             ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
     userid = auth.user_id
     if len( ids_to_add ) == 0:
-      return
+        return
 
     for id,size,counts in ids_to_add:
         likethis = db( ( db.t_selected_files.f_id == id ) & ( db.t_selected_files.f_user == userid ) ).select()
@@ -311,9 +311,9 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
     if public:
         pub = 'public'
     experiment_links = [
-         lambda row: downloadRow( row ),
-         lambda row: fileRow( pub , row ),
-         lambda row: stateRow( row )
+        lambda row: downloadRow( row ),
+        lambda row: fileRow( pub , row ),
+        lambda row: stateRow( row )
         ]
 
     if is_active == False:
@@ -372,7 +372,7 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          paginate = 100 ,
                          headers = { 0 : 'poopy' } ,
                          selectable = lambda ids: add_bn_id(ids) ,
-                        )
+                         )
     #need this try-catch in case the table is empty, and therefore has no submit button
     try:
         form.element('.web2py_table input[type=submit]')['_value'] = T('Add To Dropbox')
@@ -390,21 +390,21 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
 ######
 def metadata_display():
     experiment_links = [
-         lambda row: A('Download',_href=URL("default","bn_download",args=[row.f_bionimbus_id])),
-         lambda row: A('Files'   ,_href=URL("default","file_manage" , args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
+        lambda row: A('Download',_href=URL("default","bn_download",args=[row.f_bionimbus_id])),
+        lambda row: A('Files'   ,_href=URL("default","file_manage" , args=[ '?keywords=t_file.f_bionimbus_id+%%3D+"%s"' % row.f_bionimbus_id ] ) ) ,
         ]
 
     experiment_links.append( lambda row: "http://www.opensciencedatacloud.org/keyservice/ark:/31807/bn2011-123%s" % row.f_bionimbus_id )
 
     fields = [
-          db.t_experiment_unit.f_bionimbus_id
+        db.t_experiment_unit.f_bionimbus_id
         , db.t_experiment_unit.f_name
         , db.t_experiment_unit.f_project
         , db.t_experiment_unit.f_agent
         , db.t_experiment_unit.f_barcode
         , db.t_experiment_unit.f_protein
         , db.t_experiment_unit.f_is_public
-    ]
+        ]
 
     form = SQLFORM.grid( db.t_experiment_unit ,
                          fields = fields ,
@@ -414,7 +414,7 @@ def metadata_display():
                          deletable = False ,
                          create = False ,
                          user_signature = False
-                        )
+                         )
     return locals()
 
 
@@ -528,7 +528,7 @@ def cloud_manage():
                          editable  = editable ,
                          deletable = editable ,
                          #fields    = fields
-                       )
+                         )
     return locals()
 
 
@@ -542,7 +542,7 @@ def barcode_manage():
                          paginate = 1000 ,
                          maxtextlength = 150,
                          #fields    = fields
-                       )
+                         )
     return locals()
 
 @auth.requires_login()
@@ -555,7 +555,7 @@ def mailing_list_manage():
                          paginate = 1000 ,
                          maxtextlength = 150,
                          #fields    = fields
-                       )
+                         )
     return locals()
 
 
@@ -567,21 +567,21 @@ def mail_list():
                          editable  = editable ,
                          deletable = editable ,
                          #fields    = fields
-                       )
+                         )
     return locals()
 
 
 @auth.requires_login()
 def organism_manage():
     fields = [
-              db.t_organism.f_name
-            , db.t_organism.f_common_name
-             ]
+        db.t_organism.f_name
+        , db.t_organism.f_common_name
+        ]
     editable = is_user_admin( db , auth )
 
     links = [
-         lambda row: A( 'Libraries' , 
-                        _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
+        lambda row: A( 'Libraries' , 
+                       _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_organism+=+"%d"' % (row[ db.t_organism.id ] ) ) ) ,
         ]
 
     form = SQLFORM.grid( db.t_organism ,
@@ -648,9 +648,9 @@ def library_type_manage():
 
 
 file_links = [
-         lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
-         #lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")
-        ]
+    lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
+    #lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")
+    ]
 
 @auth.requires_login()
 def public_file_manage():
@@ -672,7 +672,7 @@ def add_file_id( ids ):
     ids_to_add = []
     for file_id in ids:
         rows = db(
-                   ( db.t_file.id == file_id ) ).select()
+            ( db.t_file.id == file_id ) ).select()
         for row in rows:
             ids_to_add.append( ( row[ db.t_file.id ] , row[ db.t_file.f_size ] ,row[ db.t_file.f_reads ] ) )
     print "id's to add:" , ids_to_add
@@ -697,11 +697,11 @@ def add_file_id( ids ):
 @auth.requires_login()
 def file_manage( public ):
     fields = [
-              db.t_file.f_filename
-            , db.t_file.f_bionimbus_id
-            , db.t_file.f_size
-            , db.t_file.f_reads
-             ]
+        db.t_file.f_filename
+        , db.t_file.f_bionimbus_id
+        , db.t_file.f_size
+        , db.t_file.f_reads
+        ]
 
     if public == True:
         q = ( db.t_file.f_bionimbus_id == db.t_experiment_unit.f_bionimbus_id) & ( db.t_experiment_unit.f_is_public == 't' )
@@ -721,7 +721,7 @@ def file_manage( public ):
                          create        = False ,
                          paginate = 1000 ,
                          selectable = lambda ids: add_file_id(ids) ,
-                       )
+                         )
     return locals()
 
 
