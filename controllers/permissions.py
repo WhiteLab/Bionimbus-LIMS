@@ -19,16 +19,16 @@ def error():
 
 def proj( q ):
     fields = [ db.t_project.id ,
-             db.t_project.f_name
-           , db.t_project.f_organism
-           , db.t_project.f_pi
-           , db.t_project.f_public
-           , db.t_project.f_cloud
-             ]
+               db.t_project.f_name
+               , db.t_project.f_organism
+               , db.t_project.f_pi
+               , db.t_project.f_public
+               , db.t_project.f_cloud
+               ]
     editable = is_user_admin( db , auth )
 
     links = [
-         lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row[ db.t_project.id ] ) ) ) ,
+        lambda row: A('Libraries'       , _href=URL( "default" , 'my_experiments?keywords=t_experiment_unit.f_project+=+"%d"' % (row[ db.t_project.id ] ) ) ) ,
         ]
 
 
@@ -78,10 +78,10 @@ def user_project_manage():
     arg = request.args( 0 )
 
     fields = [
-             db.t_user_project.f_project_id
-           , db.t_user_project.f_user_id
-           , db.t_user_project.f_admin
-             ]
+        db.t_user_project.f_project_id
+        , db.t_user_project.f_user_id
+        , db.t_user_project.f_admin
+        ]
     editable = is_user_admin( db , auth )
     form = SQLFORM.grid( db.t_user_project ,
                          create    = editable ,
