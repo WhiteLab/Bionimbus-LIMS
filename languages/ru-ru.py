@@ -55,6 +55,7 @@
 'desired minimum reads': 'desired minimum reads',
 'Desired Multiplexing': 'Desired Multiplexing',
 'DNA seq': 'DNA seq',
+'Documentation': 'Documentation',
 'done!': 'готово!',
 'E-mail': 'E-mail',
 'Edit current record': 'Редактировать текущую запись',
