@@ -349,12 +349,11 @@ def generate_key( values ):
 
     if values.has_key( 'f_stage' ):
         stage_name = values[ 'f_stage' ]
-      #print "SN:" , stage_name 
         try:
             dummy = int( stage_name )
         except:
             db.t_stage.update_or_insert( f_name = stage_name )
-        values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
+            values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
     id = db.t_experiment_unit.bulk_insert( [values] )
 
     return key
