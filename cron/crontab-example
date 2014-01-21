@@ -1,0 +1,10 @@
+
+MAILTO=""
+* * * * * ./report_tickets.sh
+#* * * * *    logit -N -c 1000 --debug cloud_publish --pipe 'grep -v "not a import file"' -- /home/dave/publish.py
+#*/1 * * * * logit -c 1000 --debug compressor    --pipe 'grep -v "failed"'            -- /home/dave/compressor.py
+0 * * * *  logit -N -c 1000 --debug importer      --pipe 'grep -v "failed"'            -- /home/dave/import.sh
+0 * * * *    logit -N -c 1000 --debug syncer        --pipe 'grep -v "failed"'            -- /home/dave/bio-controlled-sync
+0 * * * *    logit -N -c 1000 --debug ssyncer        --pipe 'grep -v "failed"'            -- /home/dave/sullivan_sync
+* * * * *    logit -N -c 1000 --debug popper        --pipe 'grep -v "failed"'            -- /home/dave/populate.sh
+#0 * * * *  ls -lR /XRaid/bridge/ > ~/apache-tomcat-6.0.32/webapps/Bionimbus/bridge.txt

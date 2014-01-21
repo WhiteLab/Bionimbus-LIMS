@@ -40,7 +40,7 @@ def projects_for_user():
     lefty = sub.on( p.id == sub.f_parent )
     pfu = db( ( d.f_user_id == auth.user_id ) &
               ( d.f_project_id == p.id      ) ).select( left = lefty )
-    return [ ( row[ p.f_name ] + is_paren( row[ sub.f_name ] ) ,
+    return [ ( row[ p.f_name ] + in_paren( row[ sub.f_name ] ) ,
                str( row[ p.id ] ) + ',' + str( row[ sub.id ] )
                ) for row in pfu ]
 
@@ -160,8 +160,8 @@ def get_spreadsheet_info( id ):
 
 # create the HTML version of a metadata spreadsheet.  Used in 2 places, and massaged a bit after, so it's a routing
 def make_slug( id , keys = None ):
-    try:
-        row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
+  try:
+    row , fn , project , projectname , projectid , title , matrix , organism , stage , subproject , lib_type = get_spreadsheet_info( id )
 
     slug = [ ]
     table = []
@@ -240,7 +240,7 @@ def make_slug( id , keys = None ):
         return slug,False
     slug.append( TABLE( *table ,  _style='border:1px solid black' ) )
     return slug,True
-except:
+  except:
     return "Unable to process spreadsheet!" , False
 
 
@@ -349,12 +349,11 @@ def generate_key( values ):
 
     if values.has_key( 'f_stage' ):
         stage_name = values[ 'f_stage' ]
-      #print "SN:" , stage_name 
         try:
             dummy = int( stage_name )
         except:
             db.t_stage.update_or_insert( f_name = stage_name )
-        values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
+            values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
     id = db.t_experiment_unit.bulk_insert( [values] )
 
     return key
