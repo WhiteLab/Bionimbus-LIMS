@@ -1,6 +1,12 @@
 import sys
 import os
 
+####
+# 
+# look for states in the updated states table that are newer than the newst state
+# in the unit table. Copy those over. 
+#
+####
 
 newest_eu_state = db.t_experiment_unit.f_sample_state_changed.max()
 after_this = db().select( newest_eu_state ).first()[ newest_eu_state ]

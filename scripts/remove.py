@@ -3,6 +3,7 @@ import os
 
 #
 # System to remove files
+# we need a way to remove files from bionimbus for the periodically occurring incorrect imports
 #
 
 def run( cmd ):

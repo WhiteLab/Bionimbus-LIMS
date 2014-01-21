@@ -1,4 +1,9 @@
 
+#####
+#
+# import cghub into bionimbus
+#
+#####
 
 from xml.dom import minidom
 

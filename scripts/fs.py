@@ -1,7 +1,18 @@
 import os
 
+
+##########
+#
+# route files to the right cloud directory
+#
+##########
+
+#
+# TODO: erase files that are there that should not be.
+# the main use case for this is files going away because permissions have changed
+#
+
 def run( str ):
-  #print str
   os.popen( str ).readlines()
 
 def PAL( id , p_name , is_pub , really_at , fn , cloud ):
