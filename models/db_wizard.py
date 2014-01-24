@@ -1,5 +1,15 @@
 ### we prepend t_ to tablenames and f_ to fieldnames for disambiguity
 
+def noneify( t , x ):
+  try:
+    return t[x].f_name
+  except:
+    return "None"
+
+def linkify( table , controller , func , key ):
+    return lambda x,row: A( noneify( table , x ) , _href=URL( controller , '%s?keywords=%s.id+=+"%s"' % (func,key,x) ) )
+
+
 db.define_table( "t_library_type" , 
     Field('f_name', type='string',
           label=T('Name')),
@@ -155,6 +165,8 @@ db.define_table('t_organism',
     format='%(f_name)s',
     migrate=settings.migrate)
 
+organism_rep =linkify(db.t_organism, "default" , 'organism_manage' , 't_organism' )
+
 db.define_table('t_organism_archive',db.t_organism,Field('current_record','reference t_organism',readable=False,writable=False),migrate=settings.migrate)
 
 
@@ -170,7 +182,7 @@ db.define_table('t_project',
     Field('f_cloud', type='reference t_cloud',ondelete='set null',
           label=T('Cloud')),
     Field('f_organism', type='reference t_organism',ondelete='set null',
-          label=T('Organism')),
+          label=T('Organism') , represent = organism_rep ),
     Field('f_platform', type='reference t_platform',ondelete='set null',
           label=T('Platform')),
     Field('f_pi', type='reference auth_user',ondelete='set null',
@@ -178,6 +190,8 @@ db.define_table('t_project',
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
+
+project_rep = linkify(db.t_project , "permissions" , 'project_manage' , 't_project' )
 
 
 
@@ -220,9 +234,11 @@ db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_f
   #pass
   #index alreafy exists
 ########################################
+
+
 db.define_table( 't_user_project' ,
     Field('f_project_id' , type = 'reference t_project' ,
-           label=T('Project') ) , 
+           label=T('Project') , represent=project_rep ) , 
     Field('f_user_id' , type = 'reference auth_user' ,
            label=T('Users') ) ,
     Field('f_admin' , type = 'boolean' ,
@@ -230,7 +246,6 @@ db.define_table( 't_user_project' ,
     auth.signature,
     format='%(f_name)s',
     migrate=settings.migrate)
-
 
 eu_fields = [ Field('f_name', type='string',
           label=T('Name')),
@@ -242,13 +257,13 @@ eu_fields = [ Field('f_name', type='string',
           label=T('Sample State Updated'),writable=False),
 
     Field('f_project', db.t_project,
-          label=T('Project')),
+          label=T('Project'),represent=project_rep ),
     Field('f_library_type', db.t_library_type,ondelete='set null',
           label=T('Library Type')),
     Field('f_subproject', db.t_subproject,
           label=T('Subproject'),default=1),
     Field('f_organism', type='reference t_organism',ondelete='set null',
-          label=T('Organism')),
+          label=T('Organism'),represent=organism_rep ),
     Field('f_stage', type='reference t_stage',ondelete='set null',
           label=T('Stage')),
     Field('f_sample', type='string',

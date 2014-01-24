@@ -341,10 +341,6 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
             else:
                 editable = True
 
-    #if arg == 'csv':
-    #  form = SQLFORM.grid( db.t_experiment_unit )
-    #  return locals()
-
     if public == True:
         q = db.t_experiment_unit.f_is_public == 't'
     else:
