@@ -235,12 +235,13 @@ db.define_table('t_file_archive',db.t_file,Field('current_record','reference t_f
   #index alreafy exists
 ########################################
 
+user_rep =linkify(db.auth_user, "default" , 'user_manage' , 'auth_user' )
 
 db.define_table( 't_user_project' ,
     Field('f_project_id' , type = 'reference t_project' ,
            label=T('Project') , represent=project_rep ) , 
     Field('f_user_id' , type = 'reference auth_user' ,
-           label=T('Users') ) ,
+           label=T('Users') , represent = user_rep ) ,
     Field('f_admin' , type = 'boolean' ,
            label=T('Is administrator') ) ,
     auth.signature,

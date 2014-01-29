@@ -529,6 +529,20 @@ def cloud_manage():
 
 
 @auth.requires_login()
+def user_manage():
+    editable = False
+    form = SQLFORM.grid( db.auth_user ,
+                         create    = False ,
+                         editable  = editable ,
+                         deletable = False ,
+                         #fields    = fields
+                         )
+    return locals()
+
+
+
+
+@auth.requires_login()
 def barcode_manage():
     editable = is_user_admin( db , auth )
     form = SQLFORM.grid( db.t_barcodes ,

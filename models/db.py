@@ -99,6 +99,11 @@ db.define_table('auth_user',
     format='%(first_name)s %(last_name)s ( %(email)s )',
     migrate=settings.migrate)
 
+db.auth_user.f_name = Field.Virtual(
+    'f_name',
+    lambda row: '%s %s ( %s )' % ( row[ db.auth_user.first_name ] , row[ db.auth_user.last_name ] , row[ db.auth_user.email ] ) ) 
+
+
 scheme = True
 try:
   scheme = settings[ 'scheme' ]
