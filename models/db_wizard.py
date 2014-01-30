@@ -321,7 +321,7 @@ eu_fields = [ Field('f_name', type='string',
           label=T('Spreadsheet'),writable=False),
     Field('f_sample_state' , type='ref t_sample_state_list',
           label=T('Sample State'),writable=False),
-    Field('f_sample_state_changed' , type='datetime',
+    Field('f_sample_state_changed' , type='datetime',default=request.now,
           label=T('Sample State Changed'),writable=False),
 
 ]
