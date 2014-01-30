@@ -368,7 +368,7 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                          paginate = 100 ,
                          headers = { 0 : 'poopy' } ,
                          selectable = lambda ids: add_bn_id(ids) ,
-                         orderby=~db.t_experiment_unit.id
+                         orderby=~db.t_experiment_unit.f_sample_state_changed
                          )
     #need this try-catch in case the table is empty, and therefore has no submit button
     try:
