@@ -356,6 +356,8 @@ def generate_key( values ):
             values[ 'f_stage' ] = db.t_stage( db.t_stage.f_name == stage_name ).id
     id = db.t_experiment_unit.bulk_insert( [values] )
 
+    db.t_sample_state.insert( f_bionimbus_id = key, f_state = 1 ,f_updated = datetime.datetime.now() )
+
     return key
 
 
