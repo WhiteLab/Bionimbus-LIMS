@@ -60,7 +60,7 @@ def get_key_from_path( justpath , fn ):
        return( fn.split( '_' )[ 0 ] )
 
 
-def foo( path ):
+def import_run( path ):
  cmd = 'find ' + path
  potentials = run( cmd )
 
@@ -239,4 +239,8 @@ mefiles = run( 'find %s -name import.me' % home )
 for mefile in mefiles:
   path = '/' + '/'.join( mefile.split( '/' )[:-1] )
   print 'checking ', path
-  foo( path )
+  try:
+    import_run( path )
+  except:
+    print "failed to import run from path",path 
+
