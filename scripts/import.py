@@ -28,39 +28,13 @@ def file_len( fname ):
   except:
     return 0
 
-path = '/XRaid/bridge/'
-test_path = '/home/bionimbus-import/'
-#path = test_path
-
-cmd = 'find ' + path
-print cmd 
-potentials = run( cmd )
-
-by_project = {}
-fullreport = []
-
-manifests = {} 
-
-for file in potentials:
-   file = file.strip()
-   fullpath = file
-   file = file.split( '/' )
-   file = file[ -1 ] 
-  
-   print file 
-
-   already = db( db.t_file.f_filename == file ).select()
-
-   if len( already ) == 0:
-     
-     justpath = fullpath.split( '/' )
-     justpath = justpath[ : -1 ]
-     run_id = justpath[ -1 ] 
-     justpath = '/'.join( justpath )
-
-     if not os.path.exists( justpath + '/import.me' ):
-       continue
-
+#
+# given a file, see if there is a manifest file mapping it to a 
+# bionimbus ID. If this doesn't exist, extract the bionimbus ID 
+# from the filename
+#
+manifests = {}
+def get_key_from_path( justpath , fn ):
      if not manifests.has_key( justpath ):
        manifest = {}
        manifests[ justpath ] = manifest
@@ -76,18 +50,55 @@ for file in potentials:
              pass
        print 'read manifest',manifest
 
-
      manifest = manifests[ justpath ]
 
-     fn = file.split( '/' )[ -1 ]
      if manifest.has_key( fn ):
-       bn_id = manifest[ fn ] 
+       return( manifest[ fn ] )
      else:
-       bn_id = fn.split( '_' )[ 0 ]
+       return( fn.split( '_' )[ 0 ] )
+
+
+def import_run( path ):
+ cmd = 'find ' + path
+ potentials = run( cmd )
+
+<<<<<<< HEAD
+for file in potentials:
+=======
+ by_project = {}
+ fullreport = []
+
+ now = datetime.datetime.now()
+
+ already_distributed = {} 
+
+ for file in potentials:
+>>>>>>> 02db8dcaa7763a835802b79d92e4ca9bed3822d7
+   file = file.strip()
+   fullpath = file
+   file = file.split( '/' )
+   file = file[ -1 ] 
+  
+   print file 
+
+   already = db( db.t_file.f_filename == file ).select()
+
+   if len( already ) == 0:
+     
+     justpath = fullpath.split( '/' )
+     justpath = justpath[ : -1 ]
+     run_id = justpath[ -1 ] 
+     justpath = '/'.join( justpath )
+     fn = file.split( '/' )[ -1 ]
+
+     if not os.path.exists( justpath + '/import.me' ):
+       continue
+ 
+     bn_id = get_key_from_path( justpath , fn )
      
      row = db( db.t_experiment_unit.f_bionimbus_id == bn_id ).select()
      if len( row ) <> 1:
-       #print "malformed bionimbus ID:" , bn_id 
+       print "malformed bionimbus ID:" , bn_id 
        continue 
 
      fullreport.append( ( bn_id , fn ) )
@@ -119,9 +130,9 @@ for file in potentials:
      print "**** fin!" 
 
 
-for project in by_project.keys():
+ for project in by_project.keys():
   paths = by_project[ project ]
-  project,title,run = project.split( ',' )
+  project,title,run_num = project.split( ',' )
 
   content = ''
   print "type =",title 
@@ -203,11 +214,11 @@ for project in by_project.keys():
 
   pname = db.t_project[ project ].f_name
 
-  msg = "Files imported to " + pname + " from run " + run
+  msg = "Files imported to " + pname + " from run " + run_num
   sendMailTo( db , 'dhanley@uchicago.edu' , msg , content , list = 'Import' , project = project )
 
-fullLen = len( fullreport )
-if fullLen > 0:
+ fullLen = len( fullreport )
+ if fullLen > 0:
   report  = '<html>\n'
   report += '<table border="3">\n'
   report += 'Number of files: %d' % fullLen 
@@ -216,6 +227,16 @@ if fullLen > 0:
     report += '<tr><td>%s</td><td>%s</td></tr>\n' % row 
   report += '</html>'
   sendMailTo( db , 'dhanley@uchicago.edu' , 'Import report' , report , list = 'Import Report' )
+  db.commit()
 
-if path == test_path:
-  db.rollback()
+
+home = '/XRaid/bridge/'
+mefiles = run( 'find %s -name import.me' % home )
+
+for mefile in mefiles:
+  path = '/' + '/'.join( mefile.split( '/' )[:-1] )
+  print 'checking ', path
+  try:
+    import_run( path )
+  except:
+    print "failed to import run from path",path 

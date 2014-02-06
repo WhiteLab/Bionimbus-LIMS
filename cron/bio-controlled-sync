@@ -2,15 +2,5 @@
 
 PASSWD=~/Passwd
 
-# add --copy-links 
-# add --delete-during'
-
-
 rsync --progress --size-only --password-file=$PASSWD  --copy-links --delete-during -rlpgoDv -hh --stats --inplace -B 65536 --address 74.114.99.134 /XRaid/share/private/ cistrack@74.114.99.127::cistracksync
 
-#find /XRaid/data/Cistrack/Human/WhiteLab/ -mtime -7 -print | rsync --files-from=- --password-file=$PASSWD  -av -hh --stats --inplace -B 65536 --delete-during --address 74.114.99.134 / cistrack@74.114.99.127::cistracksync
-
-#find /XRaid/data/Cistrack/Human/WhiteLab/ -mtime -7 | rsync --password-file=$PASSWD  -av -hh --stats --inplace -B 65536 --delete-during --address 74.114.99.134 --files-from=- cistrack@bioc.lac.uic.edu::cistracksync
-#rsync --password-file=$PASSWD  -av -hh --stats --inplace -B 65536 --delete-during --address 74.114.99.134 /XRaid/data/Cistrack/Human/WhiteLab/ cistrack@bioc.lac.uic.edu::cistracksync
-
-#rsync --password-file=$PASSWD  -av -hh --stats --inplace -B 65536 --delete-during /XRaid/data/Cistrack/OlafSchneewind/ cistrack@bioc.lac.uic.edu::cistracksync/Olaf/ 
