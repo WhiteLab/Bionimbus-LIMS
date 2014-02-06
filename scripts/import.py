@@ -233,10 +233,10 @@ def foo( path ):
   db.commit()
 
 
-path = ' /XRaid/bridge/140103_SN7001227_0126_AC33U7ACXX/'
-path = path + '2013-2493_140103_SN7001227_0126_AC33U7ACXX_3_1_sequence.txt.gz'
+home = '/XRaid/bridge/'
+mefiles = run( 'find %s -name import.me' % home )
 
-test_path = '/home/bionimbus-import/'
-#path = test_path
-run( 'ls -l' )
-foo( path )
+for mefile in mefiles:
+  path = '/' + '/'.join( mefile.split( '/' )[:-1] )
+  print 'checking ', path
+  foo( path )
