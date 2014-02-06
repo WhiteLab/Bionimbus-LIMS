@@ -6,6 +6,8 @@ from applications.Bionimbus.modules.mail          import sendMailTo
 
 from applications.Bionimbus.modules.cols import *
 
+import datetime 
+
 def flatten( x ):
     return str(x)
 
@@ -75,18 +77,16 @@ def import_run( path ):
         file = file.split( '/' )
         file = file[ -1 ]
 
-        print file
-
         already = db( db.t_file.f_filename == file ).select()
 
         if len( already ) == 0:
-
             justpath = fullpath.split( '/' )
             justpath = justpath[ : -1 ]
             run_id = justpath[ -1 ]
             justpath = '/'.join( justpath )
             fn = file.split( '/' )[ -1 ]
 
+            print file , fn 
             if not os.path.exists( justpath + '/import.me' ):
                 continue
 
@@ -232,7 +232,7 @@ mefiles = run( 'find %s -name import.me' % home )
 for mefile in mefiles:
     path = '/' + '/'.join( mefile.split( '/' )[:-1] )
     print 'checking ', path
-    try:
-        import_run( path )
-    except:
-        print "failed to import run from path",path
+    #try:
+    import_run( path )
+    #except:
+    print "failed to import run from path",path
