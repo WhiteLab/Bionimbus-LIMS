@@ -1,6 +1,5 @@
 import sys
 import os
-import datetime
 
 from applications.Bionimbus.modules.file_location import generate_name
 from applications.Bionimbus.modules.mail          import sendMailTo
@@ -31,7 +30,7 @@ def file_len( fname ):
 
 path = '/XRaid/bridge/'
 test_path = '/home/bionimbus-import/'
-path = test_path
+#path = test_path
 
 cmd = 'find ' + path
 print cmd 
@@ -41,10 +40,6 @@ by_project = {}
 fullreport = []
 
 manifests = {} 
-
-now = datetime.datetime.now()
-
-already_distributed = {} 
 
 for file in potentials:
    file = file.strip()
@@ -121,11 +116,6 @@ for file in potentials:
      reads = file_len( fullpath ) / 4 
   
      db( db.t_file.id == id ).update( f_newpath = newname , f_filename = file  , f_reads = reads )
-     #db( db.t_experiment_unit.f_bionimbus_id = bn_id ).update( f_sample_state_changed = now )
-     if not already_distributed.has_key( bn_id ):
-       print "**inserting state : " , bn_id , now , 6 
-       db.t_sample_state.insert( f_bionimbus_id = bn_id , f_updated = now , f_state = 6 ) 
-       already_distributed[ bn_id ] = bn_id
      print "**** fin!" 
 
 
@@ -227,5 +217,5 @@ if fullLen > 0:
   report += '</html>'
   sendMailTo( db , 'dhanley@uchicago.edu' , 'Import report' , report , list = 'Import Report' )
 
-##if path == test_path:
-##  db.rollback()
+if path == test_path:
+  db.rollback()
