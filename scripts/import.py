@@ -8,13 +8,23 @@ from applications.Bionimbus.modules.cols import *
 
 import datetime 
 
+#
+# this used to do more.
+#
 def flatten( x ):
     return str(x)
 
+
+#
+# run a subprocess, and return its output
+#
 def run( str ):
     print str
     return os.popen( str ).readlines()
 
+#
+# count the number of lines in a file. This is needed because sequence count = lines / 4 
+#
 def file_len( fname ):
     try:
         i = 0
@@ -226,13 +236,17 @@ def import_run( path ):
         db.commit()
 
 
+#
+# Main loop: go looking for directories with import.me in them,
+# and scan those for files not yet present in the database
+#
 home = '/XRaid/bridge/'
 mefiles = run( 'find %s -name import.me' % home )
 
 for mefile in mefiles:
     path = '/' + '/'.join( mefile.split( '/' )[:-1] )
     print 'checking ', path
-    #try:
-    import_run( path )
-    #except:
-    print "failed to import run from path",path
+    try:
+      import_run( path )
+    except:
+      sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
