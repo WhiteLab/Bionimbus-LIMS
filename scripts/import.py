@@ -80,6 +80,7 @@ def get_key_from_path( justpath , fn ):
 
 
 def import_run( path ):
+    db._adapter.reconnect() 
     cmd = 'find ' + path
     potentials = run( cmd )
 
@@ -252,10 +253,24 @@ def import_run( path ):
 home = '/XRaid/bridge/'
 mefiles = run( 'find %s -name import.me' % home )
 
+children = []
+
+db.close()
+
 for mefile in mefiles:
     path = '/' + '/'.join( mefile.split( '/' )[:-1] )
     print 'checking ', path
-    try:
-      import_run( path )
-    except:
-      sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
+ 
+    pid = os.fork()
+    if pid == 0:   
+      try:
+        import_run( path )
+      except:
+        sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
+      os._exit( 1 )
+    else:
+      children.append( pid )
+
+for child in children:
+  os.waitpid( child )
+
