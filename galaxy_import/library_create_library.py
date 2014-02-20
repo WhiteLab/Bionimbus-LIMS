@@ -4,7 +4,7 @@ import ConfigParser
 import os, sys
 
 config = ConfigParser.RawConfigParser()
-config.read('dropbox.config')
+config.read('import.config')
 
 dist = config.get( 'main' , 'dist' )
 api_key = config.get( 'main' , 'api_key' )

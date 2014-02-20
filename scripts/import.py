@@ -25,7 +25,7 @@ def run( str ):
 #
 # count the number of lines in a file. This is needed because sequence count = lines / 4 
 #
-def file_len( fname ):
+def file_len1( fname ):
     try:
         i = 0
         if fname.endswith( '.gz' ):
@@ -39,6 +39,15 @@ def file_len( fname ):
         return i + 1
     except:
         return 0
+
+def file_len( fname ):
+    cmd = ' %s | wc -l' % fname
+    fp = 'pigz -c -d' if ( fname.endswith( '.gz' ) ) else 'cat'
+    cmd = fp + cmd
+    lines = run( cmd )
+    len = int( lines[ 0 ])
+    return len
+
 
 #
 # given a file, see if there is a manifest file mapping it to a
