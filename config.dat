@@ -1,5 +1,6 @@
 [main]
 
+forking_import	  = False
 base_dir          = /XRaid/
 data_import	  = /XRaid/bridge/
 data_target       = /XRaid/share/
