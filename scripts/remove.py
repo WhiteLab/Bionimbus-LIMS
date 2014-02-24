@@ -16,8 +16,8 @@ def rm( base , fn ):
 
 for f in sys.argv:
   f = f.split('/')[-1]
-  rm( "/XRaid/bridge/" , f )
-  rm( "/XRaid/share/" , f )
-  rm( "/XRaid/data/Cistrack/" , f )
-  rm( "/XRaid/bionimbus/" , f )
+  rm( settings.data_import , f )
+  rm( settings.data_target , f )
+  rm( "/%s/data/Cistrack/" % settings.base_dir , f )
+  rm( "/%s/bionimbus/" % settings.base_dir , f )
   rr = db( db.t_file.f_filename == f ).delete() 
