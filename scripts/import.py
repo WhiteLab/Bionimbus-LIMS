@@ -264,19 +264,30 @@ print "Database already has" , len( filenames_in_db ) , "files."
 
 db.close()
 
+def regular_import( path ):
+    try:
+        import_run( path )
+    except:
+        sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
+
+def forking_import( path ):
+    pid = os.fork()
+    if pid == 0:
+        regular_import( path )
+        os._exit( 1 )
+    else:
+        children.append( pid )
+
+
 for mefile in mefiles:
     path = '/' + '/'.join( mefile.split( '/' )[:-1] )
     print 'checking ', path
  
-    pid = os.fork()
-    if pid == 0:   
-      try:
-        import_run( path )
-      except:
-        sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
-      os._exit( 1 )
+    if settings.forking_import == 'True':
+      forking_import( path )
     else:
-      children.append( pid )
+      regular_import( path ) 
+
 
 for child in children:
   os.waitpid( child )
