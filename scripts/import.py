@@ -251,7 +251,7 @@ def import_run( path ):
 # Main loop: go looking for directories with import.me in them,
 # and scan those for files not yet present in the database
 #
-home = '/XRaid/bridge/'
+home = settings.data_import
 mefiles = run( 'find %s -name import.me' % home )
 
 children = []
