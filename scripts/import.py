@@ -78,6 +78,7 @@ def get_key_from_path( justpath , fn ):
     else:
         return( fn.split( '_' )[ 0 ] )
 
+filenames_in_db = {} 
 
 def import_run( path ):
     db._adapter.reconnect() 
@@ -97,9 +98,9 @@ def import_run( path ):
         file = file.split( '/' )
         file = file[ -1 ]
 
-        already = db( db.t_file.f_filename == file ).select()
+        imported_already = filenames_in_db.has_key( file )
 
-        if len( already ) == 0:
+        if not imported_already:
             justpath = fullpath.split( '/' )
             justpath = justpath[ : -1 ]
             run_id = justpath[ -1 ]
@@ -107,8 +108,8 @@ def import_run( path ):
             fn = file.split( '/' )[ -1 ]
 
             print file , fn 
-            if not os.path.exists( justpath + '/import.me' ):
-                continue
+            #if not os.path.exists( justpath + '/import.me' ):
+            #    continue
 
             bn_id = get_key_from_path( justpath , fn )
 
@@ -250,26 +251,43 @@ def import_run( path ):
 # Main loop: go looking for directories with import.me in them,
 # and scan those for files not yet present in the database
 #
-home = '/XRaid/bridge/'
+home = settings.data_import
 mefiles = run( 'find %s -name import.me' % home )
 
 children = []
 
+filewalk = db( db.t_file ).select( db.t_file.f_filename )
+for file in filewalk:
+  filenames_in_db[ file[ db.t_file.f_filename ] ] = 0
+
+print "Database already has" , len( filenames_in_db ) , "files."
+
 db.close()
+
+def regular_import( path ):
+    try:
+        import_run( path )
+    except:
+        sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
+
+def forking_import( path ):
+    pid = os.fork()
+    if pid == 0:
+        regular_import( path )
+        os._exit( 1 )
+    else:
+        children.append( pid )
+
 
 for mefile in mefiles:
     path = '/' + '/'.join( mefile.split( '/' )[:-1] )
     print 'checking ', path
  
-    pid = os.fork()
-    if pid == 0:   
-      try:
-        import_run( path )
-      except:
-        sendMailTo( db , 'dhanley@uchicago.edu' , "import" , "Failed to import run from folder " + path )
-      os._exit( 1 )
+    if settings.forking_import == 'True':
+      forking_import( path )
     else:
-      children.append( pid )
+      regular_import( path ) 
+
 
 for child in children:
   os.waitpid( child )

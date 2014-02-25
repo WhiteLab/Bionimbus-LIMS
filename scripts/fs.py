@@ -21,7 +21,7 @@ def PAL( id , p_name , is_pub , really_at , fn , cloud ):
     fn = fn[ -1 ]
     db( db.t_file.id == id ).update( f_filename = fn )
   goesto = cloud
-  p_name = ( '/XRaid/share/%s/' % goesto ) + p_name.replace( ' ' , '_' ) + '/' + fn
+  p_name = ( '%s/%s/' % ( settings.data_target , goesto ) ) + p_name.replace( ' ' , '_' ) + '/' + fn
   p_path = p_name.split( '/' )
   p_path = p_path[ : -1 ]
   p_path = '/'.join( p_path )

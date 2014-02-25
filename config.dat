@@ -1,5 +1,9 @@
 [main]
 
+forking_import	  = False
+base_dir          = /XRaid/
+data_import	  = /XRaid/bridge/
+data_target       = /XRaid/share/
 sqlite            = False
 postgres          = postgres://dstn:cisdstn@localhost:5432/bionimbus
 login_with_openid = True
