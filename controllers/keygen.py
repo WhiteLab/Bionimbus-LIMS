@@ -84,6 +84,7 @@ def keygen_spreadsheet():
 table_types = { 'dswg'   : 'DNAseq' ,
                 'dswg2'  : 'DNAseq' ,
                 'rnaseq' : 'RNAseq' ,
+                'Samples_rnaseq' : 'RNAseq' ,
                 'CS'     : 'ChIP-seq' ,
                 'ChiPseq': 'ChIP-seq' ,
                 'Chipseq': 'ChIP-seq' ,
@@ -109,7 +110,7 @@ def spreadsheet_to_matrix( fn ):
                     title = title.split()
                     title = title[ 0 ]
                     if not table_types.has_key( title ):
-                        print "Invalid title '%s' " % title
+                        print "Invalid silly silly title '%s' " % title
                         raise Exception( "Invalid spreadsheet" , '' )
                 mr.append( str( r ) )
             matrix.append( mr )
@@ -296,7 +297,7 @@ def extractRow( title , row ):
 
     #### NEW SPREADSHEETS
 
-    if title == 'RNA':
+    if title == 'RNA' or title == 'Samples_rnaseq':
         res = unswizzle( 'RNAseq' , rna_cols(db) , row )
     if title == 'DNA':
         res = unswizzle( 'DNAseq' , dna_cols(db) , row )
@@ -307,7 +308,7 @@ def extractRow( title , row ):
     if title == 'TF':
         res = unswizzle( 'UC_ChiPseq' , UCSEQ_cols(db) , row )
     if res == None:
-        raise Exception( "Invalid spreadsheet " + title  )
+        raise Exception( "Invalid spreadsheet #2 " + title  )
     return res
 
 def generate_a_key(  ):
