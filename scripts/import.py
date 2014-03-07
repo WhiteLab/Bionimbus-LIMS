@@ -290,5 +290,5 @@ for mefile in mefiles:
 
 
 for child in children:
-  os.waitpid( child )
+  os.waitpid( child , 0 )
 
