@@ -14,7 +14,7 @@ def rm( base , fn ):
   print c 
   run( c )
 
-for f in sys.argv:
+for f in sys.argv[1:]:
   f = f.split('/')[-1]
   rm( settings.data_import , f )
   rm( settings.data_target , f )

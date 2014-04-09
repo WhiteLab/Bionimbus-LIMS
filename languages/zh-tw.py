@@ -99,6 +99,7 @@
 'desired minimum reads': 'desired minimum reads',
 'Desired Multiplexing': 'Desired Multiplexing',
 'DNA seq': 'DNA seq',
+'Documentation': 'Documentation',
 'done!': '完成!',
 'E-mail': '電子郵件',
 'EDIT': '編輯',
