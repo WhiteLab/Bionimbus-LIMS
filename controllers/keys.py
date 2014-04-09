@@ -113,13 +113,14 @@ def recent_keys( count ):
     return flatify( re )
 
 @service.xmlrpc
-def keys_after_date( adate , count = 1000 ): 
+def keys_after_date( adate ): 
     re = db( ( db.t_experiment_unit.created_by == db.auth_user.id ) &
             ( db.t_experiment_unit.f_library_type == db.t_library_type.id ) &
             ( db.t_experiment_unit.f_project == db.t_project.id ) &
             ( db.t_experiment_unit.created_on > adate ) ).select( *rpc_return_fields ,
-                                                                            orderby = ~db.t_experiment_unit.id ,
-                                                                            limitby = ( 0 , count ) )
+                                                                            orderby = ~db.t_experiment_unit.id 
+                                                                            #limitby = ( 0 , count ) 
+                                                                )
     return flatify( re )
 
 def call():
