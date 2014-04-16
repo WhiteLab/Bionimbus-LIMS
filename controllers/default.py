@@ -23,14 +23,9 @@ def error():
     return dict()
 
 def check_access():
-<<<<<<< HEAD
     args = request.env.path_info.split('/')[3:]
     print args 
     return "YES"
-
-=======
-    return "YES"   
->>>>>>> 7431672fcb82934868e424afba55b7465d97e609
 
 #####
 #
