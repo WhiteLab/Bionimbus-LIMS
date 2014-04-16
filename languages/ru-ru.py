@@ -15,6 +15,7 @@
 'Antobody/Treatment': 'Antobody/Treatment',
 'Are you sure you want to delete this object?': 'Are you sure you want to delete this object?',
 'Available databases and tables': 'Базы данных и таблицы',
+'Back': 'Back',
 'Barcode': 'Barcode',
 'Billing Status (Tifani/Erin: please enter any additional work performed here that was not in request otherwise enter nothing)': 'Billing Status (Tifani/Erin: please enter any additional work performed here that was not in request otherwise enter nothing)',
 'Biological Material': 'Biological Material',

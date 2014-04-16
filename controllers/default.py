@@ -23,10 +23,14 @@ def error():
     return dict()
 
 def check_access():
+<<<<<<< HEAD
     args = request.env.path_info.split('/')[3:]
     print args 
     return "YES"
 
+=======
+    return "YES"   
+>>>>>>> 7431672fcb82934868e424afba55b7465d97e609
 
 #####
 #
@@ -312,7 +316,7 @@ def bn_archive():
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None , is_active = True ):
     if type<>None:
-        type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
+        type = db( db.t_library_type.f_name == type ).select()[ 0 ][ db.t_library_type.id ]
     pub = 'my'
     if public:
         pub = 'public'
@@ -340,7 +344,10 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                 experiment_links.insert( 0 , lambda row: A('Archive', _href=URL( "default" , "bn_archive",args=[row.f_bionimbus_id])))
         else:
             id = int( request.args( 2 ) )
-            rows = db( ( db.t_user_project.f_user_id    == auth.user_id ) & ( db.t_experiment_unit.id == id ) ).select( db.t_experiment_unit.id , left = experiment_project_join(db) )
+            rows = db( ( db.t_user_project.f_user_id    == auth.user_id ) &
+                       ( db.t_user_project.f_admin == 'T') & 
+                       ( db.t_experiment_unit.id == id ) ).select( db.t_experiment_unit.id , left = experiment_project_join(db) )
+            #response.flash = db._lastsql 
             if len(rows)<1:
                 response.flash = "you can't edit that experiment"
                 editable = False
