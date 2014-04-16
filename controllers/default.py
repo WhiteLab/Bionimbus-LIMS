@@ -22,23 +22,8 @@ def index():
 def error():
     return dict()
 
-@request.restful()
-def api():
-    response.view = 'generic.'+request.extension
-    def GET(*args,**vars):
-        patterns = 'auto'
-        parser = db.parse_as_rest(patterns,args,vars)
-        if parser.status == 200:
-            return dict(content=parser.response)
-        else:
-            raise HTTP(parser.status,parser.error)
-    def POST(table_name,**vars):
-        return db[table_name].validate_and_insert(**vars)
-    def PUT(table_name,record_id,**vars):
-        return db(db[table_name]._id==record_id).update(**vars)
-    def DELETE(table_name,record_id):
-        return db(db[table_name]._id==record_id).delete()
-    return dict(GET=GET, POST=POST, PUT=PUT, DELETE=DELETE)
+def check_access():
+    return "YES"   
 
 #####
 #
@@ -324,7 +309,7 @@ def bn_archive():
 @auth.requires_login()
 def experiment_unit_manage( public , fields = basic_experiment_fields , type = None , is_active = True ):
     if type<>None:
-        type = db( db.t_library_type.f_name == type ).select()[0][ db.t_library_type.id]
+        type = db( db.t_library_type.f_name == type ).select()[ 0 ][ db.t_library_type.id ]
     pub = 'my'
     if public:
         pub = 'public'
@@ -352,7 +337,10 @@ def experiment_unit_manage( public , fields = basic_experiment_fields , type = N
                 experiment_links.insert( 0 , lambda row: A('Archive', _href=URL( "default" , "bn_archive",args=[row.f_bionimbus_id])))
         else:
             id = int( request.args( 2 ) )
-            rows = db( ( db.t_user_project.f_user_id    == auth.user_id ) & ( db.t_experiment_unit.id == id ) ).select( db.t_experiment_unit.id , left = experiment_project_join(db) )
+            rows = db( ( db.t_user_project.f_user_id    == auth.user_id ) &
+                       ( db.t_user_project.f_admin == 'T') & 
+                       ( db.t_experiment_unit.id == id ) ).select( db.t_experiment_unit.id , left = experiment_project_join(db) )
+            #response.flash = db._lastsql 
             if len(rows)<1:
                 response.flash = "you can't edit that experiment"
                 editable = False
