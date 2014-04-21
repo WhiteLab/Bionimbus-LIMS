@@ -666,11 +666,6 @@ def library_type_manage():
 
 
 
-file_links = [
-    lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
-    #lambda row: A('Cloud Push',callback=URL('file_cloud_push',args=[row.id]),target="me")
-    ]
-
 @auth.requires_login()
 def public_file_manage():
     return file_manage( public = True )
@@ -707,6 +702,24 @@ def add_file_id( ids ):
 
 
 
+######
+#
+# delete files!
+# Danger! Danger!
+#
+######
+
+@auth.requires_login()
+def file_delete():
+  args = request.env.path_info.split('/')[3:]
+  filename = args[ 1 ]
+
+  o = open( "/tmp/testdel" , "w" )
+  cmd = "applications/Bionimbus/scripts/remove.sh %s" % filename
+  print >>o, cmd
+
+
+
 
 ######
 #
@@ -721,6 +734,13 @@ def file_manage( public ):
         , db.t_file.f_size
         , db.t_file.f_reads
         ]
+
+    file_links = [
+      lambda row: A('Download',_href=URL("default","file_download",args=[row.id]))
+    ]
+
+    if is_user_admin( db , auth ):
+      file_links.append( lambda row: A('Delete',_href=URL("default","file_delete",args=[row.f_filename])) )
 
     if public == True:
         q = ( db.t_file.f_bionimbus_id == db.t_experiment_unit.f_bionimbus_id) & ( db.t_experiment_unit.f_is_public == 't' )
