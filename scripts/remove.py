@@ -16,8 +16,9 @@ def rm( base , fn ):
 
 for f in sys.argv[1:]:
   f = f.split('/')[-1]
+  rr = db( db.t_file.f_filename == f ).delete()
+  db.commit()
   rm( settings.data_import , f )
-  rm( settings.data_target , f )
-  rm( "/%s/data/Cistrack/" % settings.base_dir , f )
-  rm( "/%s/bionimbus/" % settings.base_dir , f )
-  rr = db( db.t_file.f_filename == f ).delete() 
+  #rm( settings.data_target , f )
+  #rm( "/%s/data/Cistrack/" % settings.base_dir , f )
+  #rm( "/%s/bionimbus/" % settings.base_dir , f )

@@ -715,9 +715,11 @@ def file_delete():
   filename = args[ 1 ]
 
   o = open( "/tmp/testdel" , "w" )
-  cmd = "applications/Bionimbus/scripts/remove.sh %s" % filename
+  cmd = "nohup applications/Bionimbus/scripts/remove.sh %s &" % filename
   print >>o, cmd
+  os.popen( cmd , "r" ).readlines()
 
+  return file_manage( False ) 
 
 
 

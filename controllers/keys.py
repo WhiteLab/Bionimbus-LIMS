@@ -58,7 +58,7 @@ def key_to_id( key ):
     y,i = int(y) , int(i)
     print "y,i" , y , i
     id = db( ( db.t_keys.f_year == y )  & ( db.t_keys.f_index == i ) ).select()
-    print "result of ID query"
+    #print "result of ID query"
     id = id[ 0 ]
     id = id[ 'id' ]
     return id
