@@ -10,7 +10,7 @@ def linkify( table , controller , func , key ):
     return lambda x,row: A( noneify( table , x ) , _href=URL( controller , '%s?keywords=%s.id+=+"%s"' % (func,key,x) ) )
 
 
-db.define_table( "t_library_type" , 
+db.define_table( "t_library_type" ,  #library type
     Field('f_name', type='string',
           label=T('Name')),
     Field('f_description', type='text',
