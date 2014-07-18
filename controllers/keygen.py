@@ -415,5 +415,5 @@ def create_keys():
     #print msg
     msg = msg.replace( '</tr>' , '</tr>\n' )
 
-    sendMailTo( db , 'dhanley@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Key Creation' , project = projectid )
+    sendMailTo( db , 'pmakella@uchicago.edu' , "Keys created in project " + projectname  , msg , list = 'Key Creation' , project = projectid )
     return redirect( u )
